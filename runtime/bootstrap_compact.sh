@@ -34,6 +34,7 @@ After=network-online.target
 User=ubuntu
 WorkingDirectory=/opt/vehicle-compact
 Environment=HF_HOME=/opt/vehicle-compact/models
+Environment=HF_HUB_OFFLINE=1
 Environment=TOKENIZERS_PARALLELISM=false
 Environment=COMPACT_SERVING=1
 Environment=DEFAULT_PLANNER=${planner_model}
@@ -59,7 +60,7 @@ if [ ! -x /opt/vehicle-node/bin/node ]; then
 fi
 export PATH=/opt/vehicle-node/bin:$PATH
 npm ci --omit=dev --no-audit --no-fund
-sudo tee /etc/systemd/system/vehicle-compact-web.service >/dev/null <<'EOF'
+sudo tee /etc/systemd/system/vehicle-compact-web.service >/dev/null <<EOF
 [Unit]
 Description=Loopback-only compact voice evaluation backend
 After=network-online.target
@@ -73,7 +74,7 @@ Environment=AWS_REGION=ap-northeast-2
 Environment=CORE_URL=http://127.0.0.1:9101
 Environment=WHISPER_URL=http://127.0.0.1:9105
 Environment=COMPACT_SERVING=1
-Environment=INSTANCE_TYPE=g6.xlarge
+Environment=INSTANCE_TYPE=${COMPACT_INSTANCE_TYPE:-g6.xlarge}
 ExecStart=/opt/vehicle-node/bin/node server.mjs
 Restart=on-failure
 RestartSec=5

@@ -1,0 +1,10 @@
+{
+  "containerCreatedAt": "2026-10-22T03:44:00.50084962Z",
+  "firstHealthyAt": "2026-10-22T03:53:06.458716294Z",
+  "firstSuccessfulPlanAt": "2026-10-22T03:53:20.074281664Z",
+  "secondsToFirstHealth": 545.96,
+  "secondsToFirstPlan": 559.57,
+  "modelLoadGiB": 4.93,
+  "weightsAlreadyCached": true,
+  "note": "First initialization with empty vLLM/Triton compile caches on T4. Qwen GDN kernel compilation/autotuning observed with py-spy. Excludes initial package install and weight download; warm response timings reported separately. Warm restart time has not been measured."
+}

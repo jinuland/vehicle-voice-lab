@@ -8,7 +8,7 @@ Compare how well speech models and small language models turn **vehicle requests
 
 ## Smaller-GPU deployment and serving cost
 
-A separate Seoul **L4 / g6.xlarge** experiment compares Qwen 4B BF16/NF4 and Phi-4 mini, then measures one planner worker, two Docker copies sharing the GPU, and vLLM continuous batching. The original shared demo remains available. [Try the L4 deployment](https://d3q7tlfor72b22.cloudfront.net/) · [Interactive cost / measured performance](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [Method, raw results and deployment instructions](docs/GPU_RIGHTSIZING.md).
+A separate Seoul **L4 / g6.xlarge** experiment compares Qwen 4B BF16/NF4 and Phi-4 mini, then measures one planner worker, two Docker copies sharing the GPU, and vLLM continuous batching. The original shared demo remains available. [Try the L4 deployment](https://d3q7tlfor72b22.cloudfront.net/) · [Interactive cost / measured performance](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [Method, raw results and deployment instructions](docs/GPU_RIGHTSIZING.md). [GPU headroom and cheaper 4-bit follow-up](docs/GPU_HEADROOM.md).
 
 ## What you can do
 

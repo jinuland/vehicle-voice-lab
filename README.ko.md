@@ -8,7 +8,7 @@
 
 ## 작은 GPU 배포와 서빙 비용 실험
 
-서울 **L4 / g6.xlarge** 한 대에 별도 배포해 Qwen 4B BF16/NF4와 Phi-4 mini를 평가합니다. 빠른 후보로 단일 워커, 같은 GPU의 Docker 복제본 2개, vLLM 연속 배치를 비교합니다. 기존 공유 데모도 계속 사용할 수 있습니다. [L4 차량 데모](https://d3q7tlfor72b22.cloudfront.net/) · [비용 계산기와 실측 결과](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [결과·손익분기점·스케일 방법](docs/GPU_RIGHTSIZING.ko.md).
+서울 **L4 / g6.xlarge** 한 대에 별도 배포해 Qwen 4B BF16/NF4와 Phi-4 mini를 평가합니다. 빠른 후보로 단일 워커, 같은 GPU의 Docker 복제본 2개, vLLM 연속 배치를 비교합니다. 기존 공유 데모도 계속 사용할 수 있습니다. [L4 차량 데모](https://d3q7tlfor72b22.cloudfront.net/) · [비용 계산기와 실측 결과](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [결과·손익분기점·스케일 방법](docs/GPU_RIGHTSIZING.ko.md). [남는 자원과 4비트 소형 서버 추가 검증](docs/GPU_HEADROOM.ko.md).
 
 ## 바로 따라 하는 테스트 시나리오
 

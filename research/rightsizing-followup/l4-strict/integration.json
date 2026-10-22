@@ -1,0 +1,8 @@
+{
+  "status": "ready",
+  "schemaVersion": "typed-actions-v2",
+  "originalInputTokenIdsUnchanged": true,
+  "qualityMeasured": true,
+  "loadMeasured": true,
+  "note": "Same output schema for both final comparison configurations; original before-fix results retained separately."
+}

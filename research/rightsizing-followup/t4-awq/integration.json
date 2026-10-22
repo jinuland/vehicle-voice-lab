@@ -1,0 +1,12 @@
+{
+  "status": "ready",
+  "engine": "vLLM 0.32.0",
+  "dtype": "float16",
+  "quantization": "AWQ",
+  "attentionBackend": "TRITON_ATTN",
+  "model": "QuantTrio/Qwen3.5-4B-AWQ",
+  "revision": "32c292e3a73afe1138518180b1b6d2868c980ee2",
+  "qualityMeasured": true,
+  "loadMeasured": true,
+  "schemaVersion": "legacy-generic-v1"
+}

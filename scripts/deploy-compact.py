@@ -11,6 +11,7 @@ parser.add_argument('--host',required=True)
 parser.add_argument('--key',required=True)
 parser.add_argument('--known-hosts',required=True)
 parser.add_argument('--engine',choices=['hf','vllm'],default='hf')
+parser.add_argument('--instance-type',default='g6.xlarge',help='Recorded hardware label, not a provisioning option')
 parser.add_argument('--planner',choices=['qwen35-4b','qwen35-4b-nf4','phi4-mini'],default='qwen35-4b-nf4')
 args=parser.parse_args()
 if args.engine=='vllm' and args.planner=='qwen35-4b-nf4':parser.error('This vLLM experiment supports reviewed BF16 planners only')
@@ -19,9 +20,11 @@ bundle=root/'.runtime/compact-release.tar.gz';bundle.parent.mkdir(exist_ok=True)
 catalog=json.loads((root/'model-catalog.json').read_text())
 catalog['defaultPlannerId']=args.planner
 selected=next(model for model in catalog['models'] if model['id']==args.planner)
+if args.instance_type.startswith('g4dn.') and args.planner!='qwen35-4b-nf4':parser.error('The reviewed T4 deployment uses NF4 with FP16 compute')
+ready_ids=[args.planner] if args.engine=='vllm' or args.instance_type.startswith('g4dn.') else ['qwen35-4b','qwen35-4b-nf4','phi4-mini']
 for model in catalog['models']:
- if model['id'] not in ([args.planner] if args.engine=='vllm' else ['qwen35-4b','qwen35-4b-nf4','phi4-mini']):model['status']='not-deployed'
-files=list(root.glob('*.mjs'))+[root/n for n in ['package.json','package-lock.json','runtime/model_server.py','runtime/whisper_server.py','runtime/bootstrap_compact.sh','runtime/vllm_adapter.py','runtime/planner-schema.json','runtime/run_vllm.sh','runtime/run_two_planners.sh','runtime/Dockerfile.planner','runtime/check_planner.py','runtime/check_tokenization.py','runtime/warm_compact.py']]
+ if model['id'] not in ready_ids:model['status']='not-deployed'
+files=list(root.glob('*.mjs'))+[root/n for n in ['package.json','package-lock.json','runtime/model_server.py','runtime/whisper_server.py','runtime/bootstrap_compact.sh','runtime/vllm_adapter.py','runtime/vehicle_plan_schema.py','runtime/planner-schema.json','runtime/run_vllm.sh','runtime/run_two_planners.sh','runtime/Dockerfile.planner','runtime/check_planner.py','runtime/check_tokenization.py','runtime/warm_compact.py']]
 files+=list((root/'public').rglob('*'))
 files+=[root/n for n in ['research/vehicle-benchmark-summary.json','research/vehicle-model-comparison.csv','research/assistant-tool-latency.json']]
 with tarfile.open(bundle,'w:gz') as tar:
@@ -36,7 +39,7 @@ subprocess.run(['scp',*options,str(bundle),host+':/tmp/vehicle-compact.tar.gz'],
 # its own services/containers so stale engine ports and GPU copies cannot survive.
 reset="for unit in vehicle-compact-web vehicle-compact-core vehicle-compact-whisper vehicle-vllm-adapter; do if sudo systemctl cat $unit.service >/dev/null 2>&1; then sudo systemctl stop $unit; fi; done; for name in vehicle-vllm vehicle-hf-a vehicle-hf-b; do if sudo docker container inspect $name >/dev/null 2>&1; then sudo docker rm -f $name; fi; done"
 subprocess.run(['ssh',*options,host,reset],check=True)
-bootstrap_env='COMPACT_DEFAULT_MODEL='+shlex.quote(selected['repo'])+' COMPACT_DEFAULT_QUANTIZATION='+shlex.quote(selected.get('quantization','bf16'))
+bootstrap_env='COMPACT_DEFAULT_MODEL='+shlex.quote(selected['repo'])+' COMPACT_DEFAULT_QUANTIZATION='+shlex.quote(selected.get('quantization','bf16'))+' COMPACT_INSTANCE_TYPE='+shlex.quote(args.instance_type)
 subprocess.run(['ssh',*options,host,'tar -xzf /tmp/vehicle-compact.tar.gz -C /opt/vehicle-compact && '+bootstrap_env+' bash /opt/vehicle-compact/runtime/bootstrap_compact.sh'],check=True)
 if args.engine=='vllm':
  serving_env='VLLM_MODEL_ID='+shlex.quote(selected['repo'])+' VLLM_MODEL_REVISION='+shlex.quote(selected['revision'])+' VLLM_TEXT_ONLY=1'

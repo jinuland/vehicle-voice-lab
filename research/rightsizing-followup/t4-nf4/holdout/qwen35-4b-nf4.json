@@ -1,0 +1,1012 @@
+{
+  "modelId": "qwen35-4b-nf4",
+  "name": "Qwen3.5 · 4B · 4bit NF4",
+  "repo": "Qwen/Qwen3.5-4B",
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "size": "4.66B total",
+  "startedAt": "2026-10-22T03:38:07.553Z",
+  "status": "complete",
+  "asrId": "whisper",
+  "promptVersion": "compact-v2",
+  "generationProfile": "deterministic",
+  "quantization": "nf4",
+  "syntheticAudio": true,
+  "pipeline": "Whisper turbo ASR → selected sLLM → vehicle executor → Polly",
+  "rows": [
+    {
+      "id": "holdout-passenger-27",
+      "text": "조수석 온도를 스물일곱 도로 바꿔 주세요.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 27
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "조수석 온도를 27도로 바꿔주세요.",
+      "modelProposedActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 27
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.66,
+        "requestAdditionalPeakMiB": 243.41
+      },
+      "modelReply": "",
+      "rawTranscript": "조수석 온도를 27도로 바꿔주세요.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 27
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "조수석 온도를 27도로 맞췄어요.",
+      "asrMs": 210,
+      "llmMs": 2782,
+      "ttsMs": 151,
+      "modelLoadMs": 0,
+      "firstAudioMs": 3193,
+      "elapsedMs": 3193,
+      "audioValid": true,
+      "audioBytes": 88044,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-driver-19",
+      "text": "운전석은 19도로 설정해 주세요.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "temperature",
+          "zone": "driver",
+          "value": 19
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 19,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "운전석은 19도로 설정해주세요.",
+      "modelProposedActions": [
+        {
+          "type": "temperature",
+          "zone": "driver",
+          "value": 19
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.62,
+        "requestAdditionalPeakMiB": 243.37
+      },
+      "modelReply": "",
+      "rawTranscript": "운전석은 19도로 설정해주세요.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "temperature",
+          "zone": "driver",
+          "value": 19
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 19,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "운전석 온도를 19도로 맞췄어요.",
+      "asrMs": 204,
+      "llmMs": 2680,
+      "ttsMs": 146,
+      "modelLoadMs": 0,
+      "firstAudioMs": 3078,
+      "elapsedMs": 3078,
+      "audioValid": true,
+      "audioBytes": 85244,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-both-26",
+      "text": "실내 온도 양쪽 다 26도로 해 줘.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "temperature",
+          "zone": "both",
+          "value": 26
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 26,
+          "passenger": 26
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "실내 온도 양쪽 다 26도로 해줘.",
+      "modelProposedActions": [
+        {
+          "type": "temperature",
+          "zone": "both",
+          "value": 26
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3399.05,
+        "requestAdditionalPeakMiB": 241.8
+      },
+      "modelReply": "",
+      "rawTranscript": "실내 온도 양쪽 다 26도로 해줘.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "temperature",
+          "zone": "both",
+          "value": 26
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 26,
+          "passenger": 26
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "양쪽 온도를 26도로 맞췄어요.",
+      "asrMs": 208,
+      "llmMs": 2696,
+      "ttsMs": 113,
+      "modelLoadMs": 0,
+      "firstAudioMs": 3072,
+      "elapsedMs": 3072,
+      "audioValid": true,
+      "audioBytes": 82844,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-fan-4",
+      "text": "풍량을 4단으로 맞춰 주세요.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "fan",
+          "value": 4
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 4,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "풍량을 4단으로 맞춰주세요.",
+      "modelProposedActions": [
+        {
+          "type": "fan",
+          "value": 4
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.55,
+        "requestAdditionalPeakMiB": 243.3
+      },
+      "modelReply": "",
+      "rawTranscript": "풍량을 4단으로 맞춰주세요.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "fan",
+          "value": 4
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 4,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "바람 세기를 4단으로 바꿨어요.",
+      "asrMs": 204,
+      "llmMs": 2214,
+      "ttsMs": 137,
+      "modelLoadMs": 0,
+      "firstAudioMs": 2604,
+      "elapsedMs": 2604,
+      "audioValid": true,
+      "audioBytes": 77644,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-seat-3",
+      "text": "엉덩이가 추워서 시트 열선 3단으로 켜 줘.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "seatHeat",
+          "value": 3
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 3,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": false,
+      "actionCorrect": false,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "엉덩이가 추워서 시트 열선 3단으로 켜줘.",
+      "modelProposedActions": [
+        {
+          "type": "seatHeat",
+          "zone": "driver",
+          "value": 3
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3403.4,
+        "requestAdditionalPeakMiB": 246.15
+      },
+      "modelReply": "",
+      "rawTranscript": "엉덩이가 추워서 시트 열선 3단으로 켜줘.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "seatHeat",
+          "zone": "driver",
+          "value": 3
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 3,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "열선을 3단으로 켰어요.",
+      "asrMs": 240,
+      "llmMs": 2692,
+      "ttsMs": 125,
+      "modelLoadMs": 0,
+      "firstAudioMs": 3101,
+      "elapsedMs": 3101,
+      "audioValid": true,
+      "audioBytes": 65644,
+      "validationError": null,
+      "failureCategory": "understanding-or-planning",
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-volume-45",
+      "text": "음악 소리를 45로 설정해 줘.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "volume",
+          "value": 45
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 45,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "음악소리를 45로 설정해줘",
+      "modelProposedActions": [
+        {
+          "type": "volume",
+          "value": 45
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.58,
+        "requestAdditionalPeakMiB": 243.33
+      },
+      "modelReply": "",
+      "rawTranscript": "음악소리를 45로 설정해줘",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "volume",
+          "value": 45
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 45,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "음량을 45으로 맞췄어요.",
+      "asrMs": 190,
+      "llmMs": 2312,
+      "ttsMs": 129,
+      "modelLoadMs": 0,
+      "firstAudioMs": 2674,
+      "elapsedMs": 2674,
+      "audioValid": true,
+      "audioBytes": 69244,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-defrost-off",
+      "text": "앞유리 성에 제거 기능을 꺼 주세요.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "defrost",
+          "value": false
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "앞유리성의 제거 기능을 꺼주세요.",
+      "modelProposedActions": [
+        {
+          "type": "defrost",
+          "value": false
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.55,
+        "requestAdditionalPeakMiB": 243.3
+      },
+      "modelReply": "",
+      "rawTranscript": "앞유리성의 제거 기능을 꺼주세요.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "defrost",
+          "value": false
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "앞유리 김서림 제거 기능을 껐어요.",
+      "asrMs": 215,
+      "llmMs": 2295,
+      "ttsMs": 149,
+      "modelLoadMs": 0,
+      "firstAudioMs": 2706,
+      "elapsedMs": 2706,
+      "audioValid": true,
+      "audioBytes": 82844,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-pause",
+      "text": "노래 잠깐 멈춰 줘.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "media",
+          "value": "pause"
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "노래 잠깐 멈춰줘.",
+      "modelProposedActions": [
+        {
+          "type": "media",
+          "value": "pause"
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3400.51,
+        "requestAdditionalPeakMiB": 243.26
+      },
+      "modelReply": "",
+      "rawTranscript": "노래 잠깐 멈춰줘.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "media",
+          "value": "pause"
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "음악을 멈췄어요.",
+      "asrMs": 180,
+      "llmMs": 2214,
+      "ttsMs": 102,
+      "modelLoadMs": 0,
+      "firstAudioMs": 2537,
+      "elapsedMs": 2537,
+      "audioValid": true,
+      "audioBytes": 50044,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-compound",
+      "text": "조수석은 21도로 하고 풍량은 6단으로 바꿔 줘.",
+      "variant": "holdout",
+      "expectedActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 21
+        },
+        {
+          "type": "fan",
+          "value": 6
+        }
+      ],
+      "expectedState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 21
+        },
+        "fan": 6,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": true,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": true,
+      "heard": "조수석은 21도로 하고 풍량은 육간으로 바꿔줘.",
+      "modelProposedActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 21
+        },
+        {
+          "type": "fan",
+          "value": 6
+        }
+      ],
+      "quantization": "nf4",
+      "plannerMemory": {
+        "modelFootprintMiB": 3081.34,
+        "cudaAllocatedDeltaMiB": 3149.13,
+        "linear4bitLayers": 346,
+        "computeDtype": "torch.float16",
+        "measurement": "this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM",
+        "processPeakAllocatedMiB": 3403.4,
+        "requestAdditionalPeakMiB": 246.15
+      },
+      "modelReply": "",
+      "rawTranscript": "조수석은 21도로 하고 풍량은 육간으로 바꿔줘.",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [
+        {
+          "type": "temperature",
+          "zone": "passenger",
+          "value": 21
+        },
+        {
+          "type": "fan",
+          "value": 6
+        }
+      ],
+      "actualState": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 21
+        },
+        "fan": 6,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "조수석 온도를 21도로 맞췄어요. 바람 세기를 6단으로 바꿨어요.",
+      "asrMs": 247,
+      "llmMs": 3556,
+      "ttsMs": 294,
+      "modelLoadMs": 0,
+      "firstAudioMs": 4011,
+      "elapsedMs": 4140,
+      "audioValid": true,
+      "audioBytes": 166088,
+      "validationError": null,
+      "failureCategory": null,
+      "actualPlanner": "Qwen/Qwen3.5-4B",
+      "actualRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    {
+      "id": "holdout-weather",
+      "text": "오늘 날씨 알려 줄래?",
+      "variant": "holdout",
+      "expectedActions": [],
+      "expectedState": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "preludeCorrect": true,
+      "passed": false,
+      "actionCorrect": true,
+      "stateCorrect": true,
+      "answerCorrect": true,
+      "intentCorrect": true,
+      "denialCorrect": false,
+      "heard": "오늘 날씨 알려줄래?",
+      "modelProposedActions": [],
+      "modelReply": "",
+      "rawTranscript": "오늘 날씨 알려줄래?",
+      "asrModel": "openai/whisper-large-v3-turbo",
+      "actualActions": [],
+      "actualState": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "서울시청 데모 위치 예보는 기온 11도, 바람 초속 1.9미터, 다음 한 시간 강수량 0밀리미터예요.",
+      "asrMs": 187,
+      "llmMs": 0,
+      "ttsMs": 355,
+      "modelLoadMs": 0,
+      "firstAudioMs": 1773,
+      "elapsedMs": 1773,
+      "audioValid": true,
+      "audioBytes": 264444,
+      "validationError": null,
+      "failureCategory": "understanding-or-planning",
+      "actualPlanner": "Application tool router"
+    }
+  ],
+  "warmup": {
+    "elapsedMs": 3203,
+    "modelLoadMs": 0
+  },
+  "completedAt": "2026-10-22T03:38:39.801Z"
+}

@@ -1,7 +1,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {initialState,executePlan} from '../vehicle.mjs';
 import {variants,cases,holdout} from './vehicle-benchmark-cases.mjs';
-const catalog=JSON.parse(await readFile('model-catalog.json','utf8')),base=process.env.BENCH_BASE||'http://localhost:8787/api/';
+const catalog=JSON.parse(await readFile(process.env.BENCH_CATALOG_PATH||'model-catalog.json','utf8')),base=process.env.BENCH_BASE||'http://localhost:8787/api/';
 const isHoldout=process.env.BENCH_SUITE==='holdout',suite=isHoldout?holdout:variants,reportDir=process.env.BENCH_REPORT_DIR||(isHoldout?'research/vehicle-holdout':'research/vehicle-benchmark');const requested=process.argv.slice(2);const models=catalog.models.filter(m=>requested.includes(m.id));await mkdir(reportDir,{recursive:true});
 export function canonicalActions(actions){return actions.flatMap(a=>a.type==='temperature'&&a.zone==='both'?[{...a,zone:'driver'},{...a,zone:'passenger'}]:[a]).map(a=>JSON.stringify(Object.fromEntries(Object.entries(a).sort()))).sort();}
 export function stateEqual(a,b){if(!a||!b)return false;const{revision:ar,...aa}=a,{revision:br,...bb}=b;return JSON.stringify(aa)===JSON.stringify(bb);}

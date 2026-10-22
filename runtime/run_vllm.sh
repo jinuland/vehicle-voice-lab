@@ -3,6 +3,11 @@ set -euo pipefail
 cd /opt/vehicle-compact
 model_id=${VLLM_MODEL_ID:-microsoft/Phi-4-mini-instruct}
 revision=${VLLM_MODEL_REVISION:-cfbefacb99257ffa30c83adab238a50856ac3083}
+quantization=${VLLM_QUANTIZATION:-bf16}
+dtype=${VLLM_DTYPE:-bfloat16}
+gpu_pool=${VLLM_GPU_MEMORY_FRACTION:-0.75}
+gpu_name=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)
+case "$quantization" in bf16|awq) ;; *) echo 'Reviewed vLLM quantization must be bf16 or awq' >&2; exit 1;; esac
 image=${VLLM_IMAGE:-vllm/vllm-openai:v0.32.0@sha256:befccf0e7e4089aa23926bb6f887a85c0d46c2a99e6de5c5ffdf5cb7957c5b34}
 sudo docker image inspect "$image" >/dev/null 2>&1 || sudo docker pull "$image"
 /opt/vehicle-compact/core-env/bin/python -c 'import httpx'
@@ -19,6 +24,8 @@ User=ubuntu
 WorkingDirectory=/opt/vehicle-compact
 Environment=VLLM_MODEL_ID=$model_id
 Environment=VLLM_MODEL_REVISION=$revision
+Environment=VLLM_QUANTIZATION=$quantization
+Environment="VLLM_GPU_NAME=$gpu_name"
 ExecStart=/opt/vehicle-compact/core-env/bin/python -m uvicorn runtime.vllm_adapter:app --host 127.0.0.1 --port 9101
 Restart=on-failure
 RestartSec=5
@@ -31,17 +38,20 @@ sudo tee /etc/systemd/system/vehicle-compact-web.service.d/engine.conf >/dev/nul
 Environment=CORE_URL=http://127.0.0.1:9101
 Environment=CORE_URLS=http://127.0.0.1:9101
 EOF
+sudo systemctl enable --no-reload vehicle-vllm-adapter
 sudo systemctl daemon-reload
 extra_args=()
 if [ "${VLLM_TEXT_ONLY:-0}" = 1 ]; then extra_args+=(--language-model-only); fi
+if [ "$quantization" = awq ]; then extra_args+=(--quantization awq); fi
+if [ -n "${VLLM_ATTENTION_BACKEND:-}" ]; then extra_args+=(--attention-backend "$VLLM_ATTENTION_BACKEND"); fi
+if [ "${VLLM_ENFORCE_EAGER:-0}" = 1 ]; then extra_args+=(--enforce-eager); fi
 sudo docker run -d --name vehicle-vllm --restart unless-stopped --gpus all --shm-size=2g \
  -p 127.0.0.1:8000:8000 -v /opt/vehicle-compact/models:/models-cache \
  -e HF_HOME=/models-cache -e HF_HUB_OFFLINE=1 -e OMP_NUM_THREADS=2 \
  "$image" --model "$model_id" --revision "$revision" \
- --served-model-name vehicle-planner --dtype bfloat16 --max-model-len 4096 \
- --max-num-seqs 16 --gpu-memory-utilization 0.75 \
+ --served-model-name vehicle-planner --dtype "$dtype" --max-model-len 4096 \
+ --max-num-seqs 16 --gpu-memory-utilization "$gpu_pool" \
  --structured-outputs-config '{"backend":"xgrammar","disable_any_whitespace":true}' "${extra_args[@]}"
-sudo systemctl enable vehicle-vllm-adapter
 sudo systemctl restart vehicle-vllm-adapter
 for attempt in $(seq 1 120); do
  if [ "$(sudo docker inspect --format '{{.RestartCount}}' vehicle-vllm)" != 0 ]; then sudo docker logs --tail 100 vehicle-vllm; exit 1; fi
@@ -49,5 +59,5 @@ for attempt in $(seq 1 120); do
  sleep 5
 done
 curl -fsS http://127.0.0.1:8000/health
-/opt/vehicle-compact/core-env/bin/python runtime/check_planner.py --url http://127.0.0.1:9101 --model "$model_id"
+/opt/vehicle-compact/core-env/bin/python runtime/check_planner.py --url http://127.0.0.1:9101 --model "$model_id" --quantization "$quantization"
 sudo systemctl restart vehicle-compact-web

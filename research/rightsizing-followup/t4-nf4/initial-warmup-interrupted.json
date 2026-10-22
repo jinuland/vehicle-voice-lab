@@ -1,0 +1,46 @@
+{
+  "modelId": "qwen35-4b-nf4",
+  "name": "Qwen3.5 · 4B · 4bit NF4",
+  "repo": "Qwen/Qwen3.5-4B",
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "size": "4.66B total",
+  "startedAt": "2026-10-22T03:34:05.088Z",
+  "status": "failed",
+  "asrId": "whisper",
+  "promptVersion": "compact-v2",
+  "generationProfile": "deterministic",
+  "quantization": "nf4",
+  "syntheticAudio": true,
+  "pipeline": "Whisper turbo ASR → selected sLLM → vehicle executor → Polly",
+  "rows": [],
+  "warmup": {
+    "elapsedMs": 8598,
+    "error": {
+      "error": "GPU 모델 오류 (500): Internal Server Error",
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "failureStage": "model-planning",
+      "vehicleTools": true,
+      "turnId": "cfb686b1-88f2-4985-b2f2-8cd77a4020c2"
+    }
+  }
+}

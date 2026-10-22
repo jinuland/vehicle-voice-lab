@@ -18,6 +18,11 @@ jobs:
           NPM_CONFIG_FETCH_TIMEOUT: '15000'
           NPM_CONFIG_FETCH_RETRIES: '0'
       - run: npm test
+      - name: Validate typed planner action contract
+        run: |
+          python3 -m venv "$RUNNER_TEMP/planner-schema-tests"
+          "$RUNNER_TEMP/planner-schema-tests/bin/python" -m pip install -r runtime/requirements-test.txt
+          "$RUNNER_TEMP/planner-schema-tests/bin/python" -m unittest runtime.test_vehicle_plan_schema
       - run: python3 scripts/check-public-files.py
       - run: python3 runtime/test_minicpm_protocol.py
       - run: python3 runtime/test_speech_protocol.py

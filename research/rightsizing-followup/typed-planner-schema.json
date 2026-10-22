@@ -1,0 +1,194 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intent",
+    "actions",
+    "reply"
+  ],
+  "properties": {
+    "intent": {
+      "enum": [
+        "control",
+        "question",
+        "clarify"
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "temperature"
+              },
+              "zone": {
+                "enum": [
+                  "driver",
+                  "passenger",
+                  "both"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type",
+              "zone",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "fan"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "ac"
+              },
+              "value": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "defrost"
+              },
+              "value": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "seatHeat"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "media"
+              },
+              "value": {
+                "enum": [
+                  "play",
+                  "pause",
+                  "next"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "volume"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "navigate"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "navigationStop"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "undo"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        ]
+      }
+    },
+    "reply": {
+      "type": "string",
+      "maxLength": 350
+    }
+  }
+}

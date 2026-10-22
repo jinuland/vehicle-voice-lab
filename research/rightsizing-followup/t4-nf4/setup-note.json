@@ -1,0 +1,4 @@
+{
+  "status": "setup-retry",
+  "reason": "First real inference warmup was interrupted by Ubuntu unattended-upgrade/needrestart restarting vehicle services and killing the Triton compiler with SIGTERM. No timed quality cases were run. Wait for package maintenance and warm model again; exclude from measured model quality."
+}

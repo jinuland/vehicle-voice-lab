@@ -57,7 +57,7 @@ else:
    units=['vehicle-speech'] if name=='speech' else ['vehicle-core','vehicle-tts','vehicle-minicpm','vehicle-whisper']
    subprocess.run(['ssh',*ssh_args(ip),'sudo journalctl '+' '.join('-u '+unit for unit in units)+' -n 60 --no-pager'],check=True)
   elif action=='deploy':
-   files=['speech_manager.py','speech_worker.py','speech_protocol.py','mimo-planner-prompt.txt','planner-schema.json','bootstrap_speech.sh','cache_speech.py'] if name=='speech' else ['model_server.py','bootstrap.sh','minicpm_server.py','minicpm_protocol.py','bootstrap_minicpm.sh','whisper_server.py','bootstrap_whisper.sh','cache_planners.py']
+   files=['speech_manager.py','speech_worker.py','speech_protocol.py','mimo-planner-prompt.txt','planner-schema.json','bootstrap_speech.sh','cache_speech.py'] if name=='speech' else ['model_server.py','vehicle_plan_schema.py','bootstrap.sh','minicpm_server.py','minicpm_protocol.py','bootstrap_minicpm.sh','whisper_server.py','bootstrap_whisper.sh','cache_planners.py']
    directory='/opt/vehicle-speech/' if name=='speech' else '/opt/vehicle-voice/'
    subprocess.run(['scp',*ssh_args(ip)[:-1],*[str(ROOT/'runtime'/f) for f in files],*([str(ROOT/'public/reference-neutral.wav')] if name=='core' else []),'ubuntu@'+ip+':'+directory],check=True)
    command='sudo systemctl restart vehicle-speech' if name=='speech' else 'sudo systemctl restart vehicle-core vehicle-tts; if systemctl is-enabled --quiet vehicle-whisper; then sudo systemctl restart vehicle-whisper; fi; if systemctl is-enabled --quiet vehicle-minicpm; then sudo systemctl restart vehicle-minicpm; fi'

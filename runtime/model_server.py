@@ -25,22 +25,11 @@ PLANNERS={
     'LGAI-EXAONE/EXAONE-4.0-1.2B':'3abf2810673c7c0778df64a73c2d52eab32d91c4',
     'HuggingFaceTB/SmolLM3-3B':'a07cc9a04f16550a088caea529712d1d335b0ac1',
 }
-PLAN_SCHEMA = {
-    'type': 'object', 'additionalProperties': False,
-    'required': ['intent', 'actions', 'reply'],
-    'properties': {
-        'intent': {'type': 'string', 'enum': ['control', 'question', 'clarify']},
-        'reply': {'type': 'string', 'maxLength': 350},
-        'actions': {'type': 'array', 'maxItems': 6, 'items': {
-            'type': 'object', 'additionalProperties': False, 'required': ['type'],
-            'properties': {
-                'type': {'type': 'string', 'enum': ['temperature','fan','ac','defrost','seatHeat','media','volume','navigate','navigationStop','undo']},
-                'zone': {'type': 'string', 'enum': ['driver','passenger','both']},
-                'value': {'anyOf': [{'type': 'number'}, {'type': 'boolean'}, {'type': 'string'}]}
-            }
-        }}
-    }
-}
+try:
+    from runtime.vehicle_plan_schema import vehicle_plan_schema
+except ModuleNotFoundError:
+    from vehicle_plan_schema import vehicle_plan_schema
+PLAN_SCHEMA=vehicle_plan_schema(os.environ.get('PLANNER_SCHEMA_VERSION','typed-actions-v2'))
 
 def load():
     global model, processor, asr, asr_processor, tts, compiled_grammar
@@ -81,14 +70,19 @@ def load_planner(lid, quantization='bf16'):
         loader=AutoModelForMultimodalLM if lid.startswith('google/') else AutoModelForImageTextToText if lid.startswith('Qwen/') else AutoModelForCausalLM
         attention='eager' if lid.startswith('google/') else 'sdpa'
         options={}
+        # T4 has no native BF16 arithmetic. Keep the existing BF16 path on
+        # Ampere/Ada; use FP16 compute and unquantized modules for NF4 on Turing.
+        compute_dtype=torch.bfloat16 if torch.cuda.get_device_capability()[0]>=8 else torch.float16
+        if quantization=='bf16' and compute_dtype!=torch.bfloat16:
+            raise ValueError('This GPU has no native BF16 support; select the NF4/FP16 experiment')
         if quantization=='nf4':
             from transformers import BitsAndBytesConfig
-            options['quantization_config']=BitsAndBytesConfig(load_in_4bit=True,bnb_4bit_quant_type='nf4',bnb_4bit_use_double_quant=True,bnb_4bit_compute_dtype=torch.bfloat16)
-        model=loader.from_pretrained(lid,revision=PLANNERS[lid],local_files_only=True,device_map='cuda',torch_dtype=torch.bfloat16,attn_implementation=attention,**options).eval()
+            options['quantization_config']=BitsAndBytesConfig(load_in_4bit=True,bnb_4bit_quant_type='nf4',bnb_4bit_use_double_quant=True,bnb_4bit_compute_dtype=compute_dtype)
+        model=loader.from_pretrained(lid,revision=PLANNERS[lid],local_files_only=True,device_map='cuda',torch_dtype=compute_dtype,attn_implementation=attention,**options).eval()
         torch.cuda.synchronize()
         quantized_layers=sum(type(module).__name__=='Linear4bit' for module in model.modules())
         if quantization=='nf4' and quantized_layers==0:raise RuntimeError('No Linear4bit layers were loaded; refusing a mislabeled quantized model')
-        status['plannerMemory']={'modelFootprintMiB':round(model.get_memory_footprint()/2**20,2),'cudaAllocatedDeltaMiB':round((torch.cuda.memory_allocated()-base_allocated)/2**20,2),'linear4bitLayers':quantized_layers,'measurement':'this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM'}
+        status['plannerMemory']={'modelFootprintMiB':round(model.get_memory_footprint()/2**20,2),'cudaAllocatedDeltaMiB':round((torch.cuda.memory_allocated()-base_allocated)/2**20,2),'linear4bitLayers':quantized_layers,'computeDtype':str(compute_dtype),'measurement':'this process CUDA allocated delta after planner load; excludes other workers, includes model quantization buffers; not vehicle shared RAM'}
         stops=model.generation_config.eos_token_id;stops=stops if isinstance(stops,list) else [stops]
         text_config=getattr(model.config,'text_config',model.config)
         info=xgr.TokenizerInfo.from_huggingface(processor,vocab_size=text_config.vocab_size,stop_token_ids=stops)

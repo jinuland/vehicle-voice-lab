@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id),usd=n=>new Intl.NumberFormat('en-US',{st
 const sec=ms=>Number.isFinite(ms)?`${(ms/1000).toFixed(2)}초`:'—';
 function args(requests=Number($('requests').value)){return{requests,replicaHours:Number($('replicas').value)*Number($('base-hours').value)+Number($('extra-hours').value),hourlyUSD:Number($('instance').value),ttsCharacters:Number($('characters').value),sonicUSDPerRequest:Number($('sonic-cost').value)/1000};}
 function cell(row,value){const td=document.createElement('td');td.textContent=value;row.append(td);}
-function failures(row,items){if(!items?.length)return;const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent=`실패 ${items.length}건 보기`;details.append(summary);for(const f of items){const p=document.createElement('p');p.textContent=`${f.caseId} · 인식: ${f.heard||'—'} · 응답: ${f.reply||f.error||'—'} · 기대 명령: ${JSON.stringify(f.expectedActions||[])} · 실제 명령: ${JSON.stringify(f.actualActions||[])}`;details.append(p);}row.firstElementChild.append(details);}
+function failures(row,items,label='실패'){if(!items?.length)return;const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent=`${label} ${items.length}건 보기`;details.append(summary);for(const f of items){const p=document.createElement('p');p.textContent=`${f.caseId} · 인식: ${f.heard||'—'} · 응답: ${f.reply||f.error||'—'} · 기대 명령: ${JSON.stringify(f.expectedActions||[])} · 실제 명령: ${JSON.stringify(f.actualActions||[])}`;details.append(p);}row.firstElementChild.append(details);}
 function draw(){
  const a=args(),c=compareCosts(a);$('open-total').textContent=usd(c.openUSD);$('sonic-total').textContent=usd(c.sonicUSD);
  $('verdict').textContent=c.openUSD<c.sonicUSD?`이 사용량에서는 GPU 구성이 월 ${usd(c.sonicUSD-c.openUSD)} 낮습니다.`:`이 사용량에서는 Sonic 추론비가 월 ${usd(c.openUSD-c.sonicUSD)} 낮습니다.`;
@@ -25,3 +25,21 @@ try{
  for(const m of r.engineQuality||[]){const row=document.createElement('tr');for(const v of [`${m.name} · ${m.serving}`,`${m.passed}/${m.total}`,sec(m.medianFirstAudioMs),sec(m.p95FirstAudioMs),m.mode==='two-workers'?'7.15GiB × 2벌':m.model==='phi4-mini'?'7.15GiB × 1벌 + KV 캐시':'text-only 가중치 + KV 캐시'])cell(row,v);failures(row,m.failures);$('quality').append(row);}
  for(const m of r.load){const row=document.createElement('tr');for(const v of [m.serving,m.name,m.concurrency,`${m.passed}/${m.count}`,`${m.successfulRequestsPerSecond}건/초`,sec(m.p95FirstAudioMs),m.p95PlannerQueueMs==null?'—':`${(m.p95PlannerQueueMs/1000).toFixed(2)}초`])cell(row,v);$('load').append(row);}
 }catch{$('test-method').textContent='이 배포의 성능 시험은 진행 중입니다. 결과가 준비되면 이 페이지에 표시됩니다.';}
+try{
+ const response=await fetch('/rightsizing-followup.json');if(!response.ok)throw Error('Follow-up unavailable');const report=await response.json();
+ if(report.production?.explanation)$('selected-serving').textContent=report.production.explanation;
+ $('followup-note').textContent='Qwen3.5-4B를 기준으로 동일 한국어 녹음 명령의 차량 상태 변경과 실제 응답 음성까지 검증했습니다. L4는 기존 모델을 공유하는 별도 로컬 평가 API를 사용했습니다. 최종 비교는 같은 필수 도구 인자 스키마로 재측정했습니다. 공통 품질 31문항과 부하 시험의 반복 6종 명령은 서로 다른 시험입니다.';
+ for(const config of report.configurations){
+  const row=document.createElement('tr');const capacity=limit=>{const valid=config.load.filter(x=>x.passed===x.count&&x.p95FirstAudioMs<=limit);return valid.length?`${Math.max(...valid.map(x=>x.successfulRequestsPerSecond)).toFixed(3)}건/초`:'관측 없음';};
+  const quality=config.common?`${config.common.passed}/${config.common.total}`:config.load.length?`부하 ${config.load.reduce((a,x)=>a+x.passed,0)}/${config.load.reduce((a,x)=>a+x.count,0)}`:'미측정';
+  for(const value of [config.label,quality+(config.holdout?` / ${config.holdout.passed}/${config.holdout.total}`:''),config.common?sec(config.common.p95FirstAudioMs):config.integration?.status==='failed'?'실행 호환 실패':config.integration?.status==='timeout'?'초기화 시간 초과 · 성능 미측정':'공통 시험 미실시',`p95 3초: ${capacity(3000)} / 5초: ${capacity(5000)}`,usd(config.monthlyComputeUSD)])cell(row,value);
+  if(config.integration?.error){const details=document.createElement('details'),summary=document.createElement('summary'),p=document.createElement('p');summary.textContent='실행 호환성 오류 보기';p.className='compat-error';p.textContent=config.integration.error;details.append(summary,p);row.firstElementChild.append(details);}
+  if(config.common)failures(row,config.common.failures.map(x=>({...x,caseId:x.id})),'공통 명령 실패');if(config.holdout)failures(row,config.holdout.failures.map(x=>({...x,caseId:x.id})),'추가 표현 실패');
+  $(config.schemaVersion==='typed-actions-v2'?'followup-comparison':'followup-legacy').append(row);
+  for(const load of config.load){
+   const r=load.resources;if(!r)continue;const detail=document.createElement('tr');
+   for(const value of [config.label,load.concurrency,`${load.successfulRequestsPerSecond}건/초`,sec(load.p95FirstAudioMs),`${r.gpuBusyMeanPercent.toFixed(1)}%`,`${r.hostCpuMeanPercent.toFixed(1)}%`,`${(r.gpuFreeMinimumMiB/1024).toFixed(2)}GiB`,`${(r.hostMemAvailableMinimumMiB/1024).toFixed(2)}GiB`])cell(detail,value);$('followup-resources').append(detail);
+  }
+ }
+ $('followup-verdict').textContent=report.conclusion||'추가 검증 중입니다. 현재 운영 구성은 L4 + Qwen BF16 + vLLM입니다. 처리량은 짧은 시험에서 관측한 값이며 운영 SLA나 최대 용량 보장은 아닙니다.';
+}catch{$('followup-note').textContent='추가 GPU 검증 결과가 아직 이 배포에 게시되지 않았습니다.';}

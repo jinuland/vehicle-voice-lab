@@ -1,0 +1,22 @@
+{
+  "repo": "QuantTrio/Qwen3.5-4B-AWQ",
+  "revision": "32c292e3a73afe1138518180b1b6d2868c980ee2",
+  "quantizationConfig": {
+    "quant_method": "awq",
+    "bits": 4,
+    "group_size": 128,
+    "version": "gemm",
+    "zero_point": true,
+    "modules_to_not_convert": [
+      "visual",
+      "linear_attn",
+      "self_attn",
+      "model.layers.0.",
+      "mtp"
+    ]
+  },
+  "customCode": null,
+  "source": "https://huggingface.co/QuantTrio/Qwen3.5-4B-AWQ",
+  "baseModel": "Qwen/Qwen3.5-4B",
+  "note": "Community 4-bit derivative; not NF4, not assumed quality-equivalent. No remote model code enabled."
+}

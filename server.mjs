@@ -18,6 +18,7 @@ const compactServing=process.env.COMPACT_SERVING==='1';
 const core=process.env.CORE_URL||'http://127.0.0.1:19101', tts=process.env.TTS_URL||'http://127.0.0.1:19102';
 const corePool=(process.env.CORE_URLS||core).split(',').map(url=>url.trim()).filter(Boolean).map(url=>({url,active:0,requests:0}));let coreCursor=0;
 const whisper=process.env.WHISPER_URL||'http://127.0.0.1:19105';
+const whisperPool=(process.env.WHISPER_URLS||whisper).split(',').map(url=>url.trim()).filter(Boolean).map(url=>({url,active:0,requests:0}));let whisperCursor=0;
 const mini=process.env.MINICPM_URL||'http://127.0.0.1:19103';
 const speechWorker=process.env.SPEECH_URL||'http://127.0.0.1:19104';
 const catalog=JSON.parse(await readFile(new URL('./model-catalog.json',import.meta.url),'utf8'));
@@ -81,8 +82,15 @@ async function planOnCore(body,signal){
   try{return await(await remote(worker.url+'/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},signal)).json();}
   finally{worker.active--;}
 }
+async function recognizeOnWhisper(form,signal){
+  const least=Math.min(...whisperPool.map(worker=>worker.active));let worker;
+  for(let i=0;i<whisperPool.length;i++){const index=(whisperCursor+i)%whisperPool.length;if(whisperPool[index].active===least){worker=whisperPool[index];whisperCursor=(index+1)%whisperPool.length;break;}}
+  worker.active++;worker.requests++;
+  try{return await(await remote(worker.url+'/asr',{method:'POST',body:form},signal)).json();}
+  finally{worker.active--;}
+}
 app.get('/api/health',async(req,res)=>{
-  const result=await Promise.allSettled([Promise.all(corePool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false,error:'GPU 연결 대기'};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:corePool[i].active,requests:corePool[i].requests}))})),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(whisper+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json())]);
+  const result=await Promise.allSettled([Promise.all(corePool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false,error:'GPU 연결 대기'};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:corePool[i].active,requests:corePool[i].requests}))})),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),Promise.all(whisperPool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:whisperPool[i].active,requests:whisperPool[i].requests}))}))]);
   const states=result.map(r=>r.status==='fulfilled'?r.value:{ready:false,error:'GPU 연결 대기'}),workers=states.slice(0,2);
   res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4]},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
 });
@@ -139,7 +147,7 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
     if(!text&&!audioControl){
       const audio=Buffer.from(req.body.audio,'base64');
       const form=new FormData();form.append('file',new Blob([audio],{type:'audio/wav'}),'speech.wav');
-      const data=await(await remote((asrId==='whisper'?whisper:core)+'/asr',{method:'POST',body:form},controller.signal)).json();rawTranscript=data.text;text=normalizeTranscript(data.text);asrMs=data.elapsedMs;asrModel=data.model;
+      const data=asrId==='whisper'?await recognizeOnWhisper(form,controller.signal):await(await remote(core+'/asr',{method:'POST',body:form},controller.signal)).json();rawTranscript=data.text;text=normalizeTranscript(data.text);asrMs=data.elapsedMs;asrModel=data.model;
     }
     if(!text&&!audioControl)throw new Error('음성을 인식하지 못했어요. 다시 말씀해 주세요.');
     if(!audioControl){send('transcript',{text,rawText:rawTranscript,asrMs,asrModel});send('stage',{stage:'thinking'});}
