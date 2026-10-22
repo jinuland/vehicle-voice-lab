@@ -1,0 +1,74 @@
+{
+  "hardware": {
+    "region": "ap-northeast-2",
+    "instance": "g6.xlarge",
+    "gpus": 1,
+    "gpu": "NVIDIA L4",
+    "visibleGpuMiB": 23034,
+    "hostGiB": 16,
+    "vcpus": 4
+  },
+  "asr": {
+    "model": "openai/whisper-large-v3-turbo",
+    "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+    "workerCount": 1,
+    "runtime": "same Hugging Face Whisper worker in every mode; requests serialized"
+  },
+  "tts": {
+    "provider": "Amazon Polly",
+    "region": "ap-northeast-2",
+    "engine": "neural",
+    "voice": "Seoyeon",
+    "sampleRate": 16000
+  },
+  "hf": {
+    "torch": "2.14.1",
+    "transformers": "5.20.0",
+    "xgrammar": "0.2.8",
+    "bitsandbytes": "0.49.2",
+    "plannerLock": "one request at a time per process",
+    "jsonWhitespace": "compact bounded schema",
+    "singleWorkerOmpThreads": "default",
+    "twoWorkersOmpThreadsEach": 2
+  },
+  "vllm": {
+    "image": "vllm/vllm-openai:v0.32.0@sha256:befccf0e7e4089aa23926bb6f887a85c0d46c2a99e6de5c5ffdf5cb7957c5b34",
+    "dtype": "bfloat16",
+    "maxModelLen": 4096,
+    "maxNumSeqs": 16,
+    "gpuMemoryUtilization": 0.75,
+    "structuredOutputs": {
+      "backend": "xgrammar",
+      "disableAnyWhitespace": true
+    },
+    "prefixCaching": "engine default; repeated common prompts and six-command pool can benefit",
+    "temperature": 0,
+    "seed": 42,
+    "maxOutputTokens": 1024,
+    "ompThreads": 2,
+    "installedVersions": {
+      "vllm": "0.32.0",
+      "torch": "2.13.0+cu130",
+      "transformers": "5.19.0",
+      "xgrammar": "0.2.8"
+    }
+  },
+  "sharing": {
+    "mig": false,
+    "mps": false,
+    "plannerInTwoContainers": "same Phi model weights copied twice; no memory/compute isolation",
+    "routing": "application least-active request count, round-robin ties",
+    "fleetAutoscalingEnabled": false
+  },
+  "interpretation": "Practical deployment configurations compared end-to-end. CPU scheduling, GPU contention, cache behavior and engine kernels can all affect results; exact memory-bandwidth bottlenecks were not hardware-profiled.",
+  "vllmQwenCandidate": {
+    "model": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "baseConfiguration": "same image, BF16, 4096 context, max16 sequences and 0.75 memory pool as Phi; additional --language-model-only",
+    "chatTemplateKwargs": {
+      "enable_thinking": false
+    },
+    "inputTokenizationCheckedAgainstHF": true,
+    "note": "Qwen is a separate model/configuration candidate; the three-way same-model serving comparison remains Phi only."
+  }
+}

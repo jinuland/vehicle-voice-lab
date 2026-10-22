@@ -1,4 +1,4 @@
-const labels={ready:'연결됨',integrating:'연동 중',candidate:'후보', 'license-review':'라이선스 검토','access-needed':'접근 동의 필요','hardware-needed':'장비 필요','low-priority':'참고 후보'};
+const labels={'not-deployed':'이 배포에서는 미실행',ready:'연결됨',integrating:'연동 중',candidate:'후보', 'license-review':'라이선스 검토','access-needed':'접근 동의 필요','hardware-needed':'장비 필요','low-priority':'참고 후보'};
 let catalog,filter='all';
 function plannerOption(model){const config=model.demoConfig||{},option=Object.assign(document.createElement('option'),{value:model.id,textContent:(config.recommended?'✓ ':'')+model.name+(config.qualityScore!=null?' · '+config.qualityScore+'점':'')+(model.status==='ready'?'':' · '+(labels[model.status]||model.status)),disabled:model.status!=='ready'});Object.assign(option.dataset,{promptVersion:config.promptVersion||'compact-v2',generationProfile:config.generationProfile||'deterministic'});return option;}
 function render(){

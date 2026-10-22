@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-10-22",
+  "currency": "USD",
+  "gpuInstance": "g6.xlarge",
+  "gpuRegion": "ap-northeast-2",
+  "gpuHourlyUSD": 0.9896,
+  "hoursPerMonth": 730,
+  "pollyUSDPerMillionCharacters": 16,
+  "assumedPollyCharactersPerRequest": 20,
+  "sonicRegion": "ap-northeast-1",
+  "sonicModel": "amazon.nova-2-5-sonic",
+  "sonicUSDPerRequest": 0.0027131898,
+  "sonicCalibration": {
+    "inputAudioSeconds": 5.12,
+    "outputAudioSeconds": 3.04,
+    "usage": {
+      "input": {
+        "speechTokens": 256,
+        "textTokens": 1354
+      },
+      "output": {
+        "speechTokens": 64,
+        "textTokens": 79
+      }
+    },
+    "estimatedInferenceUSD": 0.0027131898,
+    "sampleCount": 1,
+    "note": "One new-session synthetic Korean vehicle request with existing system prompt/tools. Not a billing statement or representative long-conversation average. Korean is not an officially supported Sonic language; this is not a quality-equivalence claim."
+  },
+  "pricesSource": "AWS Price List Query API, retrieved 2026-10-22",
+  "scope": "List-price estimate before discounts/tax. CPU backend, EBS, network/CloudFront, tools and operations excluded. Dedicated Sonic service has no GPU; keeping experiment GPUs adds their costs. Sonic calibration is one short new-session synthetic request, not a conversation average or an invoice.",
+  "instanceAlternatives": [
+    {
+      "instance": "g6e.2xlarge",
+      "gpu": "L40S 48GB",
+      "hourlyUSD": 2.75652,
+      "testedHere": false
+    },
+    {
+      "instance": "g6.xlarge",
+      "gpu": "L4 24GB class",
+      "hourlyUSD": 0.9896,
+      "testedHere": true
+    },
+    {
+      "instance": "g6.2xlarge",
+      "gpu": "L4 24GB class",
+      "hourlyUSD": 1.20208,
+      "testedHere": false
+    },
+    {
+      "instance": "g4dn.xlarge",
+      "gpu": "T4 16GB",
+      "hourlyUSD": 0.647,
+      "testedHere": false,
+      "note": "Requires FP16/runtime adaptation; BF16 results cannot be transferred."
+    }
+  ]
+}

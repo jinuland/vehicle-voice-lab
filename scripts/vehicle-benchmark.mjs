@@ -27,6 +27,7 @@ for(const model of models){
  const file=`${reportDir}/${model.id}.json`;await writeFile(file,JSON.stringify(report,null,2));
  const warm=await turn(model,await session(),cases[1]);report.warmup={elapsedMs:warm.elapsedMs,modelLoadMs:warm.metrics?.modelLoadMs,error:warm.error};
  console.log(JSON.stringify({model:model.id,warmup:report.warmup}));
+ if(warm.error){report.status="failed";await writeFile(file,JSON.stringify(report,null,2));throw Error(`Warmup failed for ${model.id}; repair serving before measuring model quality: ${JSON.stringify(warm.error)}`);}
  for(const c of suite){
   let s=await session(),before=initialState(),previous=null,preludeCorrect=true;
   if(c.prelude){const p=cases.find(x=>x.id===c.prelude),r=await turn(model,s,p);const expected=executePlan(before,previous,{intent:'control',actions:p.actions,reply:''});preludeCorrect=!!r.metrics&&stateEqual(r.metrics.state,expected.state)&&JSON.stringify(canonicalActions(r.metrics.actions))===JSON.stringify(canonicalActions(p.actions));before=expected.state;previous=expected.previous;}

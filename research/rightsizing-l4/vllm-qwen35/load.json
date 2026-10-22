@@ -1,0 +1,1630 @@
+{
+  "startedAt": "2026-10-22T02:51:02.948Z",
+  "status": "complete",
+  "mode": "vllm-qwen35",
+  "hardware": "g6.xlarge / L4",
+  "method": "Closed-loop fixed concurrent request slots, recorded Korean audio, real Whisper + planner + validated state + Polly. Each request has a fresh session. Includes HTTP session creation and SSH tunnel RTT. Not concurrent always-listening users. Serving mode is recorded separately; baseline serializes planning, replicas route independent requests, vLLM uses continuous batching. Load sample pool differs from 31-case quality suite.",
+  "rows": [
+    {
+      "model": "qwen35-4b",
+      "concurrency": 1,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 30.05,
+      "completedRequestsPerSecond": 0.799,
+      "successfulRequestsPerSecond": 0.799,
+      "medianFirstAudioMs": 1070,
+      "p95FirstAudioMs": 1626,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 128,
+      "p95AsrMs": 160,
+      "medianLlmMs": 725,
+      "p95LlmMs": 1145,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "rows": [
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1967,
+          "elapsedMs": 1968,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 132,
+          "llmMs": 864,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1626,
+          "elapsedMs": 1626,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 133,
+          "llmMs": 900,
+          "plannerQueueMs": null,
+          "ttsMs": 149,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 997,
+          "elapsedMs": 997,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 118,
+          "llmMs": 691,
+          "plannerQueueMs": null,
+          "ttsMs": 141,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1059,
+          "elapsedMs": 1060,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 126,
+          "llmMs": 724,
+          "plannerQueueMs": null,
+          "ttsMs": 154,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1070,
+          "elapsedMs": 1071,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 118,
+          "llmMs": 723,
+          "plannerQueueMs": null,
+          "ttsMs": 126,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1522,
+          "elapsedMs": 1643,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 159,
+          "llmMs": 1144,
+          "plannerQueueMs": null,
+          "ttsMs": 286,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1206,
+          "elapsedMs": 1206,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 131,
+          "llmMs": 864,
+          "plannerQueueMs": null,
+          "ttsMs": 151,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1294,
+          "elapsedMs": 1295,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 130,
+          "llmMs": 899,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1035,
+          "elapsedMs": 1035,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 118,
+          "llmMs": 690,
+          "plannerQueueMs": null,
+          "ttsMs": 104,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1062,
+          "elapsedMs": 1062,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 128,
+          "llmMs": 725,
+          "plannerQueueMs": null,
+          "ttsMs": 156,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1041,
+          "elapsedMs": 1041,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 119,
+          "llmMs": 725,
+          "plannerQueueMs": null,
+          "ttsMs": 122,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1590,
+          "elapsedMs": 1614,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 160,
+          "llmMs": 1145,
+          "plannerQueueMs": null,
+          "ttsMs": 258,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1207,
+          "elapsedMs": 1207,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 132,
+          "llmMs": 865,
+          "plannerQueueMs": null,
+          "ttsMs": 156,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1244,
+          "elapsedMs": 1244,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 130,
+          "llmMs": 901,
+          "plannerQueueMs": null,
+          "ttsMs": 159,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 998,
+          "elapsedMs": 998,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 118,
+          "llmMs": 690,
+          "plannerQueueMs": null,
+          "ttsMs": 138,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1063,
+          "elapsedMs": 1063,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 126,
+          "llmMs": 725,
+          "plannerQueueMs": null,
+          "ttsMs": 154,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1058,
+          "elapsedMs": 1058,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 119,
+          "llmMs": 725,
+          "plannerQueueMs": null,
+          "ttsMs": 124,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1514,
+          "elapsedMs": 1709,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 160,
+          "llmMs": 1145,
+          "plannerQueueMs": null,
+          "ttsMs": 289,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1212,
+          "elapsedMs": 1212,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 131,
+          "llmMs": 866,
+          "plannerQueueMs": null,
+          "ttsMs": 155,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1235,
+          "elapsedMs": 1235,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 131,
+          "llmMs": 901,
+          "plannerQueueMs": null,
+          "ttsMs": 147,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 997,
+          "elapsedMs": 997,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 119,
+          "llmMs": 690,
+          "plannerQueueMs": null,
+          "ttsMs": 135,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1060,
+          "elapsedMs": 1060,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 128,
+          "llmMs": 725,
+          "plannerQueueMs": null,
+          "ttsMs": 151,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1017,
+          "elapsedMs": 1017,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 119,
+          "llmMs": 724,
+          "plannerQueueMs": null,
+          "ttsMs": 126,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1517,
+          "elapsedMs": 1635,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 159,
+          "llmMs": 1145,
+          "plannerQueueMs": null,
+          "ttsMs": 282,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        }
+      ]
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 2,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 18.54,
+      "completedRequestsPerSecond": 1.295,
+      "successfulRequestsPerSecond": 1.295,
+      "medianFirstAudioMs": 1414,
+      "p95FirstAudioMs": 1774,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 318,
+      "p95AsrMs": 447,
+      "medianLlmMs": 912,
+      "p95LlmMs": 1333,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "rows": [
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1657,
+          "elapsedMs": 1657,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 482,
+          "llmMs": 963,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1425,
+          "elapsedMs": 1425,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 134,
+          "llmMs": 1072,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1208,
+          "elapsedMs": 1208,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 190,
+          "llmMs": 847,
+          "plannerQueueMs": null,
+          "ttsMs": 110,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1456,
+          "elapsedMs": 1456,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 349,
+          "llmMs": 912,
+          "plannerQueueMs": null,
+          "ttsMs": 149,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1405,
+          "elapsedMs": 1405,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 332,
+          "llmMs": 902,
+          "plannerQueueMs": null,
+          "ttsMs": 124,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2034,
+          "elapsedMs": 2160,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 433,
+          "llmMs": 1385,
+          "plannerQueueMs": null,
+          "ttsMs": 291,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1493,
+          "elapsedMs": 1493,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 353,
+          "llmMs": 943,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1493,
+          "elapsedMs": 1493,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 215,
+          "llmMs": 1062,
+          "plannerQueueMs": null,
+          "ttsMs": 155,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1279,
+          "elapsedMs": 1279,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 319,
+          "llmMs": 775,
+          "plannerQueueMs": null,
+          "ttsMs": 150,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1286,
+          "elapsedMs": 1287,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 130,
+          "llmMs": 884,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1385,
+          "elapsedMs": 1386,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 404,
+          "llmMs": 810,
+          "plannerQueueMs": null,
+          "ttsMs": 131,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1695,
+          "elapsedMs": 1834,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 165,
+          "llmMs": 1331,
+          "plannerQueueMs": null,
+          "ttsMs": 281,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1540,
+          "elapsedMs": 1541,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 381,
+          "llmMs": 947,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1382,
+          "elapsedMs": 1382,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 131,
+          "llmMs": 1070,
+          "plannerQueueMs": null,
+          "ttsMs": 114,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1307,
+          "elapsedMs": 1308,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 326,
+          "llmMs": 771,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1294,
+          "elapsedMs": 1295,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 133,
+          "llmMs": 882,
+          "plannerQueueMs": null,
+          "ttsMs": 157,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1426,
+          "elapsedMs": 1426,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 447,
+          "llmMs": 808,
+          "plannerQueueMs": null,
+          "ttsMs": 125,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1774,
+          "elapsedMs": 1929,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 232,
+          "llmMs": 1333,
+          "plannerQueueMs": null,
+          "ttsMs": 287,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 1533,
+          "elapsedMs": 1534,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 379,
+          "llmMs": 948,
+          "plannerQueueMs": null,
+          "ttsMs": 149,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1414,
+          "elapsedMs": 1415,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 131,
+          "llmMs": 1061,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1265,
+          "elapsedMs": 1265,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 318,
+          "llmMs": 763,
+          "plannerQueueMs": null,
+          "ttsMs": 144,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1219,
+          "elapsedMs": 1219,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 129,
+          "llmMs": 886,
+          "plannerQueueMs": null,
+          "ttsMs": 151,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1398,
+          "elapsedMs": 1398,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 417,
+          "llmMs": 810,
+          "plannerQueueMs": null,
+          "ttsMs": 133,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 1596,
+          "elapsedMs": 1749,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 230,
+          "llmMs": 1145,
+          "plannerQueueMs": null,
+          "ttsMs": 260,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        }
+      ]
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 4,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 12.87,
+      "completedRequestsPerSecond": 1.865,
+      "successfulRequestsPerSecond": 1.865,
+      "medianFirstAudioMs": 1814,
+      "p95FirstAudioMs": 2640,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 450,
+      "p95AsrMs": 905,
+      "medianLlmMs": 1216,
+      "p95LlmMs": 1706,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "rows": [
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 2238,
+          "elapsedMs": 2238,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 797,
+          "llmMs": 1216,
+          "plannerQueueMs": null,
+          "ttsMs": 165,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1728,
+          "elapsedMs": 1729,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 138,
+          "llmMs": 1370,
+          "plannerQueueMs": null,
+          "ttsMs": 160,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1736,
+          "elapsedMs": 1737,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 450,
+          "llmMs": 1087,
+          "plannerQueueMs": null,
+          "ttsMs": 139,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 2294,
+          "elapsedMs": 2295,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 1143,
+          "llmMs": 969,
+          "plannerQueueMs": null,
+          "ttsMs": 112,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1713,
+          "elapsedMs": 1714,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 305,
+          "llmMs": 1274,
+          "plannerQueueMs": null,
+          "ttsMs": 91,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2640,
+          "elapsedMs": 2738,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 727,
+          "llmMs": 1706,
+          "plannerQueueMs": null,
+          "ttsMs": 244,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 2035,
+          "elapsedMs": 2035,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 597,
+          "llmMs": 1240,
+          "plannerQueueMs": null,
+          "ttsMs": 148,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 2262,
+          "elapsedMs": 2262,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 905,
+          "llmMs": 1167,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1442,
+          "elapsedMs": 1442,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 313,
+          "llmMs": 939,
+          "plannerQueueMs": null,
+          "ttsMs": 148,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1800,
+          "elapsedMs": 1800,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 344,
+          "llmMs": 1263,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1814,
+          "elapsedMs": 1815,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 475,
+          "llmMs": 1157,
+          "plannerQueueMs": null,
+          "ttsMs": 125,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2781,
+          "elapsedMs": 2870,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 832,
+          "llmMs": 1698,
+          "plannerQueueMs": null,
+          "ttsMs": 292,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 2287,
+          "elapsedMs": 2287,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 871,
+          "llmMs": 1262,
+          "plannerQueueMs": null,
+          "ttsMs": 111,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1963,
+          "elapsedMs": 1963,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 351,
+          "llmMs": 1410,
+          "plannerQueueMs": null,
+          "ttsMs": 158,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1676,
+          "elapsedMs": 1677,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 462,
+          "llmMs": 1034,
+          "plannerQueueMs": null,
+          "ttsMs": 139,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1788,
+          "elapsedMs": 1788,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 340,
+          "llmMs": 1255,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1709,
+          "elapsedMs": 1709,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 415,
+          "llmMs": 1129,
+          "plannerQueueMs": null,
+          "ttsMs": 123,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2334,
+          "elapsedMs": 2518,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 421,
+          "llmMs": 1711,
+          "plannerQueueMs": null,
+          "ttsMs": 290,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 2154,
+          "elapsedMs": 2155,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 716,
+          "llmMs": 1238,
+          "plannerQueueMs": null,
+          "ttsMs": 153,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1846,
+          "elapsedMs": 1846,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 350,
+          "llmMs": 1304,
+          "plannerQueueMs": null,
+          "ttsMs": 149,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 1605,
+          "elapsedMs": 1605,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 500,
+          "llmMs": 921,
+          "plannerQueueMs": null,
+          "ttsMs": 139,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 1619,
+          "elapsedMs": 1619,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 338,
+          "llmMs": 1112,
+          "plannerQueueMs": null,
+          "ttsMs": 113,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 1569,
+          "elapsedMs": 1570,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 387,
+          "llmMs": 997,
+          "plannerQueueMs": null,
+          "ttsMs": 88,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2018,
+          "elapsedMs": 2128,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 572,
+          "llmMs": 1216,
+          "plannerQueueMs": null,
+          "ttsMs": 296,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        }
+      ]
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 8,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 9.98,
+      "completedRequestsPerSecond": 2.405,
+      "successfulRequestsPerSecond": 2.405,
+      "medianFirstAudioMs": 2848,
+      "p95FirstAudioMs": 4197,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 1082,
+      "p95AsrMs": 2238,
+      "medianLlmMs": 1420,
+      "p95LlmMs": 2172,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 14,
+      "within5s": 24,
+      "rows": [
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 4197,
+          "elapsedMs": 4198,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 2238,
+          "llmMs": 1702,
+          "plannerQueueMs": null,
+          "ttsMs": 164,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 1949,
+          "elapsedMs": 1949,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 136,
+          "llmMs": 1570,
+          "plannerQueueMs": null,
+          "ttsMs": 144,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 3153,
+          "elapsedMs": 3154,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 1532,
+          "llmMs": 1382,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 3526,
+          "elapsedMs": 3527,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 1876,
+          "llmMs": 1412,
+          "plannerQueueMs": null,
+          "ttsMs": 145,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 2024,
+          "elapsedMs": 2025,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 442,
+          "llmMs": 1403,
+          "plannerQueueMs": null,
+          "ttsMs": 125,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 3227,
+          "elapsedMs": 3377,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 865,
+          "llmMs": 2172,
+          "plannerQueueMs": null,
+          "ttsMs": 255,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 3162,
+          "elapsedMs": 3162,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 1223,
+          "llmMs": 1703,
+          "plannerQueueMs": null,
+          "ttsMs": 157,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 4565,
+          "elapsedMs": 4566,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 2591,
+          "llmMs": 1724,
+          "plannerQueueMs": null,
+          "ttsMs": 154,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 2553,
+          "elapsedMs": 2553,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 1021,
+          "llmMs": 1341,
+          "plannerQueueMs": null,
+          "ttsMs": 142,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 2925,
+          "elapsedMs": 2926,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 1305,
+          "llmMs": 1420,
+          "plannerQueueMs": null,
+          "ttsMs": 110,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 2095,
+          "elapsedMs": 2096,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 500,
+          "llmMs": 1415,
+          "plannerQueueMs": null,
+          "ttsMs": 132,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 3362,
+          "elapsedMs": 3441,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 900,
+          "llmMs": 2170,
+          "plannerQueueMs": null,
+          "ttsMs": 288,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 2966,
+          "elapsedMs": 2966,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 1082,
+          "llmMs": 1700,
+          "plannerQueueMs": null,
+          "ttsMs": 110,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 3214,
+          "elapsedMs": 3214,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 1283,
+          "llmMs": 1733,
+          "plannerQueueMs": null,
+          "ttsMs": 146,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 2478,
+          "elapsedMs": 2478,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 956,
+          "llmMs": 1346,
+          "plannerQueueMs": null,
+          "ttsMs": 137,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 2617,
+          "elapsedMs": 2617,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 1004,
+          "llmMs": 1419,
+          "plannerQueueMs": null,
+          "ttsMs": 151,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 2848,
+          "elapsedMs": 2848,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 1266,
+          "llmMs": 1420,
+          "plannerQueueMs": null,
+          "ttsMs": 118,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 3692,
+          "elapsedMs": 3836,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 1319,
+          "llmMs": 2172,
+          "plannerQueueMs": null,
+          "ttsMs": 294,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "driver-24",
+          "firstAudioMs": 3289,
+          "elapsedMs": 3289,
+          "audioBytes": 89244,
+          "passed": true,
+          "asrMs": 1398,
+          "llmMs": 1695,
+          "plannerQueueMs": null,
+          "ttsMs": 150,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "passenger-25",
+          "firstAudioMs": 2462,
+          "elapsedMs": 2462,
+          "audioBytes": 85644,
+          "passed": true,
+          "asrMs": 661,
+          "llmMs": 1611,
+          "plannerQueueMs": null,
+          "ttsMs": 148,
+          "ttsCharacters": 18,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "fan-5",
+          "firstAudioMs": 2158,
+          "elapsedMs": 2158,
+          "audioBytes": 76844,
+          "passed": true,
+          "asrMs": 731,
+          "llmMs": 1244,
+          "plannerQueueMs": null,
+          "ttsMs": 142,
+          "ttsCharacters": 17,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "defrost-on",
+          "firstAudioMs": 2316,
+          "elapsedMs": 2317,
+          "audioBytes": 83244,
+          "passed": true,
+          "asrMs": 1004,
+          "llmMs": 1156,
+          "plannerQueueMs": null,
+          "ttsMs": 109,
+          "ttsCharacters": 19,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "volume-20",
+          "firstAudioMs": 2449,
+          "elapsedMs": 2449,
+          "audioBytes": 64444,
+          "passed": true,
+          "asrMs": 1271,
+          "llmMs": 1012,
+          "plannerQueueMs": null,
+          "ttsMs": 124,
+          "ttsCharacters": 14,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        },
+        {
+          "caseId": "compound",
+          "firstAudioMs": 2723,
+          "elapsedMs": 2860,
+          "audioBytes": 166888,
+          "passed": true,
+          "asrMs": 1325,
+          "llmMs": 1238,
+          "plannerQueueMs": null,
+          "ttsMs": 248,
+          "ttsCharacters": 35,
+          "modelLoadMs": 0,
+          "plannerMemory": {
+            "measurement": "vLLM GPU pool; inspect separate GPU monitoring, not planner-only allocated weights"
+          }
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-10-22T02:52:15.701Z"
+}

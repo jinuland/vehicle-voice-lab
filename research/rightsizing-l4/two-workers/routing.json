@@ -1,0 +1,25 @@
+{
+  "mode": "two-workers",
+  "replicas": [
+    {
+      "ready": true,
+      "models": {
+        "llm": "microsoft/Phi-4-mini-instruct",
+        "quantization": "bf16"
+      },
+      "index": 0,
+      "active": 0,
+      "requests": 66
+    },
+    {
+      "ready": true,
+      "models": {
+        "llm": "microsoft/Phi-4-mini-instruct",
+        "quantization": "bf16"
+      },
+      "index": 1,
+      "active": 0,
+      "requests": 65
+    }
+  ]
+}

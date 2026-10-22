@@ -6,6 +6,10 @@ Compare how well speech models and small language models turn **vehicle requests
 
 [Open the shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=en) · [Test scenarios](#try-these-test-scenarios) · [Benchmark at a glance](#benchmark-at-a-glance)
 
+## Smaller-GPU deployment and serving cost
+
+A separate Seoul **L4 / g6.xlarge** experiment compares Qwen 4B BF16/NF4 and Phi-4 mini, then measures one planner worker, two Docker copies sharing the GPU, and vLLM continuous batching. The original shared demo remains available. [Try the L4 deployment](https://d3q7tlfor72b22.cloudfront.net/) · [Interactive cost / measured performance](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [Method, raw results and deployment instructions](docs/GPU_RIGHTSIZING.md).
+
 ## What you can do
 
 Speak, type, or upload an audio file to change the simulated driver/passenger temperature, climate controls, seat heating, media state, or navigation destination. Follow-up corrections and undo use the conversation and current vehicle state. The server validates commands before applying them.

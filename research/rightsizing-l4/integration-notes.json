@@ -1,0 +1,20 @@
+{
+  "notes": [
+    {
+      "mode": "two-workers",
+      "issue": "Initial minimal Docker image lacked a C compiler required by Triton at first actual inference. Health/model-load success was insufficient.",
+      "fix": "Install build-essential and python3-dev in the experiment image. Validate a real request before scoring. The quality runner now stops on warmup transport/inference errors.",
+      "excluded": "Initial setup failure attempt is excluded from model-quality and latency comparisons, not counted as a model limitation."
+    },
+    {
+      "mode": "setup",
+      "issue": "Pulling the large vLLM image created heavy disk I/O and delayed planner initialization.",
+      "fix": "Wait for all image pulls/builds to complete before latency measurement; do not treat installation-contended startup as normal inference latency."
+    },
+    {
+      "mode": "vllm",
+      "issue": "The lightweight host adapter needed httpx; the original HF-only environment did not include it.",
+      "fix": "Pin httpx in compact bootstrap and preflight adapter imports before replacing serving workers. No model-quality result was collected from the failed adapter startup."
+    }
+  ]
+}

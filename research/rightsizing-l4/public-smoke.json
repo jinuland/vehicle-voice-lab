@@ -1,0 +1,48 @@
+{
+  "url": "https://d3q7tlfor72b22.cloudfront.net",
+  "region": "ap-northeast-2",
+  "instance": "g6.xlarge",
+  "engine": "Qwen BF16 on vLLM",
+  "checks": {
+    "browserRecordedVoice": {
+      "passed": true,
+      "passengerTemperature": 25,
+      "asrMs": 131,
+      "plannerMs": 898,
+      "ttsMs": 161,
+      "firstPlaybackMs": 1256
+    },
+    "browserTypedCompound": {
+      "passed": true,
+      "driverTemperature": 24,
+      "passengerTemperatureUnchanged": 25,
+      "fan": 3,
+      "plannerMs": 1160,
+      "firstPlaybackMs": 1407
+    },
+    "postRestartFirstBrowserVoice": {
+      "firstPlaybackMs": 7540,
+      "plannerMs": 7043,
+      "note": "One-time first-request work after GPU container restart; excluded from warm latency figures. Publishing now warms the full synthetic voice path before returning success."
+    },
+    "privateLoopbackSyntheticWarmup": {
+      "ready": true,
+      "plannerId": "qwen35-4b",
+      "syntheticVoiceWarmupFirstAudioMs": 1193,
+      "audioBytes": 85644,
+      "simulatedPassengerTemperature": 25,
+      "privateOriginKeyPrinted": false
+    },
+    "calculator": {
+      "defaultMonthlyRequests": 100000,
+      "defaultGpuMonthlyRoundedUSD": 754,
+      "defaultSonicMonthlyRoundedUSD": 271,
+      "oneServerBreakEvenRounded": 301860,
+      "twoServersBreakEvenRounded": 603720,
+      "twoServersHalfMonthEqualsOneServerFullMonth": true
+    },
+    "undeployedNf4SelectionDisabled": true,
+    "originalL40SDemoStillReady": true
+  },
+  "timingNote": "Browser firstPlayback includes network and browser audio start; benchmark reports first received bytes over the SSH path. These metrics are not identical."
+}

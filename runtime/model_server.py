@@ -47,11 +47,13 @@ def load():
     try:
         if ROLE == 'core':
             from transformers import AutoModelForRNNT, AutoProcessor, AutoTokenizer, AutoModelForImageTextToText
-            aid = 'nvidia/nemotron-3.5-asr-streaming-0.6b'
-            asr_processor = AutoProcessor.from_pretrained(aid)
-            asr = AutoModelForRNNT.from_pretrained(aid, device_map='cuda', torch_dtype=torch.float32).eval()
-            status['models']['asr'] = aid
-            load_planner('Qwen/Qwen3.5-4B')
+            if os.environ.get('COMPACT_SERVING') != '1':
+                aid = 'nvidia/nemotron-3.5-asr-streaming-0.6b'
+                asr_processor = AutoProcessor.from_pretrained(aid)
+                asr = AutoModelForRNNT.from_pretrained(aid, device_map='cuda', torch_dtype=torch.float32).eval()
+                status['models']['asr'] = aid
+            # Small serving replicas must not load a BF16 model before NF4.
+            load_planner(os.environ.get('DEFAULT_PLANNER','Qwen/Qwen3.5-4B'),os.environ.get('DEFAULT_QUANTIZATION','bf16'))
         else:
             from qwen_tts import Qwen3TTSModel
             tid = os.environ.get('TTS_MODEL', 'Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice')
@@ -126,6 +128,7 @@ def plan(req: PlanRequest):
     if ROLE != 'core': raise HTTPException(404)
     started = time.perf_counter()
     with lock, torch.inference_mode():
+        queue_ms=round((time.perf_counter()-started)*1000)
         if req.model_id not in PLANNERS:raise HTTPException(400,'Unknown planner')
         if req.quantization=='nf4' and req.model_id!='Qwen/Qwen3.5-4B':raise HTTPException(400,'NF4 is enabled only for Qwen3.5-4B')
         load_ms=load_planner(req.model_id,req.quantization)
@@ -164,12 +167,13 @@ def plan(req: PlanRequest):
         model_id=status['models']['llm']
         torch.cuda.synchronize();elapsed_ms=round((time.perf_counter()-inference_started)*1000)
         memory={**status['plannerMemory'],'processPeakAllocatedMiB':round(torch.cuda.max_memory_allocated()/2**20,2),'requestAdditionalPeakMiB':round((torch.cuda.max_memory_allocated()-allocated_before)/2**20,2)}
-    return {'text':answer,'elapsedMs':elapsed_ms,'totalMs':round((time.perf_counter()-started)*1000),'loadMs':load_ms,'model':model_id,'revision':PLANNERS[model_id],'generatedTokens':generated.shape[1],'generationProfile':req.generation_profile,'quantization':req.quantization,'memory':memory}
+    return {'text':answer,'elapsedMs':elapsed_ms,'totalMs':round((time.perf_counter()-started)*1000),'queueMs':queue_ms,'loadMs':load_ms,'model':model_id,'revision':PLANNERS[model_id],'generatedTokens':generated.shape[1],'generationProfile':req.generation_profile,'quantization':req.quantization,'memory':memory}
 
 @app.post('/asr')
 def transcribe(file: UploadFile):
     require_ready()
     if ROLE != 'core': raise HTTPException(404)
+    if asr is None:raise HTTPException(503,'Nemotron is disabled in compact serving; select Whisper')
     raw = file.file.read(2_000_001)
     if len(raw) > 2_000_000: raise HTTPException(413, 'Audio too large')
     samples, rate = sf.read(io.BytesIO(raw), dtype='float32')

@@ -55,6 +55,13 @@ async function checkHealth(){
     else for(const [key,label]of Object.entries({asr:asrChoice==='whisper'?'Whisper large-v3-turbo':'Nemotron 3.5 ASR',llm:$('planner-model').selectedOptions[0].textContent}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
     $('speech-language-label').textContent='VOICE · '+(engine==='sonic'?$('sonic-language').value:engine==='minicpm'?$('minicpm-language').value:engine==='audio-native'?$('audio-language').value:'ko').toUpperCase();
     $('deployment').textContent=engine==='sonic'?'AWS 도쿄 · Bedrock S2S':isExtraAudio()?'AWS 서울 · 음성 전용 L40S 48GB':'AWS 서울 · L40S 48GB';
+    if(h.servingProfile==='compact'){
+      $('asr-model').querySelector('[value="nemotron"]').disabled=true;
+      $('tts-provider').querySelector('[value="qwen"]').disabled=true;
+      if(engine==='cascade'){$('model-asr').classList.toggle('ready',!!h.asrWorkers?.whisper?.ready);$('model-tts').classList.toggle('ready',ttsChoice==='polly');}
+      if(engine==='cascade')$('deployment').textContent=`AWS 서울 · L4 · ${h.instanceType} · ${h.workers[0].models?.engine==='vllm'?'vLLM 배치':'HF 서빙'}`;
+      if(!document.getElementById('serving-cost-link')){const link=document.createElement('a');link.id='serving-cost-link';link.className='quiet';link.href='/costs.html';link.textContent=document.documentElement.lang==='en'?'L4 cost & performance':'L4 비용·성능 실측';document.querySelector('.header-right').prepend(link);}
+    }
     $('mic').disabled=!ready||micStarting;$('send').disabled=!ready||isAudioInput();$('text-input').disabled=isAudioInput();$('text-input').placeholder=isAudioInput()?'마이크나 음성 샘플로 테스트하세요':'마이크 없이 텍스트로도 테스트할 수 있어요';
     $('control-connection').textContent=['audio-native','minicpm'].includes(engine)?'차량 제어 꺼짐 · 내장 목소리만 비교합니다. 온도·공조는 바뀌지 않습니다.':'✓ 차량 제어 연결 · 좌석 온도·공조·열선·미디어·모의 길 안내 / 센서·창문·주행 제어 미지원';$('control-connection').classList.toggle('comparison', ['audio-native','minicpm'].includes(engine));if(!busy&&!speech&&!micStarting)idleStatus();
     $('connection').title=isExtraAudio()?(h.researchWorkers?.speech?.error||''):engine.startsWith('minicpm')?(h.researchWorkers?.minicpm?.error||''):h.workers.map(w=>w.error).filter(Boolean).join('\n');

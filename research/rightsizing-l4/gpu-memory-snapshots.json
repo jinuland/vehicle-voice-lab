@@ -1,0 +1,35 @@
+{
+  "method": "Point-in-time nvidia-smi total device memory used, including Whisper, planner(s), contexts and allocator reservations; not peak memory or weight footprint. Same nominal 24GB-class L4, 23034 MiB visible.",
+  "snapshots": [
+    {
+      "mode": "single",
+      "stage": "idle after 96-request load test",
+      "usedMiB": 9868,
+      "totalMiB": 23034
+    },
+    {
+      "mode": "two-workers",
+      "stage": "both BF16 planners loaded, before requests",
+      "usedMiB": 17037,
+      "totalMiB": 23034
+    },
+    {
+      "mode": "two-workers",
+      "stage": "idle after successful 96-request load test",
+      "usedMiB": 17613,
+      "totalMiB": 23034
+    },
+    {
+      "mode": "vllm",
+      "stage": "idle after successful 96-request Phi load test",
+      "usedMiB": 18280,
+      "totalMiB": 23034
+    },
+    {
+      "mode": "vllm-qwen35",
+      "stage": "idle after successful 96-request Qwen load test",
+      "usedMiB": 17936,
+      "totalMiB": 23034
+    }
+  ]
+}

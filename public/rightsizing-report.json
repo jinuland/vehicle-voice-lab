@@ -1,0 +1,841 @@
+{
+  "at": "2026-10-22T02:52:47.931Z",
+  "hardware": "AWS Seoul g6.xlarge / 1× NVIDIA L4 24GB class / 4 vCPU / 16GiB host RAM",
+  "method": "서울 L4 한 대에서 Whisper → 선택 sLLM → 차량 상태 검증 → 서울 Polly. 동일 한국어 합성 음성 31개, 모델별 워밍업 후 측정. 첫 음성은 파일 제출부터 클라이언트 수신까지이며 SSH 터널 왕복을 포함합니다. 실제 마이크·차량 주행 시험은 아닙니다.",
+  "assumptions": {
+    "checkedAt": "2026-10-22",
+    "currency": "USD",
+    "gpuInstance": "g6.xlarge",
+    "gpuRegion": "ap-northeast-2",
+    "gpuHourlyUSD": 0.9896,
+    "hoursPerMonth": 730,
+    "pollyUSDPerMillionCharacters": 16,
+    "assumedPollyCharactersPerRequest": 20,
+    "sonicRegion": "ap-northeast-1",
+    "sonicModel": "amazon.nova-2-5-sonic",
+    "sonicUSDPerRequest": 0.0027131898,
+    "sonicCalibration": {
+      "inputAudioSeconds": 5.12,
+      "outputAudioSeconds": 3.04,
+      "usage": {
+        "input": {
+          "speechTokens": 256,
+          "textTokens": 1354
+        },
+        "output": {
+          "speechTokens": 64,
+          "textTokens": 79
+        }
+      },
+      "estimatedInferenceUSD": 0.0027131898,
+      "sampleCount": 1,
+      "note": "One new-session synthetic Korean vehicle request with existing system prompt/tools. Not a billing statement or representative long-conversation average. Korean is not an officially supported Sonic language; this is not a quality-equivalence claim."
+    },
+    "pricesSource": "AWS Price List Query API, retrieved 2026-10-22",
+    "scope": "List-price estimate before discounts/tax. CPU backend, EBS, network/CloudFront, tools and operations excluded. Dedicated Sonic service has no GPU; keeping experiment GPUs adds their costs. Sonic calibration is one short new-session synthetic request, not a conversation average or an invoice.",
+    "instanceAlternatives": [
+      {
+        "instance": "g6e.2xlarge",
+        "gpu": "L40S 48GB",
+        "hourlyUSD": 2.75652,
+        "testedHere": false
+      },
+      {
+        "instance": "g6.xlarge",
+        "gpu": "L4 24GB class",
+        "hourlyUSD": 0.9896,
+        "testedHere": true
+      },
+      {
+        "instance": "g6.2xlarge",
+        "gpu": "L4 24GB class",
+        "hourlyUSD": 1.20208,
+        "testedHere": false
+      },
+      {
+        "instance": "g4dn.xlarge",
+        "gpu": "T4 16GB",
+        "hourlyUSD": 0.647,
+        "testedHere": false,
+        "note": "Requires FP16/runtime adaptation; BF16 results cannot be transferred."
+      }
+    ]
+  },
+  "models": [
+    {
+      "id": "qwen35-4b",
+      "name": "Qwen 4B · BF16",
+      "status": "complete",
+      "passed": 30,
+      "total": 31,
+      "qualityScore": 97,
+      "medianFirstAudioMs": 1577,
+      "p95FirstAudioMs": 2978,
+      "medianLlmMs": 1249,
+      "plannerGiB": 8.455068359375,
+      "coldWarmupMs": 23901,
+      "coldModelLoadMs": 7575,
+      "failures": [
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "지원하지 않는 기능입니다. '기회 안내'는 차량 내장 기능으로, 현재 지원되지 않습니다.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": []
+        }
+      ]
+    },
+    {
+      "id": "qwen35-4b-nf4",
+      "name": "Qwen 4B · 4bit NF4",
+      "status": "complete",
+      "passed": 30,
+      "total": 31,
+      "qualityScore": 97,
+      "medianFirstAudioMs": 2024,
+      "p95FirstAudioMs": 2928,
+      "medianLlmMs": 1672,
+      "plannerGiB": 3.0751953125,
+      "coldWarmupMs": 10101,
+      "coldModelLoadMs": 7717,
+      "failures": [
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "모의 길 안내를 종료했어요.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": [
+            {
+              "type": "navigationStop",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phi4-mini",
+      "name": "Phi-4 mini · BF16",
+      "status": "complete",
+      "passed": 29,
+      "total": 31,
+      "qualityScore": 94,
+      "medianFirstAudioMs": 1462,
+      "p95FirstAudioMs": 2300,
+      "medianLlmMs": 1182,
+      "plannerGiB": 7.145146484375,
+      "coldWarmupMs": 67041,
+      "coldModelLoadMs": 64898,
+      "failures": [
+        {
+          "caseId": "navigate",
+          "heard": "서울역으로 길 안내해줘.",
+          "reply": "안녕하세요, 서울역으로 길 안내를 도와드릴 수 있습니다. 목적지에 도착할 때까지 안내해드릴까요?",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigate",
+              "value": "서울역"
+            }
+          ],
+          "actualActions": []
+        },
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "되돌릴 차량 명령이 없어요.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": [
+            {
+              "type": "undo"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "load": [
+    {
+      "model": "phi4-mini",
+      "concurrency": 1,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 39.8,
+      "completedRequestsPerSecond": 0.603,
+      "successfulRequestsPerSecond": 0.603,
+      "medianFirstAudioMs": 1583,
+      "p95FirstAudioMs": 1911,
+      "p95PlannerQueueMs": 0,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "single",
+      "serving": "HF 1 worker",
+      "name": "Phi-4 mini · BF16",
+      "medianAsrMs": 127,
+      "p95AsrMs": 157,
+      "medianLlmMs": 1259,
+      "p95LlmMs": 1548
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 2,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 34.91,
+      "completedRequestsPerSecond": 0.688,
+      "successfulRequestsPerSecond": 0.688,
+      "medianFirstAudioMs": 2846,
+      "p95FirstAudioMs": 3255,
+      "p95PlannerQueueMs": 1152,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 16,
+      "within5s": 24,
+      "mode": "single",
+      "serving": "HF 1 worker",
+      "name": "Phi-4 mini · BF16",
+      "medianAsrMs": 311,
+      "p95AsrMs": 398,
+      "medianLlmMs": 1391,
+      "p95LlmMs": 1681
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 4,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 35.06,
+      "completedRequestsPerSecond": 0.685,
+      "successfulRequestsPerSecond": 0.685,
+      "medianFirstAudioMs": 5698,
+      "p95FirstAudioMs": 6208,
+      "p95PlannerQueueMs": 4298,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 1,
+      "within5s": 2,
+      "mode": "single",
+      "serving": "HF 1 worker",
+      "name": "Phi-4 mini · BF16",
+      "medianAsrMs": 314,
+      "p95AsrMs": 751,
+      "medianLlmMs": 1422,
+      "p95LlmMs": 1711
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 8,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 35.23,
+      "completedRequestsPerSecond": 0.681,
+      "successfulRequestsPerSecond": 0.681,
+      "medianFirstAudioMs": 11294,
+      "p95FirstAudioMs": 11896,
+      "p95PlannerQueueMs": 9866,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 1,
+      "within5s": 2,
+      "mode": "single",
+      "serving": "HF 1 worker",
+      "name": "Phi-4 mini · BF16",
+      "medianAsrMs": 320,
+      "p95AsrMs": 1997,
+      "medianLlmMs": 1398,
+      "p95LlmMs": 1689
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 1,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 40.5,
+      "completedRequestsPerSecond": 0.593,
+      "successfulRequestsPerSecond": 0.593,
+      "medianFirstAudioMs": 1666,
+      "p95FirstAudioMs": 1978,
+      "p95PlannerQueueMs": 0,
+      "medianAsrMs": 128,
+      "p95AsrMs": 160,
+      "medianLlmMs": 1258,
+      "p95LlmMs": 1548,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 2,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 35.82,
+      "completedRequestsPerSecond": 0.67,
+      "successfulRequestsPerSecond": 0.67,
+      "medianFirstAudioMs": 2804,
+      "p95FirstAudioMs": 3413,
+      "p95PlannerQueueMs": 0,
+      "medianAsrMs": 318,
+      "p95AsrMs": 402,
+      "medianLlmMs": 2313,
+      "p95LlmMs": 2826,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 13,
+      "within5s": 24,
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 4,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 36.3,
+      "completedRequestsPerSecond": 0.661,
+      "successfulRequestsPerSecond": 0.661,
+      "medianFirstAudioMs": 5612,
+      "p95FirstAudioMs": 6674,
+      "p95PlannerQueueMs": 2856,
+      "medianAsrMs": 514,
+      "p95AsrMs": 1098,
+      "medianLlmMs": 2895,
+      "p95LlmMs": 3505,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 0,
+      "within5s": 2,
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 8,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 36.31,
+      "completedRequestsPerSecond": 0.661,
+      "successfulRequestsPerSecond": 0.661,
+      "medianFirstAudioMs": 11572,
+      "p95FirstAudioMs": 13229,
+      "p95PlannerQueueMs": 9037,
+      "medianAsrMs": 511,
+      "p95AsrMs": 3140,
+      "medianLlmMs": 3022,
+      "p95LlmMs": 3485,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 0,
+      "within5s": 2,
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 1,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 35.63,
+      "completedRequestsPerSecond": 0.674,
+      "successfulRequestsPerSecond": 0.674,
+      "medianFirstAudioMs": 1444,
+      "p95FirstAudioMs": 1733,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 130,
+      "p95AsrMs": 160,
+      "medianLlmMs": 1067,
+      "p95LlmMs": 1385,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 2,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 22.62,
+      "completedRequestsPerSecond": 1.061,
+      "successfulRequestsPerSecond": 1.061,
+      "medianFirstAudioMs": 1780,
+      "p95FirstAudioMs": 2083,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 350,
+      "p95AsrMs": 452,
+      "medianLlmMs": 1257,
+      "p95LlmMs": 1517,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 4,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 14.03,
+      "completedRequestsPerSecond": 1.711,
+      "successfulRequestsPerSecond": 1.711,
+      "medianFirstAudioMs": 2100,
+      "p95FirstAudioMs": 2673,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 375,
+      "p95AsrMs": 947,
+      "medianLlmMs": 1500,
+      "p95LlmMs": 1787,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "phi4-mini",
+      "concurrency": 8,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 10.03,
+      "completedRequestsPerSecond": 2.393,
+      "successfulRequestsPerSecond": 2.393,
+      "medianFirstAudioMs": 2737,
+      "p95FirstAudioMs": 4662,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 769,
+      "p95AsrMs": 2232,
+      "medianLlmMs": 1869,
+      "p95LlmMs": 2304,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 16,
+      "within5s": 23,
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "name": "Phi-4 mini · BF16"
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 1,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 30.05,
+      "completedRequestsPerSecond": 0.799,
+      "successfulRequestsPerSecond": 0.799,
+      "medianFirstAudioMs": 1070,
+      "p95FirstAudioMs": 1626,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 128,
+      "p95AsrMs": 160,
+      "medianLlmMs": 725,
+      "p95LlmMs": 1145,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "name": "Qwen 4B · BF16"
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 2,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 18.54,
+      "completedRequestsPerSecond": 1.295,
+      "successfulRequestsPerSecond": 1.295,
+      "medianFirstAudioMs": 1414,
+      "p95FirstAudioMs": 1774,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 318,
+      "p95AsrMs": 447,
+      "medianLlmMs": 912,
+      "p95LlmMs": 1333,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "name": "Qwen 4B · BF16"
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 4,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 12.87,
+      "completedRequestsPerSecond": 1.865,
+      "successfulRequestsPerSecond": 1.865,
+      "medianFirstAudioMs": 1814,
+      "p95FirstAudioMs": 2640,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 450,
+      "p95AsrMs": 905,
+      "medianLlmMs": 1216,
+      "p95LlmMs": 1706,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 24,
+      "within5s": 24,
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "name": "Qwen 4B · BF16"
+    },
+    {
+      "model": "qwen35-4b",
+      "concurrency": 8,
+      "count": 24,
+      "passed": 24,
+      "wallSeconds": 9.98,
+      "completedRequestsPerSecond": 2.405,
+      "successfulRequestsPerSecond": 2.405,
+      "medianFirstAudioMs": 2848,
+      "p95FirstAudioMs": 4197,
+      "p95PlannerQueueMs": null,
+      "medianAsrMs": 1082,
+      "p95AsrMs": 2238,
+      "medianLlmMs": 1420,
+      "p95LlmMs": 2172,
+      "meanTtsCharacters": 20.166666666666668,
+      "within3s": 14,
+      "within5s": 24,
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "name": "Qwen 4B · BF16"
+    }
+  ],
+  "status": "complete",
+  "engineQuality": [
+    {
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "model": "phi4-mini",
+      "name": "Phi-4 mini · BF16",
+      "passed": 29,
+      "total": 31,
+      "status": "complete",
+      "medianFirstAudioMs": 1598,
+      "p95FirstAudioMs": 2357,
+      "failures": [
+        {
+          "caseId": "navigate",
+          "heard": "서울역으로 길 안내해줘.",
+          "reply": "안녕하세요, 서울역으로 길 안내를 도와드릴 수 있습니다. 목적지에 도착할 때까지 안내해드릴까요?",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigate",
+              "value": "서울역"
+            }
+          ],
+          "actualActions": []
+        },
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "되돌릴 차량 명령이 없어요.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": [
+            {
+              "type": "undo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "model": "phi4-mini",
+      "name": "Phi-4 mini · BF16",
+      "passed": 28,
+      "total": 31,
+      "status": "complete",
+      "medianFirstAudioMs": 1283,
+      "p95FirstAudioMs": 1800,
+      "failures": [
+        {
+          "caseId": "ac-on",
+          "heard": "에어컨 켜줘.",
+          "reply": "에어컨 켤 수 없습니다.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "ac",
+              "value": true
+            }
+          ],
+          "actualActions": []
+        },
+        {
+          "caseId": "navigate",
+          "heard": "서울역으로 길 안내해줘.",
+          "reply": "안녕하세요, 서울역으로 길 안내를 도와드릴 수 있습니다. 도착할 목적지와 함께 안내해드릴까요?",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigate",
+              "value": "서울역"
+            }
+          ],
+          "actualActions": []
+        },
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "되돌릴 차량 명령이 없어요.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": [
+            {
+              "type": "undo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "model": "qwen35-4b",
+      "name": "Qwen 4B · BF16",
+      "passed": 30,
+      "total": 31,
+      "status": "complete",
+      "medianFirstAudioMs": 1208,
+      "p95FirstAudioMs": 2284,
+      "failures": [
+        {
+          "caseId": "nav-stop",
+          "heard": "기회 안내 종료해줘.",
+          "reply": "지원하지 않는 기능입니다. '기회 안내'는 차량 내장 기능으로, 현재 지원되지 않습니다.",
+          "category": "understanding-or-planning",
+          "expectedActions": [
+            {
+              "type": "navigationStop"
+            }
+          ],
+          "actualActions": []
+        }
+      ]
+    }
+  ],
+  "capacityObservations": [
+    {
+      "mode": "single",
+      "serving": "HF 1 worker",
+      "under3s": 0.603,
+      "under5s": 0.688,
+      "note": "Observed short closed-loop test, not a proven production SLA or maximum capacity."
+    },
+    {
+      "mode": "two-workers",
+      "serving": "HF 2 Docker workers",
+      "under3s": 0.593,
+      "under5s": 0.67,
+      "note": "Observed short closed-loop test, not a proven production SLA or maximum capacity."
+    },
+    {
+      "mode": "vllm",
+      "serving": "vLLM continuous batching",
+      "under3s": 1.711,
+      "under5s": 2.393,
+      "note": "Observed short closed-loop test, not a proven production SLA or maximum capacity."
+    },
+    {
+      "mode": "vllm-qwen35",
+      "serving": "vLLM · Qwen BF16 text-only",
+      "under3s": 1.865,
+      "under5s": 2.405,
+      "note": "Observed short closed-loop test, not a proven production SLA or maximum capacity."
+    }
+  ],
+  "memorySnapshots": {
+    "method": "Point-in-time nvidia-smi total device memory used, including Whisper, planner(s), contexts and allocator reservations; not peak memory or weight footprint. Same nominal 24GB-class L4, 23034 MiB visible.",
+    "snapshots": [
+      {
+        "mode": "single",
+        "stage": "idle after 96-request load test",
+        "usedMiB": 9868,
+        "totalMiB": 23034
+      },
+      {
+        "mode": "two-workers",
+        "stage": "both BF16 planners loaded, before requests",
+        "usedMiB": 17037,
+        "totalMiB": 23034
+      },
+      {
+        "mode": "two-workers",
+        "stage": "idle after successful 96-request load test",
+        "usedMiB": 17613,
+        "totalMiB": 23034
+      },
+      {
+        "mode": "vllm",
+        "stage": "idle after successful 96-request Phi load test",
+        "usedMiB": 18280,
+        "totalMiB": 23034
+      },
+      {
+        "mode": "vllm-qwen35",
+        "stage": "idle after successful 96-request Qwen load test",
+        "usedMiB": 17936,
+        "totalMiB": 23034
+      }
+    ]
+  },
+  "selection": {
+    "modelId": "qwen35-4b",
+    "mode": "vllm-qwen35",
+    "instance": "g6.xlarge",
+    "engine": "vLLM 0.32.0",
+    "dtype": "bf16",
+    "modelRevision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "openWeightModelsOnGpu": [
+      "openai/whisper-large-v3-turbo",
+      "Qwen/Qwen3.5-4B"
+    ],
+    "externalVoice": "Amazon Polly Neural Seoyeon / Seoul",
+    "fleetAutoscalingEnabled": false,
+    "explanation": "이번 시험의 기본 구성: 서울 L4 한 대에 Whisper와 Qwen3.5-4B BF16을 함께 적재하고, Qwen 요청을 vLLM으로 묶어 처리합니다. 한국어 응답 음성은 Polly입니다. 차량 명령 30/31 통과, 첫 음성 중앙값 1.21초. 동시 요청 4개에서 1.865건/초·첫 음성 p95 2.64초, 8개에서 2.405건/초·p95 4.20초를 관측했습니다. 같은 GPU의 HF 복제본 2개는 처리량 개선이 없었습니다. EC2 서버 수 자동 증설은 별도 구성 사항이며 현재 켜져 있지 않습니다. 짧은 반복 명령 시험 결과로 운영 SLA를 보장하지 않습니다."
+  },
+  "costScenarios": [
+    {
+      "replicas": 1,
+      "requests": 10000,
+      "fixedUSD": 722.408,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 725.6080000000001,
+      "sonicUSD": 27.131898,
+      "breakEvenRequests": 301859.88591460657
+    },
+    {
+      "replicas": 1,
+      "requests": 100000,
+      "fixedUSD": 722.408,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 754.408,
+      "sonicUSD": 271.31897999999995,
+      "breakEvenRequests": 301859.88591460657
+    },
+    {
+      "replicas": 1,
+      "requests": 300000,
+      "fixedUSD": 722.408,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 818.408,
+      "sonicUSD": 813.9569399999999,
+      "breakEvenRequests": 301859.88591460657
+    },
+    {
+      "replicas": 1,
+      "requests": 1000000,
+      "fixedUSD": 722.408,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 1042.408,
+      "sonicUSD": 2713.1897999999997,
+      "breakEvenRequests": 301859.88591460657
+    },
+    {
+      "replicas": 2,
+      "requests": 10000,
+      "fixedUSD": 1444.816,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 1448.016,
+      "sonicUSD": 27.131898,
+      "breakEvenRequests": 603719.7718292131
+    },
+    {
+      "replicas": 2,
+      "requests": 100000,
+      "fixedUSD": 1444.816,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 1476.816,
+      "sonicUSD": 271.31897999999995,
+      "breakEvenRequests": 603719.7718292131
+    },
+    {
+      "replicas": 2,
+      "requests": 300000,
+      "fixedUSD": 1444.816,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 1540.816,
+      "sonicUSD": 813.9569399999999,
+      "breakEvenRequests": 603719.7718292131
+    },
+    {
+      "replicas": 2,
+      "requests": 1000000,
+      "fixedUSD": 1444.816,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 1764.816,
+      "sonicUSD": 2713.1897999999997,
+      "breakEvenRequests": 603719.7718292131
+    },
+    {
+      "replicas": 3,
+      "requests": 10000,
+      "fixedUSD": 2167.224,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 2170.424,
+      "sonicUSD": 27.131898,
+      "breakEvenRequests": 905579.6577438196
+    },
+    {
+      "replicas": 3,
+      "requests": 100000,
+      "fixedUSD": 2167.224,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 2199.224,
+      "sonicUSD": 271.31897999999995,
+      "breakEvenRequests": 905579.6577438196
+    },
+    {
+      "replicas": 3,
+      "requests": 300000,
+      "fixedUSD": 2167.224,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 2263.224,
+      "sonicUSD": 813.9569399999999,
+      "breakEvenRequests": 905579.6577438196
+    },
+    {
+      "replicas": 3,
+      "requests": 1000000,
+      "fixedUSD": 2167.224,
+      "variableUSDPerRequest": 0.00032,
+      "openUSD": 2487.224,
+      "sonicUSD": 2713.1897999999997,
+      "breakEvenRequests": 905579.6577438196
+    }
+  ]
+}
