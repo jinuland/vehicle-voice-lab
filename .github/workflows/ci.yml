@@ -11,7 +11,12 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci
+      - name: Install locked dependencies
+        run: npm ci --prefer-offline --no-fund
+        env:
+          # Keep the default audit request, but bound registry outages/retries.
+          NPM_CONFIG_FETCH_TIMEOUT: '15000'
+          NPM_CONFIG_FETCH_RETRIES: '0'
       - run: npm test
       - run: python3 scripts/check-public-files.py
       - run: python3 runtime/test_minicpm_protocol.py
