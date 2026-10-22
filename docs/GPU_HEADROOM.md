@@ -4,12 +4,14 @@
 
 ## Final comparison with the same corrected tool schema
 
+L4 and T4 are NVIDIA GPU names; `g6.xlarge` and `g4dn.xlarge` are AWS EC2 instance types that include the GPU, CPU and host memory. The tested servers are in Seoul: **EC2 `g6.xlarge` with NVIDIA L4, and EC2 `g4dn.xlarge` with NVIDIA T4**. The shared demo runs on `g6.xlarge`. Monthly costs cover one complete instance running for 730 hours.
+
 **T4 + Qwen AWQ 4bit + vLLM preserves approximately one-second sequential responses and the same common-suite pass count as L4 BF16 in this experiment.** L4 handles higher concurrency better.
 
-| Configuration, typed-actions-v2 | Common / holdout | Common median / p95 first audio | Concurrency 4 p95 | Observed throughput, p95 ≤3 s | Compute/month, 730h |
+| AWS instance / GPU / configuration, typed-actions-v2 | Common / holdout | Common median / p95 first audio | Concurrency 4 p95 | Observed throughput, p95 ≤3 s | Compute/month, 730h |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| L4, BF16, vLLM | 30/31 · 9/10 | 1.083 / 1.693 s | 2.699 s | 1.832/s | $722.41 |
-| T4, AWQ 4bit, vLLM | 30/31 · 9/10 | 1.005 / 1.582 s | 3.159 s | 1.255/s | $472.31 |
+| EC2 `g6.xlarge`, NVIDIA L4, BF16, vLLM | 30/31 · 9/10 | 1.083 / 1.693 s | 2.699 s | 1.832/s | $722.41 |
+| EC2 `g4dn.xlarge`, NVIDIA T4, AWQ 4bit, vLLM | 30/31 · 9/10 | 1.005 / 1.582 s | 3.159 s | 1.255/s | $472.31 |
 
 Both pass 96/96 final load requests and all nine cabin-control holdouts. The legacy weather expectation remains a recorded holdout failure. Both share the same remaining common-suite ASR error. Equal counts in a small sample and differences of tens of milliseconds do not establish general quality equivalence or a speed advantage.
 
@@ -67,8 +69,8 @@ A separate Seoul `g4dn.xlarge` serves the same pinned base checkpoint in bitsand
 
 | Configuration | Common suite | Holdout suite | Common median first audio | Common p95 first audio | Compute/month, 730h |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Existing L4, BF16, vLLM | 30/31 | Not repeated for one ASR | 1.208 s | 2.284 s | $722.41 |
-| T4, NF4, HF / FP16 compute | 30/31 | 8/10 | 2.879 s | 3.930 s | $472.31 |
+| Existing EC2 `g6.xlarge`, L4, BF16, vLLM | 30/31 | Not repeated for one ASR | 1.208 s | 2.284 s | $722.41 |
+| EC2 `g4dn.xlarge`, T4, NF4, HF / FP16 compute | 30/31 | 8/10 | 2.879 s | 3.930 s | $472.31 |
 
 Instance compute is about 35% cheaper, with slower responses. The common-suite p95 already exceeds the 3-second comparison target at sequential load. The legacy weather holdout has the rubric mismatch described above. Another strict-action mismatch adds an unnecessary `zone: driver` to seat heating: the vehicle state is correct, but the raw action is not an exact match. Cabin-control final states pass 9/9, while strict cabin-control actions pass 8/9; the raw overall holdout score remains 8/10. These results establish the measured **T4 + HF NF4/FP16** behavior, not a universal disadvantage of 4-bit inference.
 

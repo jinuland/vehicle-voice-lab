@@ -36,9 +36,9 @@
     "fleetAutoscalingEnabled": false,
     "note": "Existing public configuration retained. The second ASR worker and loopback evaluation backends were stopped after measuring; test GPU choice does not switch the public demo.",
     "schemaVersion": "typed-actions-v2",
-    "explanation": "현재 공유 데모: 서울 L4 + Qwen3.5-4B BF16 + vLLM + Whisper 1개. 도구 인자 스키마를 수정하고 공통 명령 30/31·첫 음성 중앙값 1.08초를 재확인했습니다. 저렴한 T4 + AWQ 4bit + vLLM도 같은 스키마에서 30/31·중앙값 1.01초를 기록했습니다. 단독 요청은 비슷하지만 동시 요청 4개의 첫 음성 p95는 L4 2.70초, T4 3.16초였습니다. 아래 추가 검증 표에서 비용과 부하를 함께 비교하세요."
+    "explanation": "현재 공유 데모: 서울 EC2 g6.xlarge(NVIDIA L4) + Qwen3.5-4B BF16 + vLLM + Whisper 1개. 도구 인자 스키마를 수정하고 공통 명령 30/31·첫 음성 중앙값 1.08초를 재확인했습니다. 저렴한 EC2 g4dn.xlarge(NVIDIA T4) + AWQ 4bit + vLLM도 같은 스키마에서 30/31·중앙값 1.01초를 기록했습니다. 단독 요청은 비슷하지만 동시 요청 4개의 첫 음성 p95는 L4 2.70초, T4 3.16초였습니다. 아래 추가 검증 표에서 비용과 부하를 함께 비교하세요."
   },
-  "conclusion": "이미 GPU를 공유해도 추가 활용 여지가 있었습니다. Whisper 2개는 높은 부하 처리량을 약 42% 늘렸지만 p95 3초 기준 개선은 약 6%였고 GPU 잔여는 최소 1.16GiB였습니다. 최종 동일 스키마 비교에서 T4 AWQ/vLLM은 공통 30/31, 첫 음성 중앙값 1.01초·p95 1.58초로 저빈도 대안이 됐습니다. T4 한 대의 가동비는 월 $472.31로 L4보다 약 35% 낮지만, p95 3초 이내 관측 처리량은 T4 1.255건/초, L4 1.832건/초였습니다. 같은 피크 부하에서 필요한 서버 수를 함께 계산해야 합니다. 현재 공유 데모는 L4를 유지합니다. 짧은 반복 시험이며 운영 SLA나 하드웨어 최대치는 아닙니다.",
+  "conclusion": "이미 GPU를 공유해도 추가 활용 여지가 있었습니다. Whisper 2개는 높은 부하 처리량을 약 42% 늘렸지만 p95 3초 기준 개선은 약 6%였고 GPU 잔여는 최소 1.16GiB였습니다. 최종 동일 스키마 비교에서 T4 AWQ/vLLM은 공통 30/31, 첫 음성 중앙값 1.01초·p95 1.58초로 저빈도 대안이 됐습니다. EC2 g4dn.xlarge(T4) 한 대의 가동비는 월 $472.31로 g6.xlarge(L4)보다 약 35% 낮지만, p95 3초 이내 관측 처리량은 T4 1.255건/초, L4 1.832건/초였습니다. 같은 피크 부하에서 필요한 서버 수를 함께 계산해야 합니다. 현재 공유 데모는 EC2 g6.xlarge(NVIDIA L4)를 유지합니다. 짧은 반복 시험이며 운영 SLA나 하드웨어 최대치는 아닙니다.",
   "schemaCorrection": {
     "version": "typed-actions-v2",
     "trigger": "AWQ omitted the required temperature zone. The legacy generic action schema required only type, permitting invalid executor arguments.",

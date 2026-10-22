@@ -28,7 +28,7 @@ try{
 try{
  const response=await fetch('/rightsizing-followup.json');if(!response.ok)throw Error('Follow-up unavailable');const report=await response.json();
  if(report.production?.explanation)$('selected-serving').textContent=report.production.explanation;
- $('followup-note').textContent='Qwen3.5-4B를 기준으로 동일 한국어 녹음 명령의 차량 상태 변경과 실제 응답 음성까지 검증했습니다. L4는 기존 모델을 공유하는 별도 로컬 평가 API를 사용했습니다. 최종 비교는 같은 필수 도구 인자 스키마로 재측정했습니다. 공통 품질 31문항과 부하 시험의 반복 6종 명령은 서로 다른 시험입니다.';
+ $('followup-note').textContent='L4와 T4는 GPU 이름입니다. 실제 시험한 AWS 서버는 서울 리전의 EC2 g6.xlarge(NVIDIA L4)와 g4dn.xlarge(NVIDIA T4)입니다. 현재 공유 데모는 g6.xlarge에서 실행합니다. 아래 월 가동비는 GPU만의 가격이 아니라 해당 EC2 인스턴스 한 대를 730시간 켜두는 비용입니다. Qwen3.5-4B를 기준으로 동일 한국어 녹음 명령의 차량 상태 변경과 실제 응답 음성까지 검증했습니다. L4는 기존 모델을 공유하는 별도 로컬 평가 API를 사용했습니다. 최종 비교는 같은 필수 도구 인자 스키마로 재측정했습니다. 공통 품질 31문항과 부하 시험의 반복 6종 명령은 서로 다른 시험입니다.';
  for(const config of report.configurations){
   const row=document.createElement('tr');const capacity=limit=>{const valid=config.load.filter(x=>x.passed===x.count&&x.p95FirstAudioMs<=limit);return valid.length?`${Math.max(...valid.map(x=>x.successfulRequestsPerSecond)).toFixed(3)}건/초`:'관측 없음';};
   const quality=config.common?`${config.common.passed}/${config.common.total}`:config.load.length?`부하 ${config.load.reduce((a,x)=>a+x.passed,0)}/${config.load.reduce((a,x)=>a+x.count,0)}`:'미측정';

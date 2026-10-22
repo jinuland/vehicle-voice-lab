@@ -3,12 +3,12 @@ const root='research/rightsizing-followup';
 const read=async path=>{try{return JSON.parse(await readFile(path,'utf8'));}catch(error){if(error.code==='ENOENT')return null;throw error;}};
 const quantile=(a,p)=>{a=a.filter(Number.isFinite).sort((x,y)=>x-y);return a.length?a[Math.max(0,Math.ceil(a.length*p)-1)]:null;};
 const configurations=[
- {id:'l4-bf16',label:'L4 · vLLM BF16 · Whisper 1개',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896,qualityPath:'research/rightsizing-l4/vllm-qwen35/qwen35-4b.json'},
- {id:'l4-two-asr',label:'L4 · vLLM BF16 · Whisper 2개',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896},
- {id:'t4-nf4',label:'T4 · HF NF4 4bit / FP16 계산',instance:'g4dn.xlarge',engine:'HF',model:'qwen35-4b-nf4',hourlyUSD:.647},
- {id:'t4-awq',label:'T4 · vLLM AWQ 4bit / FP16 계산',instance:'g4dn.xlarge',engine:'vLLM',model:'qwen35-4b-awq',hourlyUSD:.647},
- {id:'l4-strict',label:'L4 · vLLM BF16 · 도구 스키마 수정',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896,schemaVersion:'typed-actions-v2'},
- {id:'t4-awq-strict',label:'T4 · vLLM AWQ 4bit · 도구 스키마 수정',instance:'g4dn.xlarge',engine:'vLLM',model:'qwen35-4b-awq',hourlyUSD:.647,schemaVersion:'typed-actions-v2'},
+ {id:'l4-bf16',label:'g6.xlarge · NVIDIA L4 · vLLM BF16 · Whisper 1개',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896,qualityPath:'research/rightsizing-l4/vllm-qwen35/qwen35-4b.json'},
+ {id:'l4-two-asr',label:'g6.xlarge · NVIDIA L4 · vLLM BF16 · Whisper 2개',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896},
+ {id:'t4-nf4',label:'g4dn.xlarge · NVIDIA T4 · HF NF4 4bit / FP16 계산',instance:'g4dn.xlarge',engine:'HF',model:'qwen35-4b-nf4',hourlyUSD:.647},
+ {id:'t4-awq',label:'g4dn.xlarge · NVIDIA T4 · vLLM AWQ 4bit / FP16 계산',instance:'g4dn.xlarge',engine:'vLLM',model:'qwen35-4b-awq',hourlyUSD:.647},
+ {id:'l4-strict',label:'g6.xlarge · NVIDIA L4 · vLLM BF16 · 도구 스키마 수정',instance:'g6.xlarge',engine:'vLLM',model:'qwen35-4b',hourlyUSD:.9896,schemaVersion:'typed-actions-v2'},
+ {id:'t4-awq-strict',label:'g4dn.xlarge · NVIDIA T4 · vLLM AWQ 4bit · 도구 스키마 수정',instance:'g4dn.xlarge',engine:'vLLM',model:'qwen35-4b-awq',hourlyUSD:.647,schemaVersion:'typed-actions-v2'},
 ];
 const method=await read(`${root}/method.json`);
 const report={at:new Date().toISOString(),method,conclusion:method.conclusion,production:method.production,configurations:[]};
