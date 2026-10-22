@@ -5,8 +5,8 @@ cd /opt/vehicle-compact
 model_id=${PLANNER_MODEL_ID:-microsoft/Phi-4-mini-instruct}
 quantization=${PLANNER_QUANTIZATION:-bf16}
 sudo docker build -f runtime/Dockerfile.planner -t vehicle-planner-benchmark:20261022 runtime
-if sudo systemctl cat vehicle-vllm-adapter.service >/dev/null 2>&1; then sudo systemctl stop vehicle-vllm-adapter; fi
-sudo systemctl stop vehicle-compact-core
+if sudo systemctl cat vehicle-vllm-adapter.service >/dev/null 2>&1; then sudo systemctl disable --now --no-reload vehicle-vllm-adapter; fi
+sudo systemctl disable --now --no-reload vehicle-compact-core
 sudo mkdir -p /etc/systemd/system/vehicle-compact-web.service.d
 sudo tee /etc/systemd/system/vehicle-compact-web.service.d/engine.conf >/dev/null <<'EOF'
 [Service]

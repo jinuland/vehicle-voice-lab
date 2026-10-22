@@ -80,6 +80,12 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+sudo mkdir -p /etc/systemd/system/vehicle-compact-web.service.d
+sudo tee /etc/systemd/system/vehicle-compact-web.service.d/engine.conf >/dev/null <<'EOF'
+[Service]
+Environment=CORE_URL=http://127.0.0.1:9101
+Environment=CORE_URLS=http://127.0.0.1:9101
+EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now vehicle-compact-core vehicle-compact-whisper vehicle-compact-web
 echo 'COMPACT BOOTSTRAP COMPLETE'

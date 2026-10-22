@@ -6,7 +6,7 @@ revision=${VLLM_MODEL_REVISION:-cfbefacb99257ffa30c83adab238a50856ac3083}
 image=${VLLM_IMAGE:-vllm/vllm-openai:v0.32.0@sha256:befccf0e7e4089aa23926bb6f887a85c0d46c2a99e6de5c5ffdf5cb7957c5b34}
 sudo docker image inspect "$image" >/dev/null 2>&1 || sudo docker pull "$image"
 /opt/vehicle-compact/core-env/bin/python -c 'import httpx'
-sudo systemctl stop vehicle-compact-core
+sudo systemctl disable --now --no-reload vehicle-compact-core
 for name in vehicle-hf-a vehicle-hf-b vehicle-vllm; do
  if sudo docker container inspect "$name" >/dev/null 2>&1; then sudo docker rm -f "$name"; fi
 done

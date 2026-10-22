@@ -42,7 +42,15 @@
       "twoServersHalfMonthEqualsOneServerFullMonth": true
     },
     "undeployedNf4SelectionDisabled": true,
-    "originalL40SDemoStillReady": true
+    "originalL40SDemoStillReady": true,
+    "restartConfiguration": {
+      "unusedHfCoreDisabledAtBoot": true,
+      "whisperEnabled": true,
+      "webEnabled": true,
+      "vllmAdapterEnabled": true,
+      "vllmContainerRestartPolicy": "unless-stopped",
+      "fullInstanceRebootTested": false
+    }
   },
   "timingNote": "Browser firstPlayback includes network and browser audio start; benchmark reports first received bytes over the SSH path. These metrics are not identical."
 }

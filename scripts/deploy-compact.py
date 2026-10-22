@@ -32,6 +32,10 @@ options=['-o','ConnectTimeout=15','-o','UserKnownHostsFile="'+str(pathlib.Path(a
 host='ubuntu@'+args.host
 subprocess.run(['ssh',*options,host,'sudo mkdir -p /opt/vehicle-compact && sudo chown ubuntu:ubuntu /opt/vehicle-compact'],check=True)
 subprocess.run(['scp',*options,str(bundle),host+':/tmp/vehicle-compact.tar.gz'],check=True)
+# Replacing this isolated experiment requires a maintenance window. Stop only
+# its own services/containers so stale engine ports and GPU copies cannot survive.
+reset="for unit in vehicle-compact-web vehicle-compact-core vehicle-compact-whisper vehicle-vllm-adapter; do if sudo systemctl cat $unit.service >/dev/null 2>&1; then sudo systemctl stop $unit; fi; done; for name in vehicle-vllm vehicle-hf-a vehicle-hf-b; do if sudo docker container inspect $name >/dev/null 2>&1; then sudo docker rm -f $name; fi; done"
+subprocess.run(['ssh',*options,host,reset],check=True)
 bootstrap_env='COMPACT_DEFAULT_MODEL='+shlex.quote(selected['repo'])+' COMPACT_DEFAULT_QUANTIZATION='+shlex.quote(selected.get('quantization','bf16'))
 subprocess.run(['ssh',*options,host,'tar -xzf /tmp/vehicle-compact.tar.gz -C /opt/vehicle-compact && '+bootstrap_env+' bash /opt/vehicle-compact/runtime/bootstrap_compact.sh'],check=True)
 if args.engine=='vllm':
