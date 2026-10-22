@@ -14,7 +14,9 @@ import {guardMiniPlan} from './minicpm-tools.mjs';
 import {inferAssistant,executeAssistant,toolCatalog,radioStations} from './assistant-service.mjs';
 
 const app=express(), port=Number(process.env.PORT||8787);
+const compactServing=process.env.COMPACT_SERVING==='1';
 const core=process.env.CORE_URL||'http://127.0.0.1:19101', tts=process.env.TTS_URL||'http://127.0.0.1:19102';
+const corePool=(process.env.CORE_URLS||core).split(',').map(url=>url.trim()).filter(Boolean).map(url=>({url,active:0,requests:0}));let coreCursor=0;
 const whisper=process.env.WHISPER_URL||'http://127.0.0.1:19105';
 const mini=process.env.MINICPM_URL||'http://127.0.0.1:19103';
 const speechWorker=process.env.SPEECH_URL||'http://127.0.0.1:19104';
@@ -53,7 +55,9 @@ app.use(express.static('public'));
 app.get('/api/catalog',async(req,res)=>res.json(JSON.parse(await readFile('model-catalog.json','utf8'))));
 app.get('/api/benchmark-csv',(req,res)=>res.download('vehicle-model-comparison.csv','vehicle-model-comparison.csv',{root:'research'}));
 app.get('/api/benchmark',async(req,res)=>{
-  try{res.json(JSON.parse(await readFile('research/vehicle-benchmark-summary.json','utf8')));}
+  try{const report=JSON.parse(await readFile('research/vehicle-benchmark-summary.json','utf8'));
+    if(compactServing){report.method='L40S 과거 비교표입니다. 현재 L4 실측과 비용 비교는 /costs.html 에서 확인하세요. '+report.method;report.defaultPlannerId=catalog.defaultPlannerId;for(const model of report.models||[]){model.available=model.id==='sonic'||catalog.models.some(m=>m.id===model.id&&m.status==='ready');if(!model.available)model.recommended=false;}}
+    res.json(report);}
   catch{res.json({status:'pending',models:[],method:'동일 한국어 음성으로 차량 데모 평가 중'});}
 });
 app.get('/api/benchmark-audio/:modelId/:sampleId',(req,res)=>{
@@ -70,10 +74,17 @@ async function remote(url,options={},signal,timeoutMs=120000){
   if(!r.ok)throw new Error(`GPU 모델 오류 (${r.status}): ${(await r.text()).slice(0,220)}`);
   return r;
 }
+async function planOnCore(body,signal){
+  const least=Math.min(...corePool.map(worker=>worker.active));let worker;
+  for(let i=0;i<corePool.length;i++){const index=(coreCursor+i)%corePool.length;if(corePool[index].active===least){worker=corePool[index];coreCursor=(index+1)%corePool.length;break;}}
+  worker.active++;worker.requests++;
+  try{return await(await remote(worker.url+'/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},signal)).json();}
+  finally{worker.active--;}
+}
 app.get('/api/health',async(req,res)=>{
-  const result=await Promise.allSettled([fetch(core+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(whisper+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json())]);
+  const result=await Promise.allSettled([Promise.all(corePool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false,error:'GPU 연결 대기'};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:corePool[i].active,requests:corePool[i].requests}))})),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(whisper+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json())]);
   const states=result.map(r=>r.status==='fulfilled'?r.value:{ready:false,error:'GPU 연결 대기'}),workers=states.slice(0,2);
-  res.json({ready:workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4]},minicpmControl:true,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:'g6e.2xlarge',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
+  res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4]},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
 });
 app.post('/api/session',(req,res)=>{
   if(sessions.size>=1000)return res.status(503).json({error:'공유 데모 접속이 많습니다. 잠시 후 다시 시도해 주세요.'});
@@ -142,7 +153,7 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
       if(otherAudio){form.append('model_id',audioModel.id);form.append('generation_profile',req.body.generationProfile==='official'?'official':'deterministic');}
       data=await(await remote((otherAudio?speechWorker:mini)+'/plan-audio',{method:'POST',body:form},controller.signal,otherAudio?360000:120000)).json();
     }else{
-      messages.push({role:'user',content:text});data=await(await remote(core+'/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,model_id:planner.repo,quantization:planner.quantization||'bf16',generation_profile:req.body.generationProfile==='official'?'official':'deterministic'})},controller.signal)).json();
+      messages.push({role:'user',content:text});data=await planOnCore({messages,model_id:planner.repo,quantization:planner.quantization||'bf16',generation_profile:req.body.generationProfile==='official'?'official':'deterministic'},controller.signal);
     }
     failureStage='plan-format';let plan=parsePlan(data.text),miniGate;const modelProposedActions=structuredClone(plan.actions),modelReply=plan.reply;
     if(miniControl){miniGate=guardMiniPlan(plan,currentState);plan=miniGate.plan;}
@@ -169,8 +180,9 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
     if(req.body.speak===false){record.ttsMs=0;record.audioDisabled=true;send('done',{metrics:record});return;}
     failureStage='speech-output';send('stage',{stage:'speaking'});
     const sentences=result.results.length>1?result.results:[result.reply];
-    record.ttsMs=0;
+    record.ttsMs=0;record.ttsCharacters=0;record.plannerQueueMs=data.queueMs??null;
     for(let index=0;index<sentences.length;index++){
+      record.ttsCharacters+=sentences[index].length;
       const audioResponse=await synthesize(sentences[index],ttsProvider,controller.signal);
       const bytes=audioResponse.bytes;
       record.ttsMs+=audioResponse.elapsedMs;
