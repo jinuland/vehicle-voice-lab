@@ -10,6 +10,7 @@
     "prepare:samples": "node scripts/prepare-samples.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-agentcore": "3.1156.0",
     "@aws-sdk/client-bedrock-runtime": "^3.1152.0",
     "@aws-sdk/client-polly": "^3.1152.0",
     "@aws-sdk/credential-provider-node": "^3.972.86",
@@ -18,6 +19,7 @@
     "@smithy/node-http-handler": "^4.12.1",
     "@smithy/signature-v4": "^5.7.4",
     "express": "^5.1.0",
+    "three": "0.186.1",
     "ws": "^8.22.0"
   },
   "description": "Bilingual UI for a Korean in-car voice assistant simulator with self-hosted speech models and Amazon Nova Sonic.",

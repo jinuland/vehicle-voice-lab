@@ -1,4 +1,5 @@
 import express from 'express';
+import {mountGame} from './game-api.mjs';
 import {randomUUID} from 'node:crypto';
 import {mkdir,appendFile,readFile} from 'node:fs/promises';
 import {initialState,systemPrompt,parsePlan,executePlan} from './vehicle.mjs';
@@ -52,6 +53,7 @@ app.use('/api',(req,res,next)=>{res.setHeader('Cache-Control','no-store');if(clo
  const ip=String(req.headers['x-forwarded-for']||req.socket.remoteAddress).split(',').at(-1).trim(),now=Date.now(),b=budgets.get(ip);
  if(!b||now-b.start>60000)budgets.set(ip,{start:now,count:1});else if(++b.count>90){res.setHeader('Retry-After','60');return res.status(429).json({error:'요청이 많아요. 잠시 후 다시 시도해 주세요.'});}
  }next();});setInterval(()=>{for(const[ip,b]of budgets)if(Date.now()-b.start>60000)budgets.delete(ip);},60000).unref();
+mountGame(app,{recognize:recognizeOnWhisper,synthesize,cloud:cloudMode});
 app.use(express.static('public'));
 app.get('/api/catalog',async(req,res)=>res.json(JSON.parse(await readFile('model-catalog.json','utf8'))));
 app.get('/api/benchmark-csv',(req,res)=>res.download('vehicle-model-comparison.csv','vehicle-model-comparison.csv',{root:'research'}));
