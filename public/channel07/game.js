@@ -11,7 +11,7 @@ function stopVoice(){
  voiceGeneration++;voiceQueue=[];previewController?.abort();previewController=null;currentAudio?.pause();currentAudio=null;voiceBusy=false;scene?.talking(false);
  for(const id of ['voice-preview-player','welcome-voice-preview-player']){const player=$(id);player.pause();player.removeAttribute('src');player.hidden=true;}
  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
- for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=!voiceOptions.length;
+ for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=!voiceOptions.length||voiceChanging;
  voiceStatus('같은 대사를 들어보고 골라보세요.');
 }
 async function playNext(){
@@ -152,7 +152,7 @@ async function changeVoice(id){
   chosenVoice=id;try{localStorage.setItem('channel07-voice',id);}catch{}
   voiceStatus('목소리를 바꿨어요. 다음 대사부터 들을 수 있어요.');
  }catch(e){chosenVoice=previous;voiceStatus(e.message);}
- finally{voiceChanging=false;syncVoicePickers();for(const picker of ['game-voice','welcome-voice'])$(picker).disabled=false;}
+ finally{voiceChanging=false;syncVoicePickers();for(const picker of ['game-voice','welcome-voice','preview-voice','welcome-preview-voice'])$(picker).disabled=false;}
 }
 async function previewVoice(playerId){
  stopVoice();const generation=voiceGeneration,voice=chosenVoice,player=$(playerId);previewController=new AbortController();voiceBusy=true;
