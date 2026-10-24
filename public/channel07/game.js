@@ -1,12 +1,19 @@
 import {createScene} from './scene.js';
 const $=id=>document.getElementById(id),names={coffee:'☕ 커피',banana:'바나나',stamp:'결재 도장',document:'기밀 문서'},targetNames={microwave:'전자레인지',coffee:'뜨거운 커피',banana:'바나나',sign:'안내문',table:'탕비실 테이블',pantryDoor:'탕비실 출입문',hall:'복도',locker:'청소도구함',robot:'박주임',office:'자료실',desk:'팀장 책상',stamp:'결재 도장',document:'기밀 문서',clock:'출근 단말기',exit:'퇴근 게이트'};
+let voiceOptions=[],chosenVoice='seoyeon',voiceChanging=false,voiceReady,previewUrl,previewController;
 let completedTurn=null,audioTurn=null;let modelOptions=[],modelChecks=new Map(),chosenModel=null,session=null,state=null,seen=0,selected='',currentCamera='pantry',serverCamera='pantry',busy=false,muted=false,scene,currentAudio,voiceQueue=[],voiceBusy=false,voiceGeneration=0,controller,turnVersion=0,polling=false,recording=false,micStarting=false,media,context,source,worklet,gain,chunks=[],recordTimer;
 const api=async(path,options={})=>{const r=await fetch('/api/game/'+path,{...options,headers:{'Content-Type':'application/json','X-Game-Session':session||'',...options.headers}});if(!r.ok){let data;try{data=await r.json();}catch{}throw Object.assign(Error(data?.error||'서버에 연결하지 못했어요.'),{status:r.status});}return r;};
 function status(t){$('status').textContent=t;}
 function error(t){status(t);$('subtitle').textContent=t;}
 function line(text,kind){const e=document.createElement('div');e.className='line '+(kind==='user'?'user':'');const label=document.createElement('span');label.textContent=kind==='user'?'YOU / CONTROL':kind==='robot'?'PARK / SECURITY':kind==='system'?'HAPPINESS LAB':'JIU / CHANNEL 07';e.append(label,document.createTextNode(text));$('dialogue').append(e);while($('dialogue').children.length>3)$('dialogue').firstChild.remove();}
 function chooseCamera(id){currentCamera=id;scene?.camera(id);document.querySelectorAll('[data-camera]').forEach(b=>b.classList.toggle('active',b.dataset.camera===id));$('camera-name').textContent={pantry:'CAM 01 · 탕비실',hall:'CAM 02 · 복도',office:'CAM 03 · 자료실',overview:'CAM 00 · 전체 배치'}[id];}
-function stopVoice(){voiceGeneration++;voiceQueue=[];currentAudio?.pause();currentAudio=null;voiceBusy=false;scene?.talking(false);}
+function stopVoice(){
+ voiceGeneration++;voiceQueue=[];previewController?.abort();previewController=null;currentAudio?.pause();currentAudio=null;voiceBusy=false;scene?.talking(false);
+ for(const id of ['voice-preview-player','welcome-voice-preview-player']){const player=$(id);player.pause();player.removeAttribute('src');player.hidden=true;}
+ if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+ for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=!voiceOptions.length;
+ voiceStatus('같은 대사를 들어보고 골라보세요.');
+}
 async function playNext(){
  if(voiceBusy||muted||!voiceQueue.length)return;voiceBusy=true;const event=voiceQueue.shift(),generation=voiceGeneration;let url;
  try{const r=await api('voice/'+event.id),blob=await r.blob();if(generation!==voiceGeneration)return;url=URL.createObjectURL(blob);const audio=new Audio(url);currentAudio=audio;scene?.talking(['jiu','intent'].includes(event.kind));await new Promise((resolve,reject)=>{audio.onended=resolve;audio.onerror=()=>reject(Error('음성 재생 실패'));audio.onpause=resolve;audio.play().catch(reject);});}
@@ -14,7 +21,7 @@ async function playNext(){
  finally{if(url)URL.revokeObjectURL(url);if(generation===voiceGeneration){voiceBusy=false;currentAudio=null;scene?.talking(false);playNext();}}
 }
 function render(d){
- state=d.state;scene?.update(state);if(d.planning&&!busy)status('지우가 생각 중이에요. 처음에는 모델을 불러오느라 조금 걸릴 수 있어요.');if(d.turnStatus&&d.turnStatus.status!=='processing'&&completedTurn!==d.turnStatus.id){completedTurn=d.turnStatus.id;const t=d.turnStatus;if(audioTurn===t.id&&t.heard){line(t.heard,'user');audioTurn=null;}if(t.error)error(t.error);else{if(t.heard){$('heard-command').textContent='들은 말: '+t.heard;$('planned-command').textContent='도구 호출: '+(t.actions?.length?t.actions.map(actionLabel).join(' → '):'대화');$('metrics').textContent=`${t.heard} · 판단 ${t.metrics?.llmMs??0}ms · 모델 로딩 ${t.metrics?.modelLoadMs??0}ms`;}status(state.pendingActions?'지우가 행동 중이에요.':'지우가 대답했어요. 이어서 말해보세요.');}}if(d.model){chosenModel=d.model;syncModelPickers();}renderGuidance();if(d.toolTrace?.length)$('planned-command').textContent='도구 호출: '+d.toolTrace.map(t=>t.actions.map(actionLabel).join(' → ')).filter(Boolean).join(' → ');if(state.camera!==serverCamera){serverCamera=state.camera;chooseCamera(state.camera);}
+ state=d.state;scene?.update(state);if(d.voiceId&&!voiceChanging){chosenVoice=d.voiceId;syncVoicePickers();}if(d.planning&&!busy)status('지우가 생각 중이에요. 처음에는 모델을 불러오느라 조금 걸릴 수 있어요.');if(d.turnStatus&&d.turnStatus.status!=='processing'&&completedTurn!==d.turnStatus.id){completedTurn=d.turnStatus.id;const t=d.turnStatus;if(audioTurn===t.id&&t.heard){line(t.heard,'user');audioTurn=null;}if(t.error)error(t.error);else{if(t.heard){$('heard-command').textContent='들은 말: '+t.heard;$('planned-command').textContent='도구 호출: '+(t.actions?.length?t.actions.map(actionLabel).join(' → '):'대화');$('metrics').textContent=`${t.heard} · 판단 ${t.metrics?.llmMs??0}ms · 모델 로딩 ${t.metrics?.modelLoadMs??0}ms`;}status(state.pendingActions?'지우가 행동 중이에요.':'지우가 대답했어요. 이어서 말해보세요.');}}if(d.model){chosenModel=d.model;syncModelPickers();}renderGuidance();if(d.toolTrace?.length)$('planned-command').textContent='도구 호출: '+d.toolTrace.map(t=>t.actions.map(actionLabel).join(' → ')).filter(Boolean).join(' → ');if(state.camera!==serverCamera){serverCamera=state.camera;chooseCamera(state.camera);}
  $('objective').textContent=state.objective;$('clock').textContent=new Date(2000,0,1,18,0,state.elapsedSeconds).toTimeString().slice(0,8);
  $('movement').textContent=state.won?'지우 / 퇴근!':state.hidden?'지우 / 숨는 중':state.moving?'지우 / 이동 중':'지우 / 대기 중';
  $('inventory-count').textContent=state.inventory.length+' / 4';$('inventory').replaceChildren();if(!state.inventory.length){const e=document.createElement('span');e.className='empty';e.textContent='아직 챙긴 물건이 없어요.';$('inventory').append(e);}for(const item of state.inventory){const e=document.createElement('span');e.className='item';e.textContent=names[item];$('inventory').append(e);}
@@ -30,7 +37,7 @@ function render(d){
 }
 async function begin(){
  turnVersion++;controller?.abort();stopVoice();if(recording)await endRecording(false);status('지우와 무전 연결 중…');$('start').disabled=true;
- try{const d=await(await api('session',{method:'POST',body:JSON.stringify({modelId:chosenModel})})).json();session=d.id;seen=0;serverCamera='pantry';$('dialogue').replaceChildren();$('ending').hidden=true;render(d);chooseCamera('pantry');$('welcome').close();$('connection').textContent='● 무전 연결됨';$('connection').classList.add('ready');status('지우가 듣고 있어요. 마이크나 입력창으로 말해보세요.');busy=false;}
+ try{await voiceReady;const d=await(await api('session',{method:'POST',body:JSON.stringify({modelId:chosenModel,voiceId:chosenVoice})})).json();session=d.id;seen=0;serverCamera='pantry';$('dialogue').replaceChildren();$('ending').hidden=true;render(d);chooseCamera('pantry');$('welcome').close();$('connection').textContent='● 무전 연결됨';$('connection').classList.add('ready');status('지우가 듣고 있어요. 마이크나 입력창으로 말해보세요.');busy=false;}
  catch(e){error(e.message);}finally{$('start').disabled=false;}
 }
 async function submit(payload){
@@ -63,7 +70,7 @@ $('welcome').addEventListener('click',e=>{if(e.target===$('welcome')&&session)$(
 for(const b of document.querySelectorAll('[data-camera]'))b.onclick=()=>chooseCamera(b.dataset.camera);
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&!['INPUT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName)&&!$('welcome').open){e.preventDefault();recording?endRecording():startRecording();}if(e.code==='Escape')halt();});
 setInterval(async()=>{if(!session||polling)return;polling=true;try{render(await(await api('state')).json());}catch(e){if(e.status===401){session=null;$('connection').textContent='● 재연결 필요';$('welcome').showModal();}if(!busy)status(e.message);}finally{polling=false;}},350);
-loadModels();
+loadModels();voiceReady=loadVoices();
 window.channel07={getState:()=>state,sceneInfo:()=>scene?.info()};
 $('welcome').showModal();$('welcome-heading').focus({preventScroll:true});$('welcome').scrollTop=0;
 
@@ -87,7 +94,7 @@ function syncModelPickers(){
  const detail=[model.score!=null?`차량 테스트 ${model.score}점`:'차량 테스트 점수 없음',check?`게임 명령 ${check.passed}/${check.total}개 통과`:'게임 명령 테스트 전',check?.recommended?'✓ 먼저 써볼 만한 모델':'비교해 보는 중'].join(' · ');
  const languageNote=chosenModel==='sonic'?'짧은 대화 비교에서는 한국어 안내가 가장 자연스러웠어요.':chosenModel==='qwen35-4b'||chosenModel==='qwen35-4b-nf4'?'명령 수행은 확인했지만, 대사가 어색할 때가 있어요.':'대화가 자연스러운지는 직접 비교해 보세요.';
  $('model-detail').textContent=detail+'. '+languageNote;
- $('welcome-model-detail').textContent=detail+'. '+languageNote+' 목소리는 모두 같아요.';
+ $('welcome-model-detail').textContent=detail+'. '+languageNote+' 목소리는 아래에서 따로 고를 수 있어요.';
 }
 async function loadModels(){
  try{
@@ -120,3 +127,49 @@ for(const id of ['game-model','welcome-model'])$(id).onchange=()=>changeModel($(
 function renderCapabilities(data){
  $('capability-list').replaceChildren(...data.groups.map(g=>{const section=document.createElement('section'),title=document.createElement('h2'),examples=document.createElement('p');title.textContent=g.name;examples.textContent=g.examples.map(x=>'“'+x+'”').join(' · ');section.append(title,examples);return section;}));
 }
+
+function voiceStatus(message){for(const id of ['voice-status','welcome-voice-status'])$(id).textContent=message;}
+function syncVoicePickers(){
+ for(const id of ['game-voice','welcome-voice'])$(id).value=chosenVoice;
+ $('voice-detail').textContent=voiceOptions.find(v=>v.id===chosenVoice)?.description||'';
+}
+async function loadVoices(){
+ try{
+  const data=await(await api('voices')).json();voiceOptions=data.voices;
+  let saved;try{saved=localStorage.getItem('channel07-voice');}catch{}
+  chosenVoice=voiceOptions.some(v=>v.id===saved)?saved:data.defaultVoice;
+  for(const id of ['game-voice','welcome-voice']){
+   $(id).replaceChildren(...voiceOptions.map(v=>Object.assign(document.createElement('option'),{value:v.id,textContent:v.name,title:v.description})));$(id).disabled=false;
+  }
+  for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=false;
+  syncVoicePickers();
+ }catch{voiceStatus('목소리 목록을 불러오지 못했어요. 기본 목소리로 시작할 수 있어요.');}
+}
+async function changeVoice(id){
+ const previous=chosenVoice;voiceChanging=true;stopVoice();for(const picker of ['game-voice','welcome-voice'])$(picker).disabled=true;
+ try{
+  if(session)render(await(await api('voice',{method:'POST',body:JSON.stringify({voiceId:id})})).json());
+  chosenVoice=id;try{localStorage.setItem('channel07-voice',id);}catch{}
+  voiceStatus('목소리를 바꿨어요. 다음 대사부터 들을 수 있어요.');
+ }catch(e){chosenVoice=previous;voiceStatus(e.message);}
+ finally{voiceChanging=false;syncVoicePickers();for(const picker of ['game-voice','welcome-voice'])$(picker).disabled=false;}
+}
+async function previewVoice(playerId){
+ stopVoice();const generation=voiceGeneration,voice=chosenVoice,player=$(playerId);previewController=new AbortController();voiceBusy=true;
+ for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=true;
+ voiceStatus('미리 들을 목소리를 준비하고 있어요…');
+ try{
+  const r=await api('voice-preview/'+encodeURIComponent(voice),{signal:previewController.signal}),blob=await r.blob();if(generation!==voiceGeneration)return;
+  previewUrl=URL.createObjectURL(blob);player.src=previewUrl;player.hidden=false;currentAudio=player;
+  const finishPreview=message=>{if(generation===voiceGeneration&&currentAudio===player){player.hidden=true;voiceBusy=false;currentAudio=null;voiceStatus(message);playNext();}};
+  player.onended=()=>finishPreview('다른 목소리도 들어보세요.');
+  player.onpause=()=>finishPreview('미리 듣기를 멈췄어요. 다시 들으려면 버튼을 눌러주세요.');
+  player.onerror=()=>finishPreview('목소리를 재생하지 못했어요. 다시 눌러주세요.');
+  try{await player.play();if(generation===voiceGeneration)voiceStatus('“들려? 나 지우야. 오늘은 꼭 퇴근하자.”');}
+  catch{if(generation===voiceGeneration)voiceStatus('아래 재생 버튼을 눌러 들어보세요.');}
+ }catch(e){if(generation===voiceGeneration&&e.name!=='AbortError'){voiceBusy=false;voiceStatus(e.message);}}
+ finally{if(generation===voiceGeneration)for(const id of ['preview-voice','welcome-preview-voice'])$(id).disabled=false;}
+}
+for(const id of ['game-voice','welcome-voice'])$(id).onchange=()=>changeVoice($(id).value);
+$('preview-voice').onclick=()=>previewVoice('voice-preview-player');
+$('welcome-preview-voice').onclick=()=>previewVoice('welcome-voice-preview-player');

@@ -12,7 +12,7 @@ shared_state=root/'.runtime/game-shared-workers.json'
 shared=json.loads(shared_state.read_text()) if shared_state.exists() else {}
 (root/'game-model-catalog.json').write_text((root/'model-catalog.json').read_text())
 bundle=root/'.runtime/channel07-release.tar.gz'
-files=[root/x for x in ['server.mjs','game-api.mjs','game-engine.mjs','game-memory.mjs','game-models.mjs','game-tools.mjs','game-sonic.mjs','sonic.mjs','game-model-catalog.json','package.json','package-lock.json','public/index.html']]
+files=[root/x for x in ['server.mjs','game-api.mjs','game-voices.mjs','game-engine.mjs','game-memory.mjs','game-models.mjs','game-tools.mjs','game-sonic.mjs','sonic.mjs','game-model-catalog.json','package.json','package-lock.json','public/index.html']]
 files+=list((root/'public/channel07').rglob('*'))+list((root/'public/vendor/three').glob('*'))
 if a.static_only:files=[f for f in files if f.is_relative_to(root/'public/channel07')]
 with tarfile.open(bundle,'w:gz') as tar:

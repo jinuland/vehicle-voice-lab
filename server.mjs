@@ -29,10 +29,10 @@ const polly=new PollyClient({region:process.env.AWS_REGION||'ap-northeast-2',...
 function pcmWav(pcm){
   const h=Buffer.alloc(44);h.write('RIFF',0);h.writeUInt32LE(36+pcm.length,4);h.write('WAVEfmt ',8);h.writeUInt32LE(16,16);h.writeUInt16LE(1,20);h.writeUInt16LE(1,22);h.writeUInt32LE(16000,24);h.writeUInt32LE(32000,28);h.writeUInt16LE(2,32);h.writeUInt16LE(16,34);h.write('data',36);h.writeUInt32LE(pcm.length,40);return Buffer.concat([h,pcm]);
 }
-async function synthesize(text,provider,signal){
+async function synthesize(text,provider,signal,{voiceId='Seoyeon',engine='neural'}={}){
   if(provider==='polly'){
     const start=performance.now();
-    const result=await polly.send(new SynthesizeSpeechCommand({Engine:'neural',VoiceId:'Seoyeon',LanguageCode:'ko-KR',OutputFormat:'pcm',SampleRate:'16000',TextType:'text',Text:text}),{abortSignal:signal});
+    const result=await polly.send(new SynthesizeSpeechCommand({Engine:engine,VoiceId:voiceId,LanguageCode:'ko-KR',OutputFormat:'pcm',SampleRate:'16000',TextType:'text',Text:text}),{abortSignal:signal});
     const pcm=Buffer.from(await result.AudioStream.transformToByteArray());return{bytes:pcmWav(pcm),elapsedMs:Math.round(performance.now()-start)};
   }
   const response=await remote(tts+'/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})},signal);

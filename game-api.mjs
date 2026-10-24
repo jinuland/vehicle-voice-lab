@@ -3,13 +3,14 @@ import {newGame,opening,snapshot,dispatch,gameMessages,tick,validatePlan,say,cap
 import {gameModels,defaultGameModel,gameInference} from './game-models.mjs';
 import {characterTool,resultMessages} from './game-tools.mjs';
 import {GameMemory} from './game-memory.mjs';
+import {gameVoices,defaultGameVoice,gameVoicePreview,findGameVoice} from './game-voices.mjs';
 
 export function mountGame(app,{recognize,synthesize,cloud=false,llmUrl=process.env.GAME_LLM_URL||'http://127.0.0.1:8000/v1/chat/completions',memory=new GameMemory(),infer=gameInference}={}){
  const sessions=new Map(),voices=new Map();
  const actor=req=>String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('channel07='))?.slice(10);
  const get=req=>{const s=sessions.get(req.headers['x-game-session']);if(!s||s.actor!==actor(req))throw Object.assign(Error('게임에 다시 연결해 주세요.'),{status:401});s.touched=Date.now();return s;};
  const wrap=fn=>async(req,res)=>{try{await fn(req,res);}catch(e){if(!res.headersSent)res.status(e.status||400).json({error:e.message});}};
- const view=s=>({id:s.id,state:snapshot(s.game),memory:{provider:memory.status,visits:s.memories.visits,facts:s.memories.facts,remoteCount:s.memories.remote.length},model:s.model,toolTrace:s.toolTrace||[],planning:!!s.planning,turnStatus:s.turnStatus||null,responding:!!s.narrating,dialogueError:s.dialogueError||null,models:gameModels.map(({modelId,...m})=>m),defaultModel:defaultGameModel});
+ const view=s=>({id:s.id,state:snapshot(s.game),memory:{provider:memory.status,visits:s.memories.visits,facts:s.memories.facts,remoteCount:s.memories.remote.length},model:s.model,voiceId:s.voiceId,toolTrace:s.toolTrace||[],planning:!!s.planning,turnStatus:s.turnStatus||null,responding:!!s.narrating,dialogueError:s.dialogueError||null,models:gameModels.map(({modelId,...m})=>m),defaultModel:defaultGameModel});
  const flush=s=>{const last=s.game.events.at(-1)?.id||0;if(last===s.savedEvent)return;s.savedEvent=last;memory.remember(s.actor,s.id,s.lastInput||'[game simulation]',s.game.memoryFacts,s.game.events.slice(-5)).catch(()=>{memory.status='degraded';});};
  const narrate=s=>{
   if(s.planning||s.narrating||s.game.queue.length||s.game.route.length||s.game.job||s.game.waitUntil)return;
@@ -42,16 +43,27 @@ export function mountGame(app,{recognize,synthesize,cloud=false,llmUrl=process.e
  app.get('/api/game/health',wrap(async(req,res)=>{let llm=false;try{llm=(await fetch(llmUrl.replace('/v1/chat/completions','/health'),{signal:AbortSignal.timeout(1500)})).ok;}catch{}res.json({llm,memory:memory.status,memoryConfigured:!!memory.memoryId});}));
  app.post('/api/game/session',wrap(async(req,res)=>{
   if(sessions.size>=300)throw Error('게임 접속이 많습니다. 잠시 후 다시 시도해 주세요.');
+  const voice=findGameVoice(req.body.voiceId);
   let who=actor(req);await memory.ready;
   if(!who||!/^[a-f0-9]{64}$/.test(who)||!memory.players[who]){who=randomBytes(32).toString('hex');res.setHeader('Set-Cookie',`channel07=${who}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000${cloud?'; Secure':''}`);}
   const old=[...sessions.entries()].filter(([,s])=>s.actor===who);for(const[id,s]of old){s.controller?.abort();flush(s);sessions.delete(id);}
   const memories=await memory.recall(who),game=newGame();game.modelDialogue=true;opening(game,memories);
-  const s={id:randomUUID(),actor:who,game,memories,model:gameModels.some(m=>m.id===req.body.modelId&&m.ready)?req.body.modelId:defaultGameModel,touched:Date.now(),version:0,savedEvent:0};sessions.set(s.id,s);flush(s);res.json(view(s));
+  const s={id:randomUUID(),actor:who,game,memories,voiceId:voice.id,model:gameModels.some(m=>m.id===req.body.modelId&&m.ready)?req.body.modelId:defaultGameModel,touched:Date.now(),version:0,savedEvent:0};sessions.set(s.id,s);flush(s);res.json(view(s));
  }));
  app.get('/api/game/tools',wrap(async(req,res)=>{get(req);res.json({tools:[characterTool],capabilityLookup:{name:'character_control',arguments:{reply:'',actions:[{type:'help',target:'',item:''}]},readOnly:true}});}));
  app.get('/api/game/capabilities',wrap(async(req,res)=>res.json(capabilities(get(req).game))));
- app.get('/api/game/models',wrap(async(req,res)=>res.json({models:gameModels.map(({modelId,...m})=>m),defaultModel:defaultGameModel,speech:'Whisper · Polly Seoyeon 공통'})));
+ app.get('/api/game/models',wrap(async(req,res)=>res.json({models:gameModels.map(({modelId,...m})=>m),defaultModel:defaultGameModel,speech:'Whisper 음성 인식 · Polly 목소리 별도 선택'})));
  app.post('/api/game/model',wrap(async(req,res)=>{const s=get(req);if(!gameModels.some(m=>m.id===req.body.modelId&&m.ready))throw Error('연결된 모델을 선택해 주세요.');s.version++;s.controller?.abort();s.narrating=false;s.planning=false;s.turnStatus=null;s.model=req.body.modelId;res.json(view(s));}));
+ app.get('/api/game/voices',wrap(async(req,res)=>res.json({voices:gameVoices,defaultVoice:defaultGameVoice,previewText:gameVoicePreview})));
+ app.post('/api/game/voice',wrap(async(req,res)=>{const s=get(req),voice=findGameVoice(req.body.voiceId);s.voiceId=voice.id;res.json(view(s));}));
+ const voiceAudio=async(text,voice)=>{
+  const key=JSON.stringify([voice.id,text]);let task=voices.get(key);
+  if(!task){task=Promise.resolve().then(()=>synthesize(text,'polly',AbortSignal.timeout(15000),{voiceId:voice.voiceId,engine:voice.engine}));voices.set(key,task);task.catch(()=>{if(voices.get(key)===task)voices.delete(key);});if(voices.size>120)voices.delete(voices.keys().next().value);}
+  return await task;
+ };
+ const sendVoice=async(res,text,voice)=>{const d=await voiceAudio(text,voice);res.setHeader('Content-Type','audio/wav');res.setHeader('X-Game-Voice',voice.id);res.setHeader('X-TTS-Engine',voice.engine);res.send(d.bytes);};
+ // A fixed, cached preview can be heard before creating a game. No arbitrary text is accepted.
+ app.get('/api/game/voice-preview/:voiceId',wrap(async(req,res)=>sendVoice(res,gameVoicePreview,findGameVoice(req.params.voiceId))));
  app.get('/api/game/state',wrap(async(req,res)=>res.json(view(get(req)))));
  app.post('/api/game/stop',wrap(async(req,res)=>{const s=get(req);s.version++;s.controller?.abort();s.narrating=false;s.planning=false;s.turnStatus=null;dispatch(s.game,{reply:'',actions:[{type:'stop',target:'',item:''}]});flush(s);res.json(view(s));}));
  const runTurn=async(req,res)=>{
@@ -84,8 +96,7 @@ export function mountGame(app,{recognize,synthesize,cloud=false,llmUrl=process.e
  }));
  app.get('/api/game/voice/:event',wrap(async(req,res)=>{
   const s=get(req),e=s.game.events.find(x=>x.id===Number(req.params.event));if(!e||['tool','intent'].includes(e.kind))throw Error('대사를 찾지 못했어요.');
-  const key=e.text;let task=voices.get(key);if(!task){task=synthesize(e.text,'polly',AbortSignal.timeout(10000));voices.set(key,task);task.catch(()=>voices.delete(key));if(voices.size>120)voices.delete(voices.keys().next().value);}
-  const d=await task;res.setHeader('Content-Type','audio/wav');res.send(d.bytes);
+  await sendVoice(res,e.text,findGameVoice(s.voiceId));
  }));
  return {sessions,memory,close:()=>{clearInterval(timer);for(const s of sessions.values())s.controller?.abort();}};
 }
