@@ -10,3 +10,11 @@
 .advice-toggle{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#b9c9b8;white-space:nowrap}.advice-toggle input{width:auto;accent-color:#bbf26c}.radio-meta{flex-wrap:wrap;gap:8px}
 
 #help-heading:focus{outline:none}#help-dialog>button{margin:8px 0 0}#help-dialog>#close-help{background:transparent;color:#c6d9c8;border:1px solid #54705b}
+
+/* Model choice is visible before connecting and throughout play, including narrow panels. */
+.model-panel{max-width:1800px;margin:auto;padding:16px 28px;background:#202c25;border-bottom:1px solid #58664e;display:grid;grid-template-columns:minmax(170px,1fr) minmax(240px,2fr);gap:20px;align-items:center}
+.model-panel strong{font-size:18px;color:#e9ce94}.model-panel p{margin:5px 0;font-size:12px;color:#c3cfb9}.model-field{min-width:0}.model-field label,.welcome-model-label{display:block;font-size:13px;color:#dddfcd;margin-bottom:6px}
+.model-field select,#welcome-model{display:block;width:100%;min-width:0;padding:11px 12px;background:#152019;border:1px solid #96a278;border-radius:4px;color:#f0e5c9;font:inherit;font-size:14px;line-height:1.5;cursor:pointer}.model-field small{font-size:11px;color:#9eaf99;display:block}.model-field #model-detail{color:#d3bc85;line-height:1.6}
+#welcome{max-height:90vh;overflow:auto}#welcome h1{font-size:32px;margin:16px 0}#welcome-heading:focus{outline:none}#welcome-model-detail{color:#d3bc85;line-height:1.7}#welcome ul{margin:14px 0;font-size:12px}#welcome p{line-height:1.7}
+select:focus-visible{outline:2px solid #edbd63;outline-offset:3px}
+@media(max-width:680px){header{gap:10px;flex-wrap:wrap}.brand{min-width:0}.brand small{letter-spacing:.5px}.top-right{margin-left:auto}.model-panel{grid-template-columns:minmax(0,1fr);gap:8px;padding:14px 15px}.model-panel strong{font-size:17px}.model-field label{font-size:12px}.model-field select,#welcome-model{font-size:14px}.guide-bar{flex-wrap:wrap}.guide-bar button{font-size:12px}.interaction-bar label{min-width:0}.interaction-bar select{min-width:0}#welcome{padding:22px}#welcome h1{font-size:29px}#welcome p{font-size:13px}#welcome-model{font-size:13px}.radio-meta #status{white-space:normal}.advice-toggle{white-space:normal}.brand small{max-width:150px}}
