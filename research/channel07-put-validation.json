@@ -1,0 +1,112 @@
+{
+  "at": "2026-10-24T00:35:12.687Z",
+  "rows": [
+    {
+      "text": "커피 집어서 출입문에 사용해봐",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        },
+        {
+          "type": "use",
+          "target": "pantryDoor",
+          "item": "coffee"
+        }
+      ],
+      "passed": true,
+      "reply": "열렸어. 안전 규정으로 안전 규정을 뚫었네."
+    },
+    {
+      "text": "커피 다시 내려놔",
+      "actions": [
+        {
+          "type": "put",
+          "target": "table",
+          "item": "coffee"
+        }
+      ],
+      "passed": true,
+      "reply": "뜨거운 커피 테이블 위에 내려놨어."
+    },
+    {
+      "text": "커피 다시 집어",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        }
+      ],
+      "passed": true,
+      "reply": "커피 챙겼어. 이 회사에서 유일하게 따뜻한 거야."
+    },
+    {
+      "text": "박주임한테 팀장님이 프린터 고장났으니 점검하래",
+      "actions": [
+        {
+          "type": "distract",
+          "target": "robot",
+          "item": ""
+        }
+      ],
+      "passed": true,
+      "reply": "담당 부서에… 팀장님 요청 확인. 점검하러 이동합니다."
+    },
+    {
+      "text": "커피를 자료실 책상 위에 올려놔",
+      "actions": [
+        {
+          "type": "move",
+          "target": "office",
+          "item": ""
+        },
+        {
+          "type": "put",
+          "target": "desk",
+          "item": "coffee"
+        }
+      ],
+      "passed": true,
+      "reply": "뜨거운 커피 책상 위에 내려놨어."
+    },
+    {
+      "text": "책상에 놓은 커피 다시 들어",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        }
+      ],
+      "passed": true,
+      "reply": "커피 챙겼어. 이 회사에서 유일하게 따뜻한 거야."
+    },
+    {
+      "text": "커피 바닥에 내려놔",
+      "actions": [
+        {
+          "type": "put",
+          "target": "",
+          "item": "coffee"
+        }
+      ],
+      "passed": true,
+      "reply": "뜨거운 커피 여기 바닥에 내려놨어."
+    },
+    {
+      "text": "방금 내려놓은 커피 다시 집어",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        }
+      ],
+      "passed": true,
+      "reply": "커피 챙겼어. 이 회사에서 유일하게 따뜻한 거야."
+    }
+  ],
+  "passed": true
+}

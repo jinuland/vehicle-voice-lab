@@ -85,7 +85,7 @@ export function createScene(canvas,portraitCanvas,onSelect){
  const desk=addTarget(box(scene,2.8,.13,1.5,7,1,-1,'wood'),'desk');for(const x of[5.9,8.1])for(const z of[-1.5,-.5])box(scene,.10,.95,.10,x,.5,z,'metal');
  box(scene,1.05,.65,.10,6.6,1.55,-1.25,'dark');sign(scene,'결재는 셀프',.90,.48,6.6,1.55,-1.19,{bg:'#3a5346',fg:'#d2d9b9',size:95});box(scene,.6,.04,.20,6.6,1.10,-1,'dark');
  const stamp=addTarget(new THREE.Group(),'stamp');stamp.position.set(7,1.08,-1);scene.add(stamp);box(stamp,.28,.08,.22,0,.04,0,0x8e3f34);cylinder(stamp,.07,.11,.25,0,.20,0,'wood');
- const paper=addTarget(box(scene,.60,.025,.76,8,1.10,1,'cream'),'document');box(scene,.75,.85,1.0,8,.5,1,'wood');sign(scene,'기밀',.45,.24,8,1.13,1,{size:130}).rotation.x=-Math.PI/2;
+ const paper=addTarget(box(scene,.60,.025,.76,8,1.10,1,'cream'),'document');box(scene,.75,.85,1.0,8,.5,1,'wood');sign(paper,'기밀',.45,.24,0,.015,0,{size:130}).rotation.x=-Math.PI/2;
  for(let x=4.2;x<10.5;x+=1.3){box(scene,1.18,2.1,.7,x,1.05,-2.95,'metal');for(let y=.5;y<2;y+=.6){box(scene,1.05,.02,.03,x,y,-2.58,'cream');box(scene,.22,.04,.05,x,y+.16,-2.54,'dark');}}
  sign(scene,'행복한 일터\n퇴근은 커리어다',1.9,1.0,8,2.6,-3.31,{size:85,height:480});
  // Ceiling fixture bodies are visible but do not cover the playable floor.
@@ -109,6 +109,7 @@ export function createScene(canvas,portraitCanvas,onSelect){
   if(state){const prev=jiu.root.position.clone();jiu.root.position.x=THREE.MathUtils.damp(jiu.root.position.x,state.x,12,dt);jiu.root.position.z=THREE.MathUtils.damp(jiu.root.position.z,state.z,12,dt);const dx=jiu.root.position.x-prev.x,dz=jiu.root.position.z-prev.z;
    if(state.moving&&Math.hypot(dx,dz)>.001){const target=Math.atan2(dx,dz);jiu.root.rotation.y+=Math.atan2(Math.sin(target-jiu.root.rotation.y),Math.cos(target-jiu.root.rotation.y))*Math.min(1,dt*10);}else jiu.root.rotation.y=THREE.MathUtils.damp(jiu.root.rotation.y,cam==='office'?.35:-.15,3,dt);
    const walk=state.moving?Math.sin(t*.010)*.48:Math.sin(t*.0018)*.025;jiu.legL.rotation.x=walk;jiu.legR.rotation.x=-walk;jiu.armL.rotation.x=-walk*.7;jiu.armR.rotation.x=state.inventory.includes('coffee')||state.inventory.includes('banana')?-.75:walk*.7;jiu.root.position.y=state.hidden?-.5:.1+Math.abs(walk)*.06;jiu.head.rotation.z=Math.sin(t*.0013)*.035;jiu.pony.rotation.x=walk*.2;
+   for(const[id,mesh,original]of[['coffee',coffee,[-7.2,1.08,1]],['banana',fruit,[-5.7,1.17,1]],['stamp',stamp,[7,1.08,-1]],['document',paper,[8,1.10,1]]]){const p=state.placements?.[id];mesh.position.set(...(p?[p.x,p.y,p.z]:original));}
    jiu.heldCoffee.visible=state.inventory.includes('coffee');jiu.heldBanana.visible=!state.inventory.includes('coffee')&&state.inventory.includes('banana');coffee.visible=!state.inventory.includes('coffee');fruit.visible=!state.inventory.includes('banana');stamp.visible=!state.inventory.includes('stamp');paper.visible=!state.inventory.includes('document');
    doorPivot.rotation.y=THREE.MathUtils.damp(doorPivot.rotation.y,state.doorOpen?-1.5:0,5,dt);robot.position.set(state.guard.x,.05,state.guard.z);robot.visible=!state.guard.away;beacon.material.emissive=new THREE.Color(state.guard.danger?0x874b0c:0x000000);exitLight.material.color.setHex(state.approved&&state.clockedIn?0xa1cb8a:0xedbd62);gate.position.y=THREE.MathUtils.damp(gate.position.y,state.won?4.2:1.4,4,dt);
   }
