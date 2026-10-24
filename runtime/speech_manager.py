@@ -52,6 +52,20 @@ async def health():
 async def select(body:dict):
  if gate.locked():raise HTTPException(429,'다른 음성 모델 요청을 처리 중이에요.')
  async with gate:return {'modelId':body.get('modelId'),'loadMs':await ensure(body.get('modelId'))}
+
+@app.post('/game-text')
+async def game_text(body:dict):
+ model_id=body.get('model_id')
+ if model_id not in ('qwen3-omni','step-audio2-mini'):raise HTTPException(400,'No game text adapter')
+ if gate.locked():raise HTTPException(429,'다른 음성 모델 요청을 처리 중이에요.')
+ async with gate:
+  load_ms=await ensure(model_id)
+  async with httpx.AsyncClient(timeout=120) as client:r=await client.post('http://127.0.0.1:9114/game-text',json=body)
+  try:d=r.json()
+  except ValueError:raise HTTPException(502,'게임 모델 응답 형식을 확인하지 못했어요. 서버 어댑터를 확인해 주세요.')
+  d['loadMs']=load_ms
+  return JSONResponse(d,status_code=r.status_code)
+
 @app.post('/{operation}')
 async def run(operation:str,file:UploadFile,model_id:str=Form(...),messages:str=Form('[]'),language:str=Form('ko'),generation_profile:str=Form('deterministic')):
  if operation not in ('plan-audio','s2s'):raise HTTPException(404)

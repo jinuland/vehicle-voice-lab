@@ -1,6 +1,6 @@
 # On · Vehicle Voice Lab
 
-**Try the voice-driven 3D game:** [Channel 07: After Hours](https://d3q7tlfor72b22.cloudfront.net/channel07/) is a Korean-language comedy escape prototype. Use the radio to guide Jiu through a 3D office, collect objects, avoid a security robot and clock out. It reuses Whisper, Qwen3.5-4B and Polly, with AgentCore Memory plus a local verified-event index for callbacks across playthroughs. [Gameplay, architecture and deployment guide (Korean)](docs/CHANNEL07.ko.md).
+**Try the voice-driven 3D game:** [Channel 07: After Hours](https://d3q7tlfor72b22.cloudfront.net/channel07/) is a Korean-language comedy escape prototype. Use the radio to guide Jiu through a 3D office, collect objects, avoid a security robot and clock out. Select the existing vehicle models in vehicle benchmark score order. The chosen model calls character tools, reads actual execution results and decides whether another action or a conversational reply is needed. Whisper and Polly are shared across models; AgentCore Memory plus a local verified-event index supports callbacks across playthroughs. [Gameplay, architecture and deployment guide (Korean)](docs/CHANNEL07.ko.md).
 
 Compare how well speech models and small language models turn **vehicle requests into validated actions and spoken confirmations**. Try English speech with Nova 2.5 Sonic, explore the Korean self-hosted model comparison, and watch the cabin settings change. Compare model accuracy, first-audio latency, and memory use in a **Korean / English UI**.
 

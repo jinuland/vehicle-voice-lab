@@ -21,7 +21,7 @@ export class GameMemory {
  track(promise){this.pending.add(promise);promise.finally(()=>this.pending.delete(promise));return promise;}
  async remember(actor,session,text,facts=[],events=[]){
   const p=await this.player(actor);for(const f of facts)if(!p.facts.includes(f))p.facts.push(f);
-  const summary=events.filter(x=>['jiu','system'].includes(x.kind)).map(x=>x.text).slice(-5).join(' ');
+  const summary=events.filter(x=>['tool','system'].includes(x.kind)||(x.kind==='jiu'&&x.source!=='model')).map(x=>x.text).slice(-5).join(' ');
   if(summary){p.memories.push(summary);p.memories=p.memories.slice(-8);}await this.save();
   if(this.client){this.track(this.client.send(new CreateEventCommand({memoryId:this.memoryId,actorId:actor,sessionId:session,eventTimestamp:new Date(),clientToken:randomUUID(),payload:[{conversational:{role:'USER',content:{text:text.slice(0,500)}}},{conversational:{role:'ASSISTANT',content:{text:`Verified game events: ${summary||'No action completed yet.'} Verified persistent flags: ${p.facts.join(', ')}. Do not infer successful actions from requests.`}}}]}),{abortSignal:AbortSignal.timeout(5000)}).then(()=>{this.status='agentcore';}).catch(()=>{this.status='degraded';}));}
  }

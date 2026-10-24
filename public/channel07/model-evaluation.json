@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-24T01:38:34.891017+00:00",
+  "scope": "고정 6개 게임 명령 점검 · 차량 점수/자유 대화 품질 점수와 별개",
+  "models": [
+    {
+      "modelId": "gemma4-e2b",
+      "passed": 6,
+      "total": 6,
+      "medianWarmDecisionMs": 1497,
+      "dialogueErrors": 0,
+      "recommended": false,
+      "note": "직접 명령은 통과. 질문을 명령으로 해석한 사례가 있어 조언 모드를 사용하세요.",
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    },
+    {
+      "modelId": "phi4-mini",
+      "passed": 5,
+      "total": 6,
+      "medianWarmDecisionMs": 921,
+      "dialogueErrors": 0,
+      "recommended": false,
+      "note": "명령 누락과 어색한 한국어 샘플이 있었음.",
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "qwen35-4b-nf4",
+      "passed": 6,
+      "total": 6,
+      "medianWarmDecisionMs": 2471,
+      "dialogueErrors": 0,
+      "recommended": true,
+      "note": "제어 비교용. 말투가 반복적인 샘플이 있었음.",
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "minicpm-o45",
+      "passed": 4,
+      "total": 6,
+      "medianWarmDecisionMs": 2054,
+      "dialogueErrors": 4,
+      "recommended": false,
+      "note": "초기 측정값. 이후 대사 형식 보정이 들어갔으며 재검증 필요.",
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "qwen35-4b",
+      "passed": 6,
+      "total": 6,
+      "medianWarmDecisionMs": 2605,
+      "dialogueErrors": 0,
+      "recommended": true,
+      "note": "기본 제어 비교용. 자연스러운 조언은 조언만 받기 모드를 사용하세요.",
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    },
+    {
+      "modelId": "sonic",
+      "passed": 6,
+      "total": 6,
+      "medianWarmDecisionMs": 912,
+      "dialogueErrors": 0,
+      "recommended": true,
+      "note": "이번 짧은 실험에서 한국어 선택지 안내가 가장 자연스러웠음. 공통 Whisper/Polly 경로.",
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    }
+  ]
+}

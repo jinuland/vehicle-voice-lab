@@ -69,7 +69,11 @@ export function createScene(canvas,portraitCanvas,onSelect){
  box(scene,7.3,.12,.95,-7.2,1.05,-2.85,0xc2c3b6);
  box(scene,1,.10,.65,-8.4,1.13,-2.85,'metal');box(scene,.77,.09,.44,-8.4,1.18,-2.85,0x293b36);const faucet=cylinder(scene,.035,.035,.4,-8.4,1.4,-3.05,'metal');box(scene,.28,.035,.035,-8.3,1.60,-3.05,'metal');
  box(scene,.72,.65,.60,-9.8,1.44,-2.8,'dark');box(scene,.60,.12,.58,-9.8,1.83,-2.8,'metal');box(scene,.4,.32,.4,-9.8,1.47,-2.48,0x313f37);ball(scene,.035,-9.57,1.7,-2.48,0xff5e41);cup(scene,-9.8,1.12,-2.42,.6);
- box(scene,1.1,.65,.65,-5.8,1.42,-2.8,'cream');box(scene,.83,.42,.04,-5.91,1.43,-2.45,'dark');box(scene,.03,.3,.03,-5.38,1.43,-2.4,'metal');
+ for(const[w,h,d,x,y,z]of[[1.1,.07,.65,-5.8,1.10,-2.8],[1.1,.07,.65,-5.8,1.74,-2.8],[1.1,.65,.06,-5.8,1.42,-3.11],[.07,.65,.65,-6.35,1.42,-2.8],[.15,.65,.65,-5.28,1.42,-2.8]])addTarget(box(scene,w,h,d,x,y,z,'cream'),'microwave');
+ const mwDoor=new THREE.Group();mwDoor.position.set(-6.3,1.42,-2.43);scene.add(mwDoor);
+ for(const[w,h,x,y]of[[.90,.06,.45,.27],[.90,.06,.45,-.27],[.06,.54,.0,0],[.06,.54,.9,0]])addTarget(box(mwDoor,w,h,.07,x,y,0,'metal'),'microwave');
+ const mwGlass=new THREE.Mesh(new THREE.PlaneGeometry(.81,.47),new THREE.MeshStandardMaterial({color:0x40534c,transparent:true,opacity:.55,side:THREE.DoubleSide}));mwGlass.position.set(.45,0,.025);mwDoor.add(mwGlass);addTarget(mwGlass,'microwave');box(mwDoor,.04,.30,.06,.82,0,.075,'cream');
+ const mwIndicator=ball(scene,.035,-5.27,1.61,-2.43,'mint');const mwLight=new THREE.PointLight(0xffc45c,0,2);mwLight.position.set(-5.8,1.44,-2.65);scene.add(mwLight);
  box(scene,1.15,2.55,.9,-4.2,1.3,-2.85,'cream');box(scene,1.03,.025,.02,-4.2,1.92,-2.385,'metal');sign(scene,'오늘도\n수고했어요',.60,.68,-4.2,1.40,-2.38,{size:95,height:640});
  const table=addTarget(box(scene,2.9,.14,1.45,-6.4,1,1,'wood'),'table');for(const x of[-7.6,-5.2])for(const z of[.48,1.52])box(scene,.08,.93,.08,x,.5,z,'metal');
  const coffee=addTarget(cup(scene,-7.2,1.08,1),'coffee'),fruit=addTarget(banana(scene,-5.7,1.17,1),'banana');
@@ -93,7 +97,7 @@ export function createScene(canvas,portraitCanvas,onSelect){
  // Wheeled office supervisor, Park.
  const robot=new THREE.Group();scene.add(robot);addTarget(box(robot,.8,1,.55,0,.9,0,0xc5c6b7),'robot');box(robot,.72,.40,.08,0,1.2,.32,'dark');for(const x of[-.17,.17])box(robot,.07,.19,.04,x,1.2,.38,'amber');for(const x of[-.33,.33]){const wheel=cylinder(robot,.20,.20,.12,x,.20,0,'dark');wheel.rotation.z=Math.PI/2;}box(robot,.15,.35,.025,0,.61,.30,0x995746);sign(robot,'박주임',.39,.15,0,.84,.30,{size:125});
  const beacon=ball(robot,.12,0,1.49,0,'amber');
- const jiu=makeJiu();scene.add(jiu.root);jiu.root.position.set(-7.5,.10,0);
+ const jiu=makeJiu();const facingArrow=new THREE.Mesh(new THREE.ConeGeometry(.11,.28,3),mat(0xe9bf6d));facingArrow.rotation.x=Math.PI/2;facingArrow.position.set(0,-.015,.68);jiu.root.add(facingArrow);scene.add(jiu.root);jiu.root.position.set(-7.5,.10,0);
  // An actual second 3D view, not a static portrait image.
  const portraitRenderer=new THREE.WebGLRenderer({canvas:portraitCanvas,antialias:true});portraitRenderer.setPixelRatio(Math.min(devicePixelRatio,2));portraitRenderer.toneMapping=THREE.ACESFilmicToneMapping;
  const portraitScene=new THREE.Scene();portraitScene.background=new THREE.Color(0x405344);portraitScene.add(new THREE.HemisphereLight(0xf5e7c9,0x344939,3.6));const pk=new THREE.DirectionalLight(0xffe2bb,3);pk.position.set(-2,4,4);portraitScene.add(pk);const pj=makeJiu();portraitScene.add(pj.root);
@@ -107,10 +111,11 @@ export function createScene(canvas,portraitCanvas,onSelect){
  function animate(t){requestAnimationFrame(animate);const dt=Math.min(.1,(t-lastT)/1000||.016);lastT=t;
   camera.position.lerp(destination,1-Math.exp(-dt*5));camera.lookAt(look);
   if(state){const prev=jiu.root.position.clone();jiu.root.position.x=THREE.MathUtils.damp(jiu.root.position.x,state.x,12,dt);jiu.root.position.z=THREE.MathUtils.damp(jiu.root.position.z,state.z,12,dt);const dx=jiu.root.position.x-prev.x,dz=jiu.root.position.z-prev.z;
-   if(state.moving&&Math.hypot(dx,dz)>.001){const target=Math.atan2(dx,dz);jiu.root.rotation.y+=Math.atan2(Math.sin(target-jiu.root.rotation.y),Math.cos(target-jiu.root.rotation.y))*Math.min(1,dt*10);}else jiu.root.rotation.y=THREE.MathUtils.damp(jiu.root.rotation.y,cam==='office'?.35:-.15,3,dt);
+   const facing=state.heading??0;jiu.root.rotation.y+=Math.atan2(Math.sin(facing-jiu.root.rotation.y),Math.cos(facing-jiu.root.rotation.y))*Math.min(1,dt*10);
    const walk=state.moving?Math.sin(t*.010)*.48:Math.sin(t*.0018)*.025;jiu.legL.rotation.x=walk;jiu.legR.rotation.x=-walk;jiu.armL.rotation.x=-walk*.7;jiu.armR.rotation.x=state.inventory.includes('coffee')||state.inventory.includes('banana')?-.75:walk*.7;jiu.root.position.y=state.hidden?-.5:.1+Math.abs(walk)*.06;jiu.head.rotation.z=Math.sin(t*.0013)*.035;jiu.pony.rotation.x=walk*.2;
    for(const[id,mesh,original]of[['coffee',coffee,[-7.2,1.08,1]],['banana',fruit,[-5.7,1.17,1]],['stamp',stamp,[7,1.08,-1]],['document',paper,[8,1.10,1]]]){const p=state.placements?.[id];mesh.position.set(...(p?[p.x,p.y,p.z]:original));}
    jiu.heldCoffee.visible=state.inventory.includes('coffee');jiu.heldBanana.visible=!state.inventory.includes('coffee')&&state.inventory.includes('banana');coffee.visible=!state.inventory.includes('coffee');fruit.visible=!state.inventory.includes('banana');stamp.visible=!state.inventory.includes('stamp');paper.visible=!state.inventory.includes('document');
+   mwDoor.rotation.y=THREE.MathUtils.damp(mwDoor.rotation.y,state.microwave?.open?-1.65:0,6,dt);mwLight.intensity=state.microwave?.seconds?3:0;mwIndicator.material.color.setHex(state.microwave?.seconds?0xffb447:0x73967c);
    doorPivot.rotation.y=THREE.MathUtils.damp(doorPivot.rotation.y,state.doorOpen?-1.5:0,5,dt);robot.position.set(state.guard.x,.05,state.guard.z);robot.visible=!state.guard.away;beacon.material.emissive=new THREE.Color(state.guard.danger?0x874b0c:0x000000);exitLight.material.color.setHex(state.approved&&state.clockedIn?0xa1cb8a:0xedbd62);gate.position.y=THREE.MathUtils.damp(gate.position.y,state.won?4.2:1.4,4,dt);
   }
   const mouthScale=talking?1+Math.abs(Math.sin(t*.025))*3:1;jiu.mouth.scale.y=mouthScale;pj.mouth.scale.y=mouthScale;pj.head.rotation.y=Math.sin(t*.0006)*.10;pj.head.rotation.z=Math.sin(t*.0008)*.035;

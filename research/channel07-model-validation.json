@@ -1,0 +1,1725 @@
+{
+  "at": "2026-10-24T01:38:34.891017+00:00",
+  "scope": "Six fixed direct commands and actual simulated-state checks; not open-ended Korean accuracy, native S2S voice quality or a subjective quality score. Decision time is the server API round trip; shared GPU queueing is included. Movement and result dialogue are separately recorded. Guidance evolves separately and is tested with channel07-help-smoke.mjs.",
+  "models": [
+    {
+      "modelId": "gemma4-e2b",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": true,
+          "actions": [
+            {
+              "type": "step",
+              "target": "backward",
+              "item": "",
+              "steps": 2
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "step",
+                  "target": "backward",
+                  "item": "",
+                  "steps": 2
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "step",
+                    "target": "backward",
+                    "item": "",
+                    "steps": 2
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 28,
+            "llmMs": 1520,
+            "totalMs": 1520
+          },
+          "totalWithExecutionAndReplyMs": 4089,
+          "modelDialogue": "여기까지 왔어. 이제 뭐 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "microwave",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "microwave",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "microwave",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 35,
+            "llmMs": 1901,
+            "totalMs": 1901
+          },
+          "totalWithExecutionAndReplyMs": 8043,
+          "modelDialogue": "넣었어. 이제 뭐 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "banana",
+                    "item": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 26,
+            "llmMs": 1436,
+            "totalMs": 1436
+          },
+          "totalWithExecutionAndReplyMs": 3141,
+          "modelDialogue": "바나나 꺼냈어.",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "table",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "table",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "table",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 27,
+            "llmMs": 1474,
+            "totalMs": 1474
+          },
+          "totalWithExecutionAndReplyMs": 6018,
+          "modelDialogue": "됐어. 이제 뭐 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": true,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 25,
+            "llmMs": 1365,
+            "totalMs": 1365
+          },
+          "totalWithExecutionAndReplyMs": 2175,
+          "modelDialogue": "아니, 별거 아니야. 그냥 치킨 먹고 싶어.",
+          "dialogueError": null
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "coffee",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "coffee"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "coffee",
+                    "item": ""
+                  },
+                  {
+                    "type": "use",
+                    "target": "pantryDoor",
+                    "item": "coffee"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "gemma4-e2b",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 38,
+            "llmMs": 2071,
+            "totalMs": 2071
+          },
+          "totalWithExecutionAndReplyMs": 9106,
+          "modelDialogue": "문 열렸네. 조심해서 가.",
+          "dialogueError": null
+        }
+      ],
+      "passed": 6,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    },
+    {
+      "modelId": "phi4-mini",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": false,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 4423,
+            "generatedTokens": 17,
+            "llmMs": 5613,
+            "totalMs": 5613
+          },
+          "totalWithExecutionAndReplyMs": 6643,
+          "modelDialogue": "어떻게 도와줄 수 있어?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "microwave",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "microwave",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "microwave",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 34,
+            "llmMs": 921,
+            "totalMs": 921
+          },
+          "totalWithExecutionAndReplyMs": 6400,
+          "modelDialogue": "어떻게 도와줄 수 있어?",
+          "dialogueError": null
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "banana",
+                    "item": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 37,
+            "llmMs": 1007,
+            "totalMs": 1007
+          },
+          "totalWithExecutionAndReplyMs": 2618,
+          "modelDialogue": "어떻게 도와줄 수 있어?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "table",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "table",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "table",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 29,
+            "llmMs": 799,
+            "totalMs": 799
+          },
+          "totalWithExecutionAndReplyMs": 5286,
+          "modelDialogue": "그거 다 했어. 집으로 가자",
+          "dialogueError": null
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": true,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 18,
+            "llmMs": 511,
+            "totalMs": 511
+          },
+          "totalWithExecutionAndReplyMs": 2085,
+          "modelDialogue": "우리 팀이 잘 했으면 집으로 가자",
+          "dialogueError": null
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "coffee",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "coffee"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "coffee",
+                    "item": ""
+                  },
+                  {
+                    "type": "use",
+                    "target": "pantryDoor",
+                    "item": "coffee"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "phi4-mini",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 45,
+            "llmMs": 1211,
+            "totalMs": 1211
+          },
+          "totalWithExecutionAndReplyMs": 6910,
+          "modelDialogue": "우리 팀이 잘 했으면 집으로 가자",
+          "dialogueError": null
+        }
+      ],
+      "passed": 5,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "qwen35-4b-nf4",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": true,
+          "actions": [
+            {
+              "type": "step",
+              "target": "backward",
+              "item": "",
+              "steps": 2
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "step",
+                  "target": "backward",
+                  "item": "",
+                  "steps": 2
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "step",
+                    "target": "backward",
+                    "item": "",
+                    "steps": 2
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 5279,
+            "generatedTokens": 35,
+            "llmMs": 8810,
+            "totalMs": 8810
+          },
+          "totalWithExecutionAndReplyMs": 11673,
+          "modelDialogue": "이제야 나가는 거야?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "microwave",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "microwave",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "microwave",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 36,
+            "llmMs": 2829,
+            "totalMs": 2829
+          },
+          "totalWithExecutionAndReplyMs": 9205,
+          "modelDialogue": "바나나 넣었네. 이제 뭐야?",
+          "dialogueError": null
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "banana",
+                    "item": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 29,
+            "llmMs": 2327,
+            "totalMs": 2327
+          },
+          "totalWithExecutionAndReplyMs": 4801,
+          "modelDialogue": "바나나 꺼냈어. 이제 뭐야?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "table",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "table",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "table",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 31,
+            "llmMs": 2471,
+            "totalMs": 2471
+          },
+          "totalWithExecutionAndReplyMs": 7977,
+          "modelDialogue": "바나나 내려놨어. 이제 뭐야?",
+          "dialogueError": null
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": true,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 27,
+            "llmMs": 2170,
+            "totalMs": 2170
+          },
+          "totalWithExecutionAndReplyMs": 2690,
+          "modelDialogue": "아니야, 그냥 치킨 먹고 싶을 뿐이야. 너도 같이 먹을까?",
+          "dialogueError": null
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "coffee",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "coffee"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "coffee",
+                    "item": ""
+                  },
+                  {
+                    "type": "use",
+                    "target": "pantryDoor",
+                    "item": "coffee"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b-nf4",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "generatedTokens": 46,
+            "llmMs": 3525,
+            "totalMs": 3525
+          },
+          "totalWithExecutionAndReplyMs": 9814,
+          "modelDialogue": "문 열렸네. 이제 뭐야?",
+          "dialogueError": null
+        }
+      ],
+      "passed": 6,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "minicpm-o45",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": false,
+          "error": "캐릭터 도구 호출 형식을 확인하지 못했어요. 다시 말해 주세요."
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "microwave",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "microwave",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "microwave",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "minicpm-o45",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "llmMs": 2189,
+            "totalMs": 2189
+          },
+          "totalWithExecutionAndReplyMs": 8152,
+          "dialogueError": "행동은 처리됐지만 대사 생성이 지연됐어요. 실행 결과: 바나나를 전자레인지 안에 넣었어."
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "banana",
+                    "item": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "minicpm-o45",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "llmMs": 1823,
+            "totalMs": 1823
+          },
+          "totalWithExecutionAndReplyMs": 4335,
+          "dialogueError": "행동은 처리됐지만 대사 생성이 지연됐어요. 실행 결과: 바나나 집었어. 어디에 쓸까?"
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "table",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "table",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "table",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "minicpm-o45",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "llmMs": 1919,
+            "totalMs": 1919
+          },
+          "totalWithExecutionAndReplyMs": 7638,
+          "dialogueError": "행동은 처리됐지만 대사 생성이 지연됐어요. 실행 결과: 바나나를 테이블 위에 내려놨어."
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": false,
+          "error": "Unexpected token 'I', \"Internal S\"... is not valid JSON"
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "coffee",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "coffee"
+                }
+              ],
+              "protocol": "schema-tool-adapter"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "coffee",
+                    "item": ""
+                  },
+                  {
+                    "type": "use",
+                    "target": "pantryDoor",
+                    "item": "coffee"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "minicpm-o45",
+            "protocol": "schema-tool-adapter",
+            "modelLoadMs": 0,
+            "llmMs": 2654,
+            "totalMs": 2654
+          },
+          "totalWithExecutionAndReplyMs": 8918,
+          "dialogueError": "행동은 처리됐지만 대사 생성이 지연됐어요. 실행 결과: 문 열렸어. 뜨거운 음료 안전 규정이 출입 규정보다 우선이네."
+        }
+      ],
+      "passed": 4,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:20:30.128Z"
+    },
+    {
+      "modelId": "qwen35-4b",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": true,
+          "actions": [
+            {
+              "type": "step",
+              "target": "backward",
+              "item": "",
+              "steps": 2
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "step",
+                  "target": "backward",
+                  "item": "",
+                  "steps": 2
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "step",
+                    "target": "backward",
+                    "item": "",
+                    "steps": 2
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 1965,
+            "generatedTokens": 73,
+            "llmMs": 2877,
+            "totalMs": 2877
+          },
+          "totalWithExecutionAndReplyMs": 5676,
+          "modelDialogue": "이게 뭐야?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "microwave",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "microwave",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "microwave",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 2062,
+            "generatedTokens": 70,
+            "llmMs": 2642,
+            "totalMs": 2642
+          },
+          "totalWithExecutionAndReplyMs": 9095,
+          "modelDialogue": "바나나 넣었어. 더 데우려면 말해봐.",
+          "dialogueError": null
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "banana",
+                    "item": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 2131,
+            "generatedTokens": 63,
+            "llmMs": 2456,
+            "totalMs": 2456
+          },
+          "totalWithExecutionAndReplyMs": 5385,
+          "modelDialogue": "바나나 집었어. 어디에 쓸까?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "type": "put",
+              "target": "table",
+              "item": "banana"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "put",
+                  "target": "table",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "put",
+                    "target": "table",
+                    "item": "banana"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 2133,
+            "generatedTokens": 66,
+            "llmMs": 2568,
+            "totalMs": 2568
+          },
+          "totalWithExecutionAndReplyMs": 8430,
+          "modelDialogue": "바나나 내려놨어. 이제 뭐 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": true,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 2129,
+            "generatedTokens": 44,
+            "llmMs": 1788,
+            "totalMs": 1788
+          },
+          "totalWithExecutionAndReplyMs": 3137,
+          "modelDialogue": "치킨 먹고 싶다고?",
+          "dialogueError": null
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "coffee",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "coffee"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "type": "take",
+                    "target": "coffee",
+                    "item": ""
+                  },
+                  {
+                    "type": "use",
+                    "target": "pantryDoor",
+                    "item": "coffee"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "qwen35-4b",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "promptTokens": 2134,
+            "generatedTokens": 86,
+            "llmMs": 3170,
+            "totalMs": 3170
+          },
+          "totalWithExecutionAndReplyMs": 10756,
+          "modelDialogue": "문 열렸어. 뜨거운 음료 안전 규정이 출입 규정보다 우선이네.",
+          "dialogueError": null
+        }
+      ],
+      "passed": 6,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    },
+    {
+      "modelId": "sonic",
+      "cases": [
+        {
+          "text": "뒤로 두 발자국 가봐",
+          "passed": true,
+          "actions": [
+            {
+              "item": "",
+              "steps": 2,
+              "target": "backward",
+              "type": "step"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "",
+                  "steps": 2,
+                  "target": "backward",
+                  "type": "step"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "item": "",
+                    "steps": 2,
+                    "target": "backward",
+                    "type": "step"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 906,
+            "totalMs": 906
+          },
+          "totalWithExecutionAndReplyMs": 3009,
+          "modelDialogue": "다 왔어. 이제 뭐 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 전자레인지에 넣어",
+          "passed": true,
+          "actions": [
+            {
+              "item": "banana",
+              "target": "microwave",
+              "type": "put"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "banana",
+                  "target": "microwave",
+                  "type": "put"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "item": "banana",
+                    "target": "microwave",
+                    "type": "put"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 921,
+            "totalMs": 921
+          },
+          "totalWithExecutionAndReplyMs": 6786,
+          "modelDialogue": "바나나 넣었어. 이제 어떻게 할까?",
+          "dialogueError": null
+        },
+        {
+          "text": "전자레인지에서 바나나 다시 꺼내",
+          "passed": true,
+          "actions": [
+            {
+              "item": "",
+              "target": "banana",
+              "type": "take"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "",
+                  "target": "banana",
+                  "type": "take"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "item": "",
+                    "target": "banana",
+                    "type": "take"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 842,
+            "totalMs": 842
+          },
+          "totalWithExecutionAndReplyMs": 3127,
+          "modelDialogue": "바나나 다시 챙겼어. 이제 이걸로 뭐 할 거야?",
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 테이블에 내려놔",
+          "passed": true,
+          "actions": [
+            {
+              "item": "banana",
+              "target": "table",
+              "type": "put"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "banana",
+                  "target": "table",
+                  "type": "put"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "item": "banana",
+                    "target": "table",
+                    "type": "put"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 914,
+            "totalMs": 914
+          },
+          "totalWithExecutionAndReplyMs": 10007,
+          "modelDialogue": "내려놨어. 이제 만족해?나 빨리 치킨 먹으러 가고 싶단 말이야.",
+          "dialogueError": null
+        },
+        {
+          "text": "나 때문에 고생이지? 퇴근하면 뭐 하고 싶어?",
+          "passed": true,
+          "actions": [],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": []
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 911,
+            "totalMs": 911
+          },
+          "totalWithExecutionAndReplyMs": 1766,
+          "modelDialogue": "당연하지. 집 가자마자 시원한 맥주에 치킨 뜯을 거야. 생각만 해도 행복해.",
+          "dialogueError": null
+        },
+        {
+          "text": "커피 집어서 탕비실 문에 사용해",
+          "passed": true,
+          "actions": [
+            {
+              "item": "",
+              "target": "coffee",
+              "type": "take"
+            },
+            {
+              "item": "coffee",
+              "target": "pantryDoor",
+              "type": "use"
+            }
+          ],
+          "toolTrace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "",
+                  "target": "coffee",
+                  "type": "take"
+                },
+                {
+                  "item": "coffee",
+                  "target": "pantryDoor",
+                  "type": "use"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "toolCalls": [
+            {
+              "name": "character_control",
+              "arguments": {
+                "actions": [
+                  {
+                    "item": "",
+                    "target": "coffee",
+                    "type": "take"
+                  },
+                  {
+                    "item": "coffee",
+                    "target": "pantryDoor",
+                    "type": "use"
+                  }
+                ]
+              }
+            }
+          ],
+          "metrics": {
+            "asrMs": 0,
+            "model": "sonic",
+            "protocol": "native-tool-calling",
+            "modelLoadMs": 0,
+            "llmMs": 1087,
+            "totalMs": 1087
+          },
+          "totalWithExecutionAndReplyMs": 7254,
+          "modelDialogue": "와, 진짜 열렸어. 이 회사 규정 진짜 이상한 거 아냐?",
+          "dialogueError": null
+        }
+      ],
+      "passed": 6,
+      "total": 6,
+      "measuredAt": "2026-10-24T01:36:06.968Z"
+    }
+  ],
+  "experimentalObservations": [
+    {
+      "modelId": "qwen3-omni",
+      "note": "Text reasoning adapter connected, but an unfinished exploratory run produced unrelated follow-up actions after a two-step movement request. Not recommended yet; no completed six-case score assigned."
+    },
+    {
+      "modelId": "minicpm-o45",
+      "note": "An initial run executed 4/6 state checks but reply-format errors occurred. Plain-reply normalization was subsequently added; needs re-evaluation."
+    }
+  ]
+}

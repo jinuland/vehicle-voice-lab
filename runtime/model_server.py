@@ -14,6 +14,7 @@ status = {'ready': False, 'role': ROLE, 'error': None, 'models': {}}
 lock = threading.Lock()
 model = processor = asr = asr_processor = tts = None
 compiled_grammar = None
+game_grammars = {}
 tts_queue = asyncio.Lock()
 PLANNERS={
     'Qwen/Qwen3.5-4B':'851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a',
@@ -55,7 +56,7 @@ def load():
         status['error'] = str(e)
 
 def load_planner(lid, quantization='bf16'):
-    global model,processor,compiled_grammar
+    global model,processor,compiled_grammar,game_grammars
     if lid not in PLANNERS:raise ValueError('Planner is not in the reviewed allowlist')
     if quantization not in ('bf16','nf4') or (quantization=='nf4' and lid!='Qwen/Qwen3.5-4B'):
         raise ValueError('Quantization is not enabled for this model')
@@ -63,7 +64,7 @@ def load_planner(lid, quantization='bf16'):
     from transformers import AutoTokenizer,AutoModelForImageTextToText,AutoModelForCausalLM,AutoModelForMultimodalLM
     import xgrammar as xgr
     started=time.perf_counter();status['loadingPlanner']=lid
-    model=processor=compiled_grammar=None;status['models'].pop('llm',None);status['models'].pop('quantization',None);status.pop('plannerMemory',None);gc.collect();torch.cuda.empty_cache()
+    model=processor=compiled_grammar=None;game_grammars={};status['models'].pop('llm',None);status['models'].pop('quantization',None);status.pop('plannerMemory',None);gc.collect();torch.cuda.empty_cache()
     torch.cuda.synchronize();base_allocated=torch.cuda.memory_allocated()
     try:
         processor=AutoTokenizer.from_pretrained(lid,revision=PLANNERS[lid],local_files_only=True)
@@ -115,6 +116,7 @@ class PlanRequest(BaseModel):
     model_id: str = 'Qwen/Qwen3.5-4B'
     generation_profile: Literal['deterministic','official'] = 'deterministic'
     quantization: Literal['bf16','nf4'] = 'bf16'
+    schema_kind: Literal['vehicle','game','game_dialogue'] = 'vehicle'
 
 @app.post('/plan')
 def plan(req: PlanRequest):
@@ -135,7 +137,17 @@ def plan(req: PlanRequest):
         text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, enable_thinking=False)
         inputs = processor(text=[text], return_tensors='pt', add_special_tokens=False).to(model.device)
         options={'repetition_penalty':1.2} if req.model_id.startswith('naver-hyperclovax/') else {}
-        processors=[LogitsProcessor(compiled_grammar)];sampling={'do_sample':False}
+        grammar=compiled_grammar
+        if req.schema_kind!='vehicle':
+            if req.schema_kind not in game_grammars:
+                import pathlib,xgrammar as xgr
+                schemas=json.loads(pathlib.Path(__file__).with_name('game-schemas.json').read_text())
+                stops=model.generation_config.eos_token_id;stops=stops if isinstance(stops,list) else [stops]
+                info=xgr.TokenizerInfo.from_huggingface(processor,vocab_size=getattr(model.config,'text_config',model.config).vocab_size,stop_token_ids=stops)
+                game_grammars[req.schema_kind]=xgr.GrammarCompiler(info).compile_json_schema(json.dumps(schemas[req.schema_kind]),any_whitespace=False,separators=(',',':'))
+            grammar=game_grammars[req.schema_kind]
+        processors=[LogitsProcessor(grammar)];sampling={'do_sample':False}
+        if req.schema_kind=='game_dialogue':sampling={'do_sample':True,'temperature':0.65,'top_p':0.9}
         if req.generation_profile=='official' and req.model_id.startswith('Qwen/'):
             # Official non-thinking text sampling; presence applies only to output.
             prefix_length=inputs.input_ids.shape[1]

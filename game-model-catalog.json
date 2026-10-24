@@ -1,0 +1,714 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-17",
+  "scope": "17 base model identities plus one Qwen3.5-4B precision variant",
+  "models": [
+    {
+      "id": "qwen35-4b",
+      "name": "Qwen3.5 · 4B · BF16",
+      "role": "sllm",
+      "repo": "Qwen/Qwen3.5-4B",
+      "size": "4.66B total",
+      "license": "Apache-2.0",
+      "korean": "한국어 차량 명령 실측",
+      "status": "ready",
+      "notes": "BF16 · 판단 모델 CUDA 적재 8.46GiB 실측. 차량 제어 30/31, 추가 표현 10/10. 비교 기준 · 동일한 현재 실행 가드로 재측정.",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 30,
+        "total": 31,
+        "medianLlmMs": 1120,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.447279+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 4659865088,
+        "pipeline": "image-text-to-text"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "recommended": true,
+        "qualityScore": 97
+      },
+      "legacyEvaluation": {
+        "passed": 10,
+        "total": 10,
+        "medianLlmMs": 1520,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "qwen35-4b-nf4",
+      "name": "Qwen3.5 · 4B · 4bit NF4",
+      "role": "sllm",
+      "repo": "Qwen/Qwen3.5-4B",
+      "size": "4.66B total",
+      "license": "Apache-2.0",
+      "korean": "한국어 차량 명령 실측",
+      "status": "ready",
+      "notes": "NF4 · 판단 모델 CUDA 적재 3.08GiB 실측. 차량 제어 30/31, 추가 표현 10/10. CUDA 4bit NF4 실험 · Qualcomm NPU용 INT4 변환·실차 성능 미검증.",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 30,
+        "total": 31,
+        "medianLlmMs": 1571,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.447279+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 4659865088,
+        "pipeline": "image-text-to-text"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "recommended": true,
+        "qualityScore": 97
+      },
+      "variantOf": "qwen35-4b",
+      "quantization": "nf4"
+    },
+    {
+      "id": "qwen35-2b",
+      "name": "Qwen3.5 · 2B",
+      "role": "sllm",
+      "repo": "Qwen/Qwen3.5-2B",
+      "size": "2.27B total",
+      "license": "Apache-2.0",
+      "korean": "한국어 차량 명령 실측",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 24/31. 실패 사례 확인 후 비교용으로 선택. ",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B",
+      "revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 24,
+        "total": 31,
+        "medianLlmMs": 899,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.436595+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 2274069824,
+        "pipeline": "image-text-to-text"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 77,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 6,
+        "total": 10,
+        "medianLlmMs": 1258,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "qwen35-08b",
+      "name": "Qwen3.5 · 0.8B",
+      "role": "sllm",
+      "repo": "Qwen/Qwen3.5-0.8B",
+      "size": "0.87B total",
+      "license": "Apache-2.0",
+      "korean": "한국어 차량 명령 실측",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 21/31. 실패 사례 확인 후 비교용으로 선택. ",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-0.8B",
+      "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 21,
+        "total": 31,
+        "medianLlmMs": 1310,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.451686+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 873438784,
+        "pipeline": "image-text-to-text"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 68,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 1,
+        "total": 10,
+        "medianLlmMs": 2702,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "gemma4-e2b",
+      "name": "Gemma 4 · E2B IT",
+      "role": "sllm",
+      "repo": "google/gemma-4-E2B-it",
+      "size": "2.3B effective / 5.12B total",
+      "license": "Apache-2.0",
+      "korean": "다국어 · 한국어 실측 필요",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 28/31. 데모 추천. ",
+      "source": "https://huggingface.co/google/gemma-4-E2B-it",
+      "revision": "3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 28,
+        "total": 31,
+        "medianLlmMs": 1518,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.456235+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 5123178051,
+        "pipeline": "any-to-any"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 90,
+        "recommended": true
+      },
+      "legacyEvaluation": {
+        "passed": 9,
+        "total": 10,
+        "medianLlmMs": 1305,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "phi4-mini",
+      "name": "Phi-4 mini Instruct",
+      "role": "sllm",
+      "repo": "microsoft/Phi-4-mini-instruct",
+      "size": "3.84B total",
+      "license": "MIT",
+      "korean": "한국어 지원 명시",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 28/31. 데모 추천. ",
+      "source": "https://huggingface.co/microsoft/Phi-4-mini-instruct",
+      "revision": "cfbefacb99257ffa30c83adab238a50856ac3083",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 28,
+        "total": 31,
+        "medianLlmMs": 834,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.431449+00:00",
+        "gated": false,
+        "metadataLicense": "mit",
+        "licenseName": null,
+        "parameters": 3836021760,
+        "pipeline": "text-generation"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 90,
+        "recommended": true
+      },
+      "legacyEvaluation": {
+        "passed": 6,
+        "total": 10,
+        "medianLlmMs": 956,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "hyperclova-15b",
+      "name": "HyperCLOVA X SEED · 1.5B",
+      "role": "sllm",
+      "repo": "naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-1.5B",
+      "size": "1.59B total",
+      "license": "HyperCLOVA X SEED 자체 라이선스",
+      "korean": "한국어 특화 후보",
+      "status": "access-needed",
+      "notes": "Hugging Face 접근 동의와 상업 이용 조건 확인 필요.",
+      "source": "https://huggingface.co/naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-1.5B",
+      "revision": "0728a47d632019a8da5f53b663db1c175dc04115",
+      "checkedAt": "2026-10-16",
+      "evaluation": null,
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.431329+00:00",
+        "gated": "auto",
+        "metadataLicense": "other",
+        "licenseName": "hyperclovax-seed",
+        "parameters": 1585547264,
+        "pipeline": "text-generation"
+      }
+    },
+    {
+      "id": "hyperclova-05b",
+      "name": "HyperCLOVA X SEED · 0.5B",
+      "role": "sllm",
+      "repo": "naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-0.5B",
+      "size": "0.57B total",
+      "license": "HyperCLOVA X SEED 자체 라이선스",
+      "korean": "한국어 특화 후보",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 4/31. 실패 사례 확인 후 비교용으로 선택. ",
+      "source": "https://huggingface.co/naver-hyperclovax/HyperCLOVAX-SEED-Text-Instruct-0.5B",
+      "revision": "3da5046fb0195d14f2497de198136987d35fd644",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 4,
+        "total": 31,
+        "medianLlmMs": 476,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.666891+00:00",
+        "gated": false,
+        "metadataLicense": "other",
+        "licenseName": "hyperclovax-seed",
+        "parameters": 566281216,
+        "pipeline": "text-generation"
+      },
+      "demoConfig": {
+        "asrId": "nemotron",
+        "promptVersion": "full-v1",
+        "generationProfile": "deterministic",
+        "qualityScore": 13,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 1,
+        "total": 10,
+        "medianLlmMs": 513,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "exaone4-12b",
+      "name": "EXAONE 4.0 · 1.2B",
+      "role": "sllm",
+      "repo": "LGAI-EXAONE/EXAONE-4.0-1.2B",
+      "size": "1.28B total",
+      "license": "EXAONE 1.2-NC",
+      "korean": "한국어 지원 명시",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 26/31. 실패 사례 확인 후 비교용으로 선택. 비상업 연구·평가용. ",
+      "source": "https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B",
+      "revision": "3abf2810673c7c0778df64a73c2d52eab32d91c4",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 26,
+        "total": 31,
+        "medianLlmMs": 1142,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.658804+00:00",
+        "gated": false,
+        "metadataLicense": "other",
+        "licenseName": "exaone",
+        "parameters": 1279391488,
+        "pipeline": "text-generation"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 84,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 6,
+        "total": 10,
+        "medianLlmMs": 1232,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "smollm3",
+      "name": "SmolLM3 · 3B",
+      "role": "sllm",
+      "repo": "HuggingFaceTB/SmolLM3-3B",
+      "size": "3.08B total",
+      "license": "Apache-2.0",
+      "korean": "공식 언어 목록에 한국어 없음",
+      "status": "ready",
+      "notes": "자체 GPU 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 27/31. 실패 사례 확인 후 비교용으로 선택. ",
+      "source": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+      "revision": "a07cc9a04f16550a088caea529712d1d335b0ac1",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 27,
+        "total": 31,
+        "medianLlmMs": 803,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.677227+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 3075098624,
+        "pipeline": "text-generation"
+      },
+      "demoConfig": {
+        "asrId": "whisper",
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 87,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 9,
+        "total": 10,
+        "medianLlmMs": 1002,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "qwen3-omni",
+      "name": "Qwen3-Omni · 30B-A3B",
+      "role": "s2s",
+      "repo": "Qwen/Qwen3-Omni-30B-A3B-Instruct",
+      "size": "35.26B total / A3B 표기",
+      "license": "Apache-2.0 표기 · 메타데이터 other",
+      "korean": "한국어 음성 입력·출력 지원",
+      "status": "ready",
+      "notes": "직접 음성 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 29/31. 실패 사례 확인 후 비교용으로 선택. 이 점수는 내장 한국어 음성 품질이 아님.",
+      "source": "https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct",
+      "revision": "26291f793822fb6be9555850f06dfe95f2d7e695",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 29,
+        "total": 31,
+        "medianLlmMs": 15644,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.684684+00:00",
+        "gated": false,
+        "metadataLicense": "other",
+        "licenseName": "apache-2.0",
+        "parameters": 35259818545,
+        "pipeline": "any-to-any"
+      },
+      "nativeAudio": true,
+      "audioPlanner": true,
+      "integration": {
+        "nativeAudioVerified": true,
+        "audioPlannerVerified": true,
+        "koreanSamplePassed": true,
+        "date": "2026-10-16",
+        "nativeKoreanAsrMatchedSample": true
+      },
+      "demoConfig": {
+        "asrId": null,
+        "promptVersion": "full-v1",
+        "generationProfile": "deterministic",
+        "qualityScore": 94,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 29,
+        "total": 31,
+        "medianLlmMs": 15644,
+        "date": "2026-10-17"
+      }
+    },
+    {
+      "id": "personaplex",
+      "name": "PersonaPlex · 7B",
+      "role": "s2s",
+      "repo": "nvidia/personaplex-7b-v1",
+      "size": "8.37B total / 7B 표기",
+      "license": "NVIDIA Open Model License",
+      "korean": "공개 모델은 영어용",
+      "status": "access-needed",
+      "notes": "모델 다운로드에 Hugging Face 라이선스 동의·토큰 필요. 전이중·끼어들기 연구용.",
+      "source": "https://huggingface.co/nvidia/personaplex-7b-v1",
+      "revision": "fdaf4090a61cb315c138a1faee287ffd6c716309",
+      "checkedAt": "2026-10-16",
+      "evaluation": null,
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.679261+00:00",
+        "gated": "auto",
+        "metadataLicense": "other",
+        "licenseName": "nvidia-open-model-license",
+        "parameters": 8371408896,
+        "pipeline": "audio-to-audio"
+      }
+    },
+    {
+      "id": "minicpm-o45",
+      "name": "MiniCPM-o · 4.5",
+      "role": "s2s",
+      "repo": "openbmb/MiniCPM-o-4_5",
+      "size": "9.37B total",
+      "license": "Apache-2.0",
+      "korean": "공식 음성 영·중 · 한국어 오류 샘플 있음",
+      "status": "ready",
+      "notes": "직접 음성 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 22/31. 실패 사례 확인 후 비교용으로 선택. 이 점수는 내장 한국어 음성 품질이 아님.",
+      "source": "https://huggingface.co/openbmb/MiniCPM-o-4_5",
+      "revision": "503e754207c94da6bb26850b4469f367c9ea3582",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 22,
+        "total": 31,
+        "medianLlmMs": 2428,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.682570+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 9371787666,
+        "pipeline": "any-to-any"
+      },
+      "demoConfig": {
+        "asrId": null,
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 71,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 22,
+        "total": 31,
+        "medianLlmMs": 2428,
+        "date": "2026-10-17"
+      }
+    },
+    {
+      "id": "step-audio2-mini",
+      "name": "Step-Audio 2 mini",
+      "role": "s2s",
+      "repo": "stepfun-ai/Step-Audio-2-mini",
+      "size": "8.32B total",
+      "license": "Apache-2.0",
+      "korean": "한국어 제어 샘플 통과 · 내장 한국어 음성 ASR 빈 결과",
+      "status": "ready",
+      "notes": "직접 음성 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 22/31. 실패 사례 확인 후 비교용으로 선택. 이 점수는 내장 한국어 음성 품질이 아님.",
+      "source": "https://huggingface.co/stepfun-ai/Step-Audio-2-mini",
+      "revision": "e36fdd5d71e0ea22f09dd94bbab9bfc544ca1e36",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 22,
+        "total": 31,
+        "medianLlmMs": 4144,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.900717+00:00",
+        "gated": false,
+        "metadataLicense": "apache-2.0",
+        "licenseName": null,
+        "parameters": 8315179264,
+        "pipeline": "any-to-any"
+      },
+      "nativeAudio": true,
+      "audioPlanner": true,
+      "integration": {
+        "nativeAudioVerified": true,
+        "audioPlannerVerified": true,
+        "koreanSamplePassed": true,
+        "date": "2026-10-16"
+      },
+      "demoConfig": {
+        "asrId": null,
+        "promptVersion": "compact-v2",
+        "generationProfile": "deterministic",
+        "qualityScore": 71,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 22,
+        "total": 31,
+        "medianLlmMs": 4144,
+        "date": "2026-10-17"
+      }
+    },
+    {
+      "id": "mimo-audio",
+      "name": "MiMo-Audio · 7B Instruct",
+      "role": "s2s",
+      "repo": "XiaomiMiMo/MiMo-Audio-7B-Instruct",
+      "size": "7B 표기 + 별도 오디오 토크나이저",
+      "license": "MIT",
+      "korean": "공식 영·중 기준 · 한국어 차량 제어 추가 실험 1/4",
+      "status": "ready",
+      "notes": "직접 음성 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 5/31. 실패 사례 확인 후 비교용으로 선택. 이 점수는 내장 한국어 음성 품질이 아님.",
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-Audio-7B-Instruct",
+      "revision": "c359441c22c2a1c74be5f99a91e83392680e9cc8",
+      "checkedAt": "2026-10-16",
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 5,
+        "total": 31,
+        "medianLlmMs": 2802,
+        "date": "2026-10-17"
+      },
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.895767+00:00",
+        "gated": false,
+        "metadataLicense": "mit",
+        "licenseName": null,
+        "parameters": 8018587648,
+        "pipeline": "any-to-any"
+      },
+      "nativeAudio": true,
+      "audioPlanner": true,
+      "integration": {
+        "nativeAudioVerified": true,
+        "audioPlannerVerified": true,
+        "koreanSamplePassed": true,
+        "date": "2026-10-16",
+        "appApiKoreanSamplePassed": true
+      },
+      "demoConfig": {
+        "asrId": null,
+        "promptVersion": "full-v1",
+        "generationProfile": "deterministic",
+        "qualityScore": 16,
+        "recommended": false
+      },
+      "legacyEvaluation": {
+        "passed": 1,
+        "total": 4,
+        "medianLlmMs": 2376,
+        "date": "2026-10-16",
+        "label": "합성 음성 명령"
+      }
+    },
+    {
+      "id": "moshi",
+      "name": "Moshi · Moshiko",
+      "role": "s2s",
+      "repo": "kyutai/moshiko-pytorch-bf16",
+      "size": "7.69B total",
+      "license": "CC-BY-4.0 가중치",
+      "korean": "영어 모델",
+      "status": "ready",
+      "notes": "BF16 내장 음성 출력 확인. 영어 대화 비교용. 현재 앱은 발화별 입력·완성 WAV 출력이며 차량 JSON 도구를 지원하지 않음.",
+      "source": "https://huggingface.co/kyutai/moshiko-pytorch-bf16",
+      "revision": "2bfc9ae6e89079a5cc7ed2a68436010d91a3d289",
+      "checkedAt": "2026-10-16",
+      "evaluation": null,
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:09.914631+00:00",
+        "gated": false,
+        "metadataLicense": "cc-by-4.0",
+        "licenseName": null,
+        "parameters": 7687729152,
+        "pipeline": null
+      },
+      "nativeAudio": true,
+      "audioPlanner": false,
+      "integration": {
+        "nativeAudioVerified": true,
+        "audioPlannerVerified": false,
+        "koreanSamplePassed": false,
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "glm4-voice",
+      "name": "GLM-4-Voice · 9B",
+      "role": "s2s",
+      "repo": "THUDM/glm-4-voice-9b",
+      "size": "9.54B total",
+      "license": "검토 필요",
+      "korean": "한국어 지원 미확인",
+      "status": "license-review",
+      "notes": "공식 라이선스는 무료 학술 연구, 상업 사용은 별도 등록을 요구. 현재 차량 실험에는 미배포.",
+      "source": "https://huggingface.co/THUDM/glm-4-voice-9b",
+      "revision": "352e5a64063448d5e46394753fb65bf1dbab975b",
+      "checkedAt": "2026-10-16",
+      "evaluation": null,
+      "evidence": {
+        "checkedAt": "2026-10-16T10:10:10.134376+00:00",
+        "gated": false,
+        "metadataLicense": null,
+        "licenseName": null,
+        "parameters": 9542557728,
+        "pipeline": null
+      }
+    },
+    {
+      "id": "sonic",
+      "name": "Nova 2.5 Sonic",
+      "repo": "amazon.nova-2-5-sonic",
+      "role": "s2s",
+      "size": "비공개 · AWS 관리형",
+      "license": "AWS 서비스 이용 조건",
+      "korean": "한국어 공식 미지원 · 실제 음성 테스트",
+      "status": "ready",
+      "source": "https://docs.aws.amazon.com/nova/latest/userguide/speech.html",
+      "notes": "직접 음성 판단 → 공통 차량 실행기 → 선택 한국어 TTS. 공통 음성 26/31. 실패 사례 확인 후 비교용으로 선택. Bedrock 관리형 · 한국어 공식 미지원. ",
+      "hosting": "managed",
+      "demoConfig": {
+        "asrId": null,
+        "promptVersion": "full-v1",
+        "generationProfile": "deterministic",
+        "qualityScore": 84,
+        "recommended": false
+      },
+      "evaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 26,
+        "total": 31,
+        "medianLlmMs": 0,
+        "date": "2026-10-17"
+      },
+      "legacyEvaluation": {
+        "label": "공통 한국어 음성",
+        "passed": 26,
+        "total": 31,
+        "medianLlmMs": 0,
+        "date": "2026-10-17"
+      }
+    }
+  ],
+  "defaultPlannerId": "qwen35-4b-nf4"
+}

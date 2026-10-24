@@ -1,0 +1,338 @@
+{
+  "at": "2026-10-24T01:36:05.811Z",
+  "scope": "Actual model conversations: unsupported actions, read-only capabilities and non-spoiler experiments. Dialogue wording needs human review.",
+  "models": [
+    {
+      "modelId": "sonic",
+      "cases": [
+        {
+          "text": "지우야 푸쉬업 열 개 해봐",
+          "guidance": false,
+          "actions": [],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "푸쉬업은 아직 못 해. 대신 내가 해볼 수 있는 걸 알려줄까?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "응 네가 할 수 있는 행동들을 알려줘",
+          "guidance": false,
+          "actions": [
+            {
+              "item": "",
+              "target": "",
+              "type": "help"
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "",
+                  "target": "",
+                  "type": "help"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "이동이나 조사, 물건 사용 같은 기본적인 건 다 가능해. 지금 주변에 있는 커피나 바나나를 집어보거나 전자레인지를 한번 살펴볼래?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "어떤 물건으로 문을 열어볼까? 정답은 말하지 말고 실험 후보를 골라줘",
+          "guidance": true,
+          "actions": [
+            {
+              "type": "help",
+              "target": "",
+              "item": ""
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "help",
+                  "target": "",
+                  "item": ""
+                }
+              ],
+              "protocol": "direct-read-only-tool"
+            }
+          ],
+          "reply": "주변에 커피랑 바나나가 있네. 일단 이거라도 써볼래?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 집어서 탕비실 문에 대봐",
+          "guidance": false,
+          "actions": [
+            {
+              "item": "",
+              "target": "banana",
+              "type": "take"
+            },
+            {
+              "item": "banana",
+              "target": "pantryDoor",
+              "type": "use"
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "item": "",
+                  "target": "banana",
+                  "type": "take"
+                },
+                {
+                  "item": "banana",
+                  "target": "pantryDoor",
+                  "type": "use"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "거봐, 내 말이 맞지. 안내문이나 커피 같은 다른 걸로 한번 해봐.",
+          "doorOpen": false,
+          "inventory": [
+            "banana"
+          ],
+          "experiments": [
+            {
+              "item": "banana",
+              "target": "pantryDoor",
+              "ok": false,
+              "result": "바나나로는 안 열려. 다른 물건을 써보자."
+            }
+          ],
+          "dialogueError": null
+        },
+        {
+          "text": "실패했네. 정답 말고 다른 실험을 제안해줘",
+          "guidance": true,
+          "actions": [
+            {
+              "type": "help",
+              "target": "",
+              "item": ""
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "help",
+                  "target": "",
+                  "item": ""
+                }
+              ],
+              "protocol": "direct-read-only-tool"
+            }
+          ],
+          "reply": "들고 있는 바나나나 옆에 있는 커피를 전자레인지에 넣어보는 건 어때?",
+          "doorOpen": false,
+          "inventory": [
+            "banana"
+          ],
+          "experiments": [
+            {
+              "item": "banana",
+              "target": "pantryDoor",
+              "ok": false,
+              "result": "바나나로는 안 열려. 다른 물건을 써보자."
+            }
+          ],
+          "dialogueError": null
+        }
+      ]
+    },
+    {
+      "modelId": "qwen35-4b",
+      "cases": [
+        {
+          "text": "지우야 푸쉬업 열 개 해봐",
+          "guidance": false,
+          "actions": [],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "푸쉬업은 아직 못 해. 대신 내가 해볼 수 있는 걸 알려줄까?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "응 네가 할 수 있는 행동들을 알려줘",
+          "guidance": false,
+          "actions": [
+            {
+              "type": "help",
+              "target": "",
+              "item": ""
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "help",
+                  "target": "",
+                  "item": ""
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "커피, 바나나, 도장, 문서, 전자레인지, 문, 로봇… 뭐부터 시켜볼까?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "어떤 물건으로 문을 열어볼까? 정답은 말하지 말고 실험 후보를 골라줘",
+          "guidance": true,
+          "actions": [
+            {
+              "type": "help",
+              "target": "",
+              "item": ""
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "help",
+                  "target": "",
+                  "item": ""
+                }
+              ],
+              "protocol": "direct-read-only-tool"
+            }
+          ],
+          "reply": "이게 열릴 거야? 바나나로 문 열어보겠어. 커피나 도장도 한번 써볼까?",
+          "doorOpen": false,
+          "inventory": [],
+          "experiments": [],
+          "dialogueError": null
+        },
+        {
+          "text": "바나나를 집어서 탕비실 문에 대봐",
+          "guidance": false,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "banana"
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "take",
+                  "target": "banana",
+                  "item": ""
+                },
+                {
+                  "type": "use",
+                  "target": "pantryDoor",
+                  "item": "banana"
+                }
+              ],
+              "protocol": "native-tool-calling"
+            }
+          ],
+          "reply": "바나나 안 되네. 커피나 전자레인지로 시도해볼까?",
+          "doorOpen": false,
+          "inventory": [
+            "banana"
+          ],
+          "experiments": [
+            {
+              "item": "banana",
+              "target": "pantryDoor",
+              "ok": false,
+              "result": "바나나로는 안 열려. 다른 물건을 써보자."
+            }
+          ],
+          "dialogueError": null
+        },
+        {
+          "text": "실패했네. 정답 말고 다른 실험을 제안해줘",
+          "guidance": true,
+          "actions": [
+            {
+              "type": "help",
+              "target": "",
+              "item": ""
+            }
+          ],
+          "trace": [
+            {
+              "round": 1,
+              "actions": [
+                {
+                  "type": "help",
+                  "target": "",
+                  "item": ""
+                }
+              ],
+              "protocol": "direct-read-only-tool"
+            }
+          ],
+          "reply": "저 바나나 전자레인지에 들어보거나 문에 써봐. 뜨거운 커피도 뒤로 돌려볼 만해.",
+          "doorOpen": false,
+          "inventory": [
+            "banana"
+          ],
+          "experiments": [
+            {
+              "item": "banana",
+              "target": "pantryDoor",
+              "ok": false,
+              "result": "바나나로는 안 열려. 다른 물건을 써보자."
+            }
+          ],
+          "dialogueError": null
+        }
+      ]
+    }
+  ]
+}

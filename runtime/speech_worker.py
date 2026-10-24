@@ -192,3 +192,40 @@ def speech(file:UploadFile,messages:str=Form('[]'),language:str=Form('ko')):
     text=''.join(parts).strip();buf=io.BytesIO();sf.write(buf,torch.cat(frames,dim=-1).reshape(-1).float().numpy(),24000,format='WAV');wav=buf.getvalue()
   return {'text':text,'audio':base64.b64encode(wav).decode(),'model':REPO,'revision':REV,'modelId':KIND,'elapsedMs':round((time.perf_counter()-started)*1000),'quantization':status['quantization'],'vehicleTools':False,'koreanSupported':status['koreanSupported']}
  finally:lock.release()
+
+@app.post('/game-text')
+def game_text(body:dict):
+ """Reuse the vehicle model's text reasoning path; no fabricated native S2S claim."""
+ if not status['ready']:raise HTTPException(503,status['error'] or 'Model loading')
+ if KIND not in ('qwen3-omni','step-audio2-mini'):raise HTTPException(400,'No reviewed game text adapter')
+ history=history_input(json.dumps(body.get('messages')))
+ kind=body.get('schema_kind')
+ if kind not in ('game','game_dialogue'):raise HTTPException(400,'Unknown game schema')
+ if not lock.acquire(blocking=False):raise HTTPException(429,'Model busy')
+ started=time.perf_counter()
+ try:
+  import xgrammar as xgr
+  from xgrammar.contrib.hf import LogitsProcessor
+  tokenizer=processor.tokenizer if KIND=='qwen3-omni' else model.llm_tokenizer
+  conf=model.config.thinker_config.text_config if KIND=='qwen3-omni' else model.llm.config.text_config
+  stops=model.thinker.generation_config.eos_token_id if KIND=='qwen3-omni' else model.eos_token_id
+  stops=stops if isinstance(stops,list) else [stops] if stops is not None else [151645]
+  info=xgr.TokenizerInfo.from_huggingface(tokenizer,vocab_size=conf.vocab_size,stop_token_ids=stops)
+  schema=json.loads((ROOT/'game-schemas.json').read_text())[kind]
+  compiled=xgr.GrammarCompiler(info).compile_json_schema(schema,any_whitespace=False,separators=(',',':'))
+  with torch.inference_mode():
+   if KIND=='qwen3-omni':
+    msgs=[{'role':m['role'],'content':[{'type':'text','text':m['content']}]} for m in history]
+    text=processor.apply_chat_template(msgs,add_generation_prompt=True,tokenize=False)
+    inputs=processor(text=text,return_tensors='pt',padding=True).to(model.device)
+    output,_=model.generate(**inputs,return_audio=False,thinker_do_sample=kind=='game_dialogue',thinker_max_new_tokens=768,thinker_logits_processor=[LogitsProcessor(compiled)])
+    output=getattr(output,'sequences',output)
+    text=processor.batch_decode(output[:,inputs.input_ids.shape[1]:],skip_special_tokens=True,clean_up_tokenization_spaces=False)[0]
+   else:
+    generate=model.llm.generate
+    model.llm.generate=lambda **kw:generate(**kw,logits_processor=[LogitsProcessor(compiled)])
+    try:_,text,_=model(history+[{'role':'assistant','content':None}],max_new_tokens=768,do_sample=kind=='game_dialogue')
+    finally:model.llm.generate=generate
+  json.loads(text)
+  return {'text':text,'model':REPO,'elapsedMs':round((time.perf_counter()-started)*1000),'inputMode':'text reasoning after shared ASR'}
+ finally:lock.release()

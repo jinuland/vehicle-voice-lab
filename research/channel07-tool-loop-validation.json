@@ -1,0 +1,419 @@
+{
+  "at": "2026-10-24T01:20:14.977Z",
+  "base": "https://d3q7tlfor72b22.cloudfront.net",
+  "kind": "actual Qwen planner and authoritative game execution; optional synthetic audio ASR smoke",
+  "rows": [
+    {
+      "text": "바나나를 집어서 탕비실 문에 대봐",
+      "actions": [
+        {
+          "type": "take",
+          "target": "banana",
+          "item": ""
+        },
+        {
+          "type": "use",
+          "target": "pantryDoor",
+          "item": "banana"
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "take",
+              "target": "banana",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "banana"
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1731,
+        "generatedTokens": 95,
+        "llmMs": 3796,
+        "totalMs": 3796
+      },
+      "passed": true,
+      "lastEvents": [
+        "바나나 집었어. 어디에 쓸까?",
+        "바나나로는 안 열려. 다른 물건을 써보자.",
+        "바나나로 문 열려? 뜨거운 커피로 해야지."
+      ]
+    },
+    {
+      "text": "커피를 집어서 출입문에 사용해봐",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        },
+        {
+          "type": "use",
+          "target": "pantryDoor",
+          "item": "coffee"
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "take",
+              "target": "coffee",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "pantryDoor",
+              "item": "coffee"
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1858,
+        "generatedTokens": 88,
+        "llmMs": 3357,
+        "totalMs": 3357
+      },
+      "passed": true,
+      "lastEvents": [
+        "뜨거운 커피 감지. 화상 예방을 위해 출입문을 개방합니다.",
+        "문 열렸어. 뜨거운 음료 안전 규정이 출입 규정보다 우선이네.",
+        "문 열렸네. 이제 갈까?"
+      ]
+    },
+    {
+      "text": "박주임한테 팀장님이 프린터 고장났으니 점검하래",
+      "actions": [
+        {
+          "type": "move",
+          "target": "hall",
+          "item": ""
+        },
+        {
+          "type": "distract",
+          "target": "robot",
+          "item": ""
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "move",
+              "target": "hall",
+              "item": ""
+            },
+            {
+              "type": "distract",
+              "target": "robot",
+              "item": ""
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1868,
+        "generatedTokens": 96,
+        "llmMs": 3730,
+        "totalMs": 3730
+      },
+      "passed": true,
+      "lastEvents": [
+        "박주임님, 팀장님이 프린터 긴급 점검하래요!",
+        "담당 부서에… 팀장님 요청 확인. 점검하러 이동합니다.",
+        "알았어, 박주임님!"
+      ]
+    },
+    {
+      "text": "자료실에서 결재 도장 챙겨",
+      "actions": [
+        {
+          "type": "move",
+          "target": "office",
+          "item": ""
+        },
+        {
+          "type": "take",
+          "target": "stamp",
+          "item": ""
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "move",
+              "target": "office",
+              "item": ""
+            },
+            {
+              "type": "take",
+              "target": "stamp",
+              "item": ""
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1880,
+        "generatedTokens": 84,
+        "llmMs": 3283,
+        "totalMs": 3283
+      },
+      "passed": true,
+      "lastEvents": [
+        "자료실 앞에 왔어.",
+        "도장 챙겼어. 승인권자가 물건이었네.",
+        "도장 챙겼어. 이제 갈게."
+      ]
+    },
+    {
+      "text": "기밀 문서도 가져와",
+      "actions": [
+        {
+          "type": "take",
+          "target": "document",
+          "item": ""
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "take",
+              "target": "document",
+              "item": ""
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1859,
+        "generatedTokens": 64,
+        "llmMs": 2304,
+        "totalMs": 2304
+      },
+      "passed": true,
+      "lastEvents": [
+        "기밀 문서도 챙겨올게.",
+        "주 4일 야근제… 증거 챙겼어. 이건 세상에 알려야 해.",
+        "기밀 문서도 챙겼어. 이제 갈게."
+      ]
+    },
+    {
+      "text": "결재 도장을 퇴근 게이트에 사용해",
+      "actions": [
+        {
+          "type": "take",
+          "target": "stamp",
+          "item": ""
+        },
+        {
+          "type": "use",
+          "target": "exit",
+          "item": "stamp"
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "take",
+              "target": "stamp",
+              "item": ""
+            },
+            {
+              "type": "use",
+              "target": "exit",
+              "item": "stamp"
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1857,
+        "generatedTokens": 80,
+        "llmMs": 2872,
+        "totalMs": 2872
+      },
+      "passed": true,
+      "lastEvents": [
+        "기밀 문서도 챙겼어. 이제 갈게.",
+        "도장 써볼게.",
+        "결재는 됐는데 출근 기록이 없대. 출근하지 않은 직원은 퇴근할 수 없대. 옆 단말기부터 찍자."
+      ]
+    },
+    {
+      "text": "출근 단말기 눌러봐",
+      "actions": [
+        {
+          "type": "move",
+          "target": "clock",
+          "item": ""
+        },
+        {
+          "type": "open",
+          "target": "clock",
+          "item": ""
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "move",
+              "target": "clock",
+              "item": ""
+            },
+            {
+              "type": "open",
+              "target": "clock",
+              "item": ""
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1880,
+        "generatedTokens": 81,
+        "llmMs": 3042,
+        "totalMs": 3042
+      },
+      "passed": true,
+      "lastEvents": [
+        "출근 단말기 앞에 왔어.",
+        "오후 여섯 시 출근 처리됐어. 오늘 아주 성실하네.",
+        "출근 처리됐어. 퇴근 게이트 열어줘."
+      ]
+    },
+    {
+      "text": "퇴근 게이트 열고 나가자",
+      "actions": [
+        {
+          "type": "open",
+          "target": "exit",
+          "item": ""
+        }
+      ],
+      "toolTrace": [
+        {
+          "round": 1,
+          "actions": [
+            {
+              "type": "open",
+              "target": "exit",
+              "item": ""
+            }
+          ],
+          "protocol": "native-tool-calling"
+        }
+      ],
+      "metrics": {
+        "asrMs": 0,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1874,
+        "generatedTokens": 65,
+        "llmMs": 2340,
+        "totalMs": 2340
+      },
+      "passed": true,
+      "lastEvents": [
+        "문 열렸다! 치킨아, 내가 간다!",
+        "기밀 문서 회수 · 주 4일 야근제의 실체를 세상에 알렸습니다.",
+        "문 열렸네! 치킨아, 내가 간다!"
+      ]
+    },
+    {
+      "audio": true,
+      "heard": "지우야 커피를 집어서 출입문에 사용해봐.",
+      "actions": [
+        {
+          "type": "take",
+          "target": "coffee",
+          "item": ""
+        },
+        {
+          "type": "use",
+          "target": "pantryDoor",
+          "item": "coffee"
+        }
+      ],
+      "metrics": {
+        "asrMs": 147,
+        "model": "qwen35-4b",
+        "protocol": "native-tool-calling",
+        "modelLoadMs": 0,
+        "promptTokens": 1839,
+        "generatedTokens": 90,
+        "llmMs": 3215,
+        "totalMs": 3366
+      },
+      "passed": true
+    }
+  ],
+  "memoryStart": "agentcore",
+  "ending": "증거까지 챙긴 퇴근",
+  "memoryReplay": {
+    "provider": "agentcore",
+    "remoteCount": 2,
+    "visits": 2,
+    "facts": [
+      "banana",
+      "escaped"
+    ],
+    "intro": "또 왔네. 바나나로는 문 안 열리는 거, 오늘은 기억하지?"
+  },
+  "passed": true
+}

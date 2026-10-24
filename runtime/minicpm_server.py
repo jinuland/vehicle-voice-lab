@@ -128,3 +128,31 @@ async def speech(file:UploadFile,request:Request,language:str=Form('en'),convers
                 yield json.dumps(item,ensure_ascii=False)+'\n'
         finally:canceled.set()
     return StreamingResponse(stream(),media_type='application/x-ndjson')
+
+
+@app.post('/game-text')
+def game_text(body:dict):
+    if not status['ready']:raise HTTPException(503,status['error'] or 'Model loading')
+    kind=body.get('schema_kind')
+    if kind not in ('game','game_dialogue'):raise HTTPException(400,'Unknown game schema')
+    history=body.get('messages',[])
+    if not isinstance(history,list) or not 1<=len(history)<=16 or any(m.get('role') not in ('system','user','assistant') or not isinstance(m.get('content'),str) for m in history):raise HTTPException(400,'Invalid history')
+    if not lock.acquire(blocking=False):raise HTTPException(429,'MiniCPM is busy')
+    try:
+        started=time.perf_counter();conversation.invalidate();model.reset_session(reset_token2wav_cache=True)
+        msgs=[{'role':m['role'],'content':[m['content']]} for m in history]
+        with torch.inference_mode():
+            text=model.chat(msgs=msgs,generate_audio=False,use_tts_template=False,enable_thinking=False,omni_mode=False,do_sample=kind=='game_dialogue',max_new_tokens=768)
+        # MiniCPM lacks a validated constrained decoder. Reject invalid calls, never repair into a different action.
+        text=text.strip()
+        if text.startswith('```'):text=text.split('\n',1)[1].rsplit('```',1)[0].strip()
+        try:
+            parsed=json.loads(text)
+        except json.JSONDecodeError:
+            if text.startswith(('{','[')):raise HTTPException(502,'MiniCPM이 도구 인자를 완성하지 못했어요. 다시 말해 주세요.')
+            # A plain conversational reply contains no function call: never invent actions from it.
+            parsed={'reply':text[:200],**({'actions':[]} if kind=='game' else {})}
+        if kind=='game' and isinstance(parsed,dict) and isinstance(parsed.get('reply'),str) and 'actions' not in parsed and 'tool_calls' not in parsed:parsed['actions']=[]
+        text=json.dumps(parsed,ensure_ascii=False)
+        return {'text':text,'model':MODEL,'elapsedMs':round((time.perf_counter()-started)*1000)}
+    finally:lock.release()
