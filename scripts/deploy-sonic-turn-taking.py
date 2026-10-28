@@ -1,10 +1,11 @@
 """Deploy only Sonic conversation code; preserve model workers, env files, and site-specific navigation."""
 import argparse,io,json,pathlib,subprocess,tarfile,tempfile,uuid
-p=argparse.ArgumentParser();p.add_argument('--static-only',action='store_true');p.add_argument('--target',choices=['all','original','compact'],default='all');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--static-only',action='store_true');p.add_argument('--include-assistant',action='store_true',help='Also deploy assistant provider/service and UI fixes');p.add_argument('--target',choices=['all','original','compact'],default='all');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[1];bucket='channel07-releases-748254788664-ap-northeast-2'
 targets={'original':('i-07da229472ba89e86','/opt/vehicle-web','vehicle-web'),'compact':('i-0080baccbaf0ca34a','/opt/vehicle-compact','vehicle-compact-web')}
 files=['sonic.mjs','public/sonic-client.js','public/app.js','public/index.html','public/i18n-strings.js']
-if a.static_only:files=files[1:]
+if a.include_assistant:files+=['assistant-service.mjs','assistant-providers.mjs','public/assistant-ui.js','public/timer-monitor.js']
+if a.static_only:files=[file for file in files if file.startswith('public/')]
 def aws(*args):return subprocess.check_output(['aws','--profile','game-forge','--region','ap-northeast-2',*args],text=True)
 results=[]
 for name,(instance,directory,unit) in targets.items():

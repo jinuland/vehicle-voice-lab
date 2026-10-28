@@ -32,3 +32,31 @@ test('Sonic assistant tool uses its callback and cannot enter the vehicle execut
  await s.tool({toolUseId:'lookup',toolName:'assistant_tool',content:'{"operation":"holidays","query":"다음 공휴일"}'});
  assert.equal(assistant,1);assert.equal(vehicle,0);assert.equal(events[0].data.toolName,'assistant_tool');s.close();
 });
+
+test('radio questions list all stations without starting playback; explicit play and stop retain effects',async()=>{
+ for(const query of ['라디오 채널 뭐가 있어?','혹시 라디오 채널이 뭐가 있나요?','어떤 라디오 채널 들을 수 있어','What radio stations are available?']){
+  const result=await providerLookup({operation:'radio',query,language:'ko'});assert.equal(result.effect,null,query);assert.equal(result.status,'listed');assert.equal(result.items.length,4);assert.match(result.reply,/Secret Agent/);
+ }
+ assert.equal((await providerLookup({operation:'radio',query:'재즈 라디오 틀어줘'})).effect.stationId,'secretagent');
+ assert.equal((await providerLookup({operation:'radio',query:'라디오 꺼줘'})).effect.type,'radio-stop');
+});
+test('named Suwon weather outranks even an existing Seoul GPS coordinate',async()=>{
+ const {coordinates,requestedLocation}=await import('../assistant-providers.mjs');
+ for(const query of ['수원 날씨 알려줘','내일 수원 날씨','수원에는 비 와?','Weather in Suwon']){
+  const p=await coordinates(query,{operation:'weather',language:'ko',latitude:37.5665,longitude:126.978});assert.equal(p.name,'수원');assert.equal(p.latitude,37.29111);
+ }
+ assert.equal(requestedLocation('오늘 날씨 어때?','weather'),'');
+});
+
+test('spoken Korean durations produce actual timer deadlines rather than clarification-only replies',()=>{
+ for(const [query,seconds]of [['오 초 타이머',5],['십오 분 타이머',900],['한 시간 타이머',3600],['스물다섯 초 타이머',25],['삼십 초 타이머',30],['두 시간 타이머',7200]]){
+  const start=Date.now(),result=localUtility({operation:'timer',query,language:'ko'},{});assert.equal(result.effect.type,'timers');assert.ok(Math.abs(result.effect.timers[0].deadline-start-seconds*1000)<100,query);
+ }
+});
+
+test('an unresolvable named place never returns default Seoul weather',async t=>{
+ const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original;});const urls=[];
+ globalThis.fetch=async url=>{urls.push(String(url));return new Response(JSON.stringify({results:[]}),{headers:{'Content-Type':'application/json'}});};
+ const result=await providerLookup({operation:'weather',query:'없는도시테스트 날씨 알려줘',latitude:37.5665,longitude:126.978,language:'ko'});
+ assert.equal(result.ok,false);assert.equal(result.needsLocation,true);assert.match(result.reply,/시·군 이름/);assert.equal(urls.length,1);assert.match(urls[0],/geocoding-api/);
+});

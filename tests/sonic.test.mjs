@@ -82,3 +82,24 @@ test('Sonic defaults to patient turn detection and validates comparison settings
  }
  assert.throws(()=>new SonicSession({endpointingSensitivity:'arbitrary'}));
 });
+
+test('fragmented tool syntax never enters captions, spoken history or the executor',async()=>{
+ for(const stage of ['SPECULATIVE','FINAL']){
+  const events=[];let calls=0;
+  const s=new SonicSession({state:initialState(),language:'ko',emit:(event,data)=>events.push({event,data}),executeAssistantTool:()=>{calls++;}});
+  await s.receive({contentStart:{contentId:'broken',type:'TEXT',role:'ASSISTANT',additionalModelFields:JSON.stringify({generationStage:stage})}});
+  for(const content of ['assistant','_tool','{ language:<|"|> ko'])await s.receive({textOutput:{contentId:'broken',content}});
+  await s.receive({audioOutput:{content:'AAAA'}});
+  assert.equal(calls,0);assert.equal(s.closed,true);
+  assert.equal(events.filter(x=>x.event==='audio'||x.event==='text'||x.event==='caption').length,0);
+  assert.equal(events.find(x=>x.event==='error').data.code,'invalid-spoken-tool-call');
+ }
+});
+test('TOOL content is not a conversational caption and native toolUse still executes once',async()=>{
+ const events=[];let calls=0;const s=new SonicSession({state:initialState(),emit:(event,data)=>events.push({event,data}),executeAssistantTool:()=>{calls++;return{ok:true,operation:'radio'};}});
+ await s.receive({contentStart:{contentId:'tool',type:'TOOL',role:'TOOL',additionalModelFields:'{"generationStage":"FINAL"}'}});
+ await s.receive({textOutput:{contentId:'tool',content:'assistant_tool{...}'}});
+ await s.receive({toolUse:{contentId:'tool',toolUseId:'catalog',toolName:'assistant_tool',content:'{"operation":"radio","query":"라디오 채널 뭐가 있어"}'}});
+ await s.receive({contentEnd:{contentId:'tool'}});
+ assert.equal(calls,1);assert.deepEqual(events.map(x=>x.event),['tool']);s.close();
+});

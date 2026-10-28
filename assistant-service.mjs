@@ -99,8 +99,8 @@ export async function executeAssistant(args,s,{signal,diagnostic=false}={}){
  try{
   controller.signal.throwIfAborted();
   const language=args.language==='en'?'en':'ko',request={...args,language,...s.location};
-  const result=['timer','notes','calculate'].includes(args.operation)?localUtility(request,s):await remoteLookup(request,controller.signal);
+  const result=['timer','notes','calculate'].includes(args.operation)?localUtility(request,s):args.operation==='radio'?await providerLookup(request,{signal:controller.signal}):await remoteLookup(request,controller.signal);
   controller.signal.throwIfAborted();
-  return{...structuredClone(result),reply:result.reply||(args.language==='en'?'The provider could not complete this request.':'외부 서비스가 요청을 완료하지 못했어요.'),operation:args.operation,elapsedMs:Math.round(performance.now()-start),transport:['timer','notes','calculate'].includes(args.operation)?'local':endpoint?'agentcore-mcp':'local-provider',sources:result.sources||[]};
+  return{...structuredClone(result),reply:result.reply||(args.language==='en'?'The provider could not complete this request.':'외부 서비스가 요청을 완료하지 못했어요.'),operation:args.operation,elapsedMs:Math.round(performance.now()-start),transport:['timer','notes','calculate'].includes(args.operation)?'local':args.operation==='radio'?'local-provider':endpoint?'agentcore-mcp':'local-provider',sources:result.sources||[]};
  }finally{clearTimeout(timer);signal?.removeEventListener('abort',forward);}
 }

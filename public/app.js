@@ -293,6 +293,7 @@ $('audio-file').addEventListener('change',async e=>{
   }catch(err){toast(err.message);}finally{e.target.value='';}
 });
 document.addEventListener('vehicle-assistant-prompt',e=>{void submit({text:e.detail.text});});
+document.addEventListener('vehicle-timer-expired',()=>{bubble(replyLanguage()==='en'?'Your timer has finished.':'설정한 타이머가 끝났어요.','assistant');});
 document.addEventListener('vehicle-radio-state',()=>{if(cabinState)renderState(cabinState);});
 let languageSwitch=Promise.resolve();
 document.addEventListener('vehicle-ui-language',()=>{

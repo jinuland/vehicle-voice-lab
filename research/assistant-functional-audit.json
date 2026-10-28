@@ -1,0 +1,323 @@
+{
+  "at": "2026-10-28T06:31:39.970378+00:00",
+  "base": "https://d3q7tlfor72b22.cloudfront.net",
+  "method": "Synthetic function checks, not a model-quality or load benchmark. API queries validate actual tool results, 11 Sonic text requests require native tool execution and speech output, 3 Sonic speech requests use Polly Seoyeon input. Browser checks confirm timer UI expiry and live radio playback. Physical microphone, OS speaker audibility, closed-tab alerts and driving are untested.",
+  "api": [
+    {
+      "operation": "weather",
+      "query": "수원 날씨 알려줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 2276,
+      "position": {
+        "latitude": 37.29111,
+        "longitude": 127.00889,
+        "name": "수원"
+      },
+      "reply": "수원 예보는 기온 11도, 바람 초속 3.4미터, 다음 한 시간 강수량 0밀리미터예요.",
+      "excluded": false
+    },
+    {
+      "operation": "radio",
+      "query": "라디오 채널 뭐가 있어?",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 1,
+      "position": {
+        "latitude": 37.5665,
+        "longitude": 126.978,
+        "name": "서울시청 데모 위치",
+        "demo": true
+      },
+      "reply": "들을 수 있는 채널은 SomaFM Groove Salad, SomaFM Secret Agent, SomaFM Drone Zone, Big B Radio · K-pop예요. 원하는 채널이나 장르를 말해 주세요.",
+      "excluded": false
+    },
+    {
+      "operation": "timer",
+      "query": "5초 타이머 맞춰줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 1,
+      "position": null,
+      "reply": "5초 타이머를 맞췄어요. 알림을 받으려면 이 데모 탭을 열어 두세요.",
+      "excluded": false
+    },
+    {
+      "operation": "notes",
+      "query": "메모: 테스트 주차 B12",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 1,
+      "position": null,
+      "reply": "메모했어요. 테스트 주차 B12",
+      "excluded": false
+    },
+    {
+      "operation": "notes",
+      "query": "메모 읽어줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 0,
+      "position": null,
+      "reply": "테스트 주차 B12",
+      "excluded": false
+    },
+    {
+      "operation": "calculate",
+      "query": "충전비 20kWh, kWh당 350원 계산해줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 12,
+      "position": null,
+      "reply": "20 kWh × 350 KRW/kWh, 결과는 7,000이에요.",
+      "excluded": false
+    },
+    {
+      "operation": "holidays",
+      "query": "다음 공휴일 언제야",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 1186,
+      "position": {
+        "latitude": 37.5665,
+        "longitude": 126.978,
+        "name": "서울시청 데모 위치",
+        "demo": true
+      },
+      "reply": "한국 공휴일은 2026-12-25 크리스마스이에요.",
+      "excluded": false
+    },
+    {
+      "operation": "exchange",
+      "query": "100달러 원화로 환율 계산해줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 257,
+      "position": {
+        "latitude": 37.5665,
+        "longitude": 126.978,
+        "name": "서울시청 데모 위치",
+        "demo": true
+      },
+      "reply": "2026-10-28 기준 100 USD는 약 132,713원이에요. 환전 수수료는 제외했어요.",
+      "excluded": false
+    },
+    {
+      "operation": "sun",
+      "query": "강릉 일몰 알려줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 404,
+      "position": {
+        "latitude": 37.7519,
+        "longitude": 128.8761,
+        "name": "강릉"
+      },
+      "reply": "강릉 2026-10-28, 일출은 AM 06:45, 일몰은 PM 05:30예요.",
+      "excluded": false
+    },
+    {
+      "operation": "wiki",
+      "query": "경복궁 설명해줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 2457,
+      "position": {
+        "latitude": 37.5665,
+        "longitude": 126.978,
+        "name": "서울시청 데모 위치",
+        "demo": true
+      },
+      "reply": "경복궁(景福宮, 영어: Gyeongbokgung Palace)은 대한민국 서울특별시 종로구 사직로에 위치한 조선 왕조의 법궁(法宮, 정궁)이다.",
+      "excluded": false
+    },
+    {
+      "operation": "route",
+      "query": "서울시청에서 서울역까지 거리 알려줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 876,
+      "position": {
+        "latitude": 37.5547,
+        "longitude": 126.9706,
+        "name": "서울역"
+      },
+      "reply": "서울에서 서울역까지 약 3.1킬로미터, 교통 미반영 예상 4분이에요. 실제 내비게이션 안내는 아니에요.",
+      "excluded": false
+    },
+    {
+      "operation": "web",
+      "query": "전기차 최근 뉴스 웹검색해줘",
+      "passed": true,
+      "enabled": true,
+      "elapsedMs": 458,
+      "position": null,
+      "reply": "19개 중 7개 상 휩쓸어… 현대차그룹, 美서 전동화 모델 인정 받아: ◆ 아이오닉 5·투싼 하이브리드 3년 연속 수상… 아이오닉 9 중형 SUV 부문 선정 US 뉴스 앤드 월드 리포트 선정, 최고 준중형 전기 SUV에 선정된 아이오닉 5. / 현대자동차 현대차는 전동화 및 하이브리드 SUV 부문에서 두각을 나타냈다. 전용 전기차 아이오닉 5가 최고 준중형 전기 SUV에, 투싼 하이브리드가 최고 준중형 하이브리드 SUV 부문에 선정되며 두 모델 모두 해당 부문 3년 연속 수상 기록을 세웠다. 아이오닉 5는 초고속 충전 시스템과 주행거리, 첨단 안전 사양에서 긍정적인 평가를 받았다. 투싼 하이브리드는 1",
+      "excluded": false
+    },
+    {
+      "operation": "places",
+      "query": "근처 카페 찾아줘",
+      "passed": true,
+      "enabled": false,
+      "elapsedMs": 0,
+      "position": null,
+      "reply": "이 기능은 지연·안정성 검사 후 기본 목록에서 제외했어요. 도구 표에서 결과를 확인해 주세요.",
+      "excluded": true
+    }
+  ],
+  "sonicText": [
+    {
+      "operation": "weather",
+      "text": "수원 날씨 알려줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "수원 예보는 기온 십일 도, 바람 초속 삼 점 사 미터, 다음 한 시간 강수량 영 밀리미터입니다.",
+      "audioBytes": 376320,
+      "firstAudioMs": 4121,
+      "totalMs": 12260
+    },
+    {
+      "operation": "radio",
+      "text": "혹시 라디오 채널이 뭐가 있나요?",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "소마 에프엠 그루브 샐러드, 소마 에프엠 시크릿 에이전트, 소마 에프엠 드론 존, 그리고 빅 비 라디오 케이팝이 있습니다.",
+      "audioBytes": 460800,
+      "firstAudioMs": 1579,
+      "totalMs": 9317
+    },
+    {
+      "operation": "timer",
+      "text": "오 초 타이머 맞춰줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "오 초 타이머를 설정했습니다.",
+      "audioBytes": 117120,
+      "firstAudioMs": 1079,
+      "totalMs": 3669
+    },
+    {
+      "operation": "notes",
+      "text": "메모해줘 주차 위치 지하 2층 B12",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "메모했습니다. 주차 위치 지하 이층 비 십이입니다.",
+      "audioBytes": 188160,
+      "firstAudioMs": 1184,
+      "totalMs": 5386
+    },
+    {
+      "operation": "calculate",
+      "text": "20 곱하기 350 계산해줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "칠천입니다.",
+      "audioBytes": 55680,
+      "firstAudioMs": 968,
+      "totalMs": 2319
+    },
+    {
+      "operation": "holidays",
+      "text": "다음 공휴일 언제야",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "다음 공휴일은 이천이십육년 십이월 이십오일 크리스마스입니다.",
+      "audioBytes": 199680,
+      "firstAudioMs": 1367,
+      "totalMs": 5727
+    },
+    {
+      "operation": "exchange",
+      "text": "100달러 원화로 환율 계산해줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "백 달러는 약 십삼만 이천칠백십삼 원입니다.",
+      "audioBytes": 184320,
+      "firstAudioMs": 1405,
+      "totalMs": 5482
+    },
+    {
+      "operation": "sun",
+      "text": "강릉 일몰 알려줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "강릉의 일몰 시간은 오후 다섯 시 삼십 분입니다.",
+      "audioBytes": 176640,
+      "firstAudioMs": 2735,
+      "totalMs": 6534
+    },
+    {
+      "operation": "wiki",
+      "text": "경복궁 설명해줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "경복궁은 서울특별시 종로구 사직로에 위치한 조선 왕조의 법궁입니다.",
+      "audioBytes": 272640,
+      "firstAudioMs": 4285,
+      "totalMs": 10170
+    },
+    {
+      "operation": "route",
+      "text": "서울시청에서 서울역까지 거리 알려줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "서울시청에서 서울역까지 거리는 약 삼 점 일 킬로미터이며, 예상 소요 시간은 사 분입니다.",
+      "audioBytes": 355200,
+      "firstAudioMs": 1575,
+      "totalMs": 9277
+    },
+    {
+      "operation": "web",
+      "text": "전기차 최근 뉴스 웹검색해줘",
+      "input": "synthetic-text",
+      "pass": true,
+      "reply": "최근 전기차 뉴스를 검색한 결과, 한국의 대미 전기차 수출이 보조금 축소와 현지 생산 증가로 인해 급감하며 수출처 다변화의 필요성이 제기되고 있습니다.",
+      "audioBytes": 1543680,
+      "firstAudioMs": 2040,
+      "totalMs": 13573
+    }
+  ],
+  "sonicAudio": [
+    {
+      "operation": "weather",
+      "text": "수원 날씨 알려줘",
+      "input": "synthetic-speech",
+      "pass": true,
+      "reply": "수원 날씨는 기온 십일 도이며, 바람은 초속 삼 점 사 미터, 강수량은 영 밀리미터입니다.",
+      "audioBytes": 328320,
+      "firstAudioMs": 3959,
+      "totalMs": 11084
+    },
+    {
+      "operation": "radio",
+      "text": "혹시 라디오 채널이 뭐가 있나요?",
+      "input": "synthetic-speech",
+      "pass": true,
+      "reply": "소마 에프엠 그루브 샐러드, 소마 에프엠 시크릿 에이전트, 소마 에프엠 드론 존, 그리고 빅 비 라디오 케이팝이 있습니다.",
+      "audioBytes": 476160,
+      "firstAudioMs": 4297,
+      "totalMs": 12416
+    },
+    {
+      "operation": "timer",
+      "text": "오 초 타이머 맞춰줘",
+      "input": "synthetic-speech",
+      "pass": true,
+      "reply": "오초 타이머를 맞췄습니다.",
+      "audioBytes": 84480,
+      "firstAudioMs": 3453,
+      "totalMs": 5393
+    }
+  ],
+  "browser": {
+    "sonicFiveSecondTimerBanner": true,
+    "timerExpiryChatMessage": true,
+    "radioListReadOnly": true,
+    "radioSelectedStation": "SomaFM Secret Agent",
+    "radioHTMLMediaReadyState": 4,
+    "radioPlaybackSecondsObserved": 41.858309,
+    "radioFirstPlaybackMs": 1126
+  },
+  "unitTestsPassed": 87
+}
