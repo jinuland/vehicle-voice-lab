@@ -50,7 +50,8 @@ if(typeof document!=='undefined'){
  function schedule(){if(!scheduled){scheduled=true;queueMicrotask(apply);}}
  // UI is rendered by several independent modules and streaming status updates.
  // Keep original copy per text node so switches are reversible without reloads,
- // state resets, model requests, or modification of user/model conversation data.
+ // state resets or modification of user/model conversation data. The app listens
+ // for explicit locale changes to reconnect speech with the selected language.
  new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:attributes});
  document.getElementById('ui-language')?.addEventListener('change',event=>{
   locale=event.target.value==='en'?'en':'ko';try{localStorage.setItem('vehicle-voice-ui-language',locale);}catch{}

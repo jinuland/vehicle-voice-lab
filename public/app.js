@@ -6,6 +6,15 @@ window.voiceLabAudioStatus=()=>({enabled:micEnabled,starting:micStarting,context
 let currentController,currentAudio,currentAudioUrl,lastTurnId,requestNumber=0,busy=false,stage='idle';
 let audioQueue=[],generationDone=false,playedFirst=false;
 let ttsChoice='polly';
+const replyLanguage=()=>document.documentElement?.lang==='en'?'en':'ko';
+const pollyLabel=()=>replyLanguage()==='en'?'Amazon Polly · Joanna':'Amazon Polly · Seoyeon';
+function syncConversationLanguage(){
+  const language=replyLanguage();
+  for(const id of ['sonic-language','minicpm-language','audio-language'])$(id).value=language;
+  if(language==='en'){ttsChoice='polly';$('tts-provider').value='polly';asrChoice='whisper';$('asr-model').value='whisper';}
+  $('tts-provider').querySelector('[value="polly"]').textContent=pollyLabel();
+  $('tts-provider').querySelector('[value="qwen"]').disabled=language==='en';
+}
 let plannerChoice='qwen35-4b';let asrChoice='whisper';
 document.addEventListener('vehicle-catalog-ready',()=>{plannerChoice=$('planner-model').value;});
 let engine='cascade',sonicVoice,sonicConnecting;
@@ -47,13 +56,13 @@ async function checkHealth(){
     $('connection').className='connection'+(ready?' ready':'');$('connection').replaceChildren(Object.assign(document.createElement('i'),{}),document.createTextNode(isExtraAudio()?(h.researchWorkers?.speech?.loading?'음성 모델 교체·로딩 중':ready?'추가 음성 GPU 연결됨':'음성 GPU 준비 중'):engine==='sonic'?'Sonic · 도쿄 API 준비':engine.startsWith('minicpm')?(ready?'MiniCPM · GPU 연결됨':'MiniCPM 모델 준비 중'):ready?'GPU 연결됨':'GPU 모델 준비 중'));
     const m=h.workers.flatMap(w=>Object.keys(w.models||{}));
     for(const key of ['asr','llm','tts'])$('model-'+key).classList.toggle('ready',engine!=='cascade'?ready:m.includes(key));
-    $('model-tts').replaceChildren(document.createElement('i'),document.createTextNode(ttsChoice==='polly'?'Amazon Polly · Seoyeon':'Qwen3-TTS · Sohee'));
+    $('model-tts').replaceChildren(document.createElement('i'),document.createTextNode(ttsChoice==='polly'?pollyLabel():'Qwen3-TTS · Sohee'));
     if(engine==='sonic')for(const [key,label]of Object.entries({asr:'Nova 2.5 Sonic · 음성 이해',llm:'Sonic · 통합 추론',tts:'Sonic · Tiffany'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
-    else if(engine==='minicpm-control')for(const [key,label]of Object.entries({asr:'MiniCPM · 음성 입력',llm:'MiniCPM · 명령 판단',tts:ttsChoice==='polly'?'Amazon Polly · Seoyeon':'Qwen3-TTS · Sohee'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
+    else if(engine==='minicpm-control')for(const [key,label]of Object.entries({asr:'MiniCPM · 음성 입력',llm:'MiniCPM · 명령 판단',tts:ttsChoice==='polly'?pollyLabel():'Qwen3-TTS · Sohee'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
     else if(engine==='minicpm')for(const [key,label]of Object.entries({asr:'MiniCPM-o · 음성 이해',llm:'MiniCPM · 음성 대화',tts:'MiniCPM · 내장 음성 출력'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
-    else if(isExtraAudio())for(const [key,label]of Object.entries({asr:audioModelName()+' · 음성 입력',llm:audioModelName(),tts:engine==='audio-control'?(ttsChoice==='polly'?'Amazon Polly · Seoyeon':'Qwen3-TTS · Sohee'):'모델 내장 음성'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
+    else if(isExtraAudio())for(const [key,label]of Object.entries({asr:audioModelName()+' · 음성 입력',llm:audioModelName(),tts:engine==='audio-control'?(ttsChoice==='polly'?pollyLabel():'Qwen3-TTS · Sohee'):'모델 내장 음성'}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
     else for(const [key,label]of Object.entries({asr:asrChoice==='whisper'?'Whisper large-v3-turbo':'Nemotron 3.5 ASR',llm:$('planner-model').selectedOptions[0].textContent}))$('model-'+key).replaceChildren(document.createElement('i'),document.createTextNode(label));
-    $('speech-language-label').textContent='VOICE · '+(engine==='sonic'?$('sonic-language').value:engine==='minicpm'?$('minicpm-language').value:engine==='audio-native'?$('audio-language').value:'ko').toUpperCase();
+    $('speech-language-label').textContent='VOICE · '+(engine==='sonic'?$('sonic-language').value:engine==='minicpm'?$('minicpm-language').value:engine==='audio-native'?$('audio-language').value:replyLanguage()).toUpperCase();
     $('deployment').textContent=engine==='sonic'?'AWS 도쿄 · Bedrock S2S':isExtraAudio()?'AWS 서울 · 음성 전용 L40S 48GB':'AWS 서울 · L40S 48GB';
     if(h.servingProfile==='compact'){
       $('asr-model').querySelector('[value="nemotron"]').disabled=true;
@@ -95,7 +104,7 @@ async function submit(payload,{basis='text',endedAt=performance.now()}={}){
   }
   if(isAudioInput()&&payload.text){toast('이 모드는 마이크나 음성 샘플로 테스트해 주세요.');return;}
   if(busy)await interrupt(false);
-  payload.comparisonOnly=$('comparison-only').checked&&['audio-native','minicpm'].includes(engine);payload.ttsProvider=ttsChoice;payload.inputMode=basis;payload.plannerId=plannerChoice;payload.asrId=asrChoice;payload.promptVersion=engine==='cascade'?$('planner-model').selectedOptions[0]?.dataset.promptVersion||'compact-v2':engine==='minicpm-control'?'compact-v2':$('audio-model').selectedOptions[0]?.dataset.promptVersion||'full-v1';payload.generationProfile=$('planner-model').selectedOptions[0]?.dataset.generationProfile||'deterministic';payload.language=isExtraAudio()?$('audio-language').value:$('minicpm-language').value;payload.audioModelId=$('audio-model').value;
+  payload.comparisonOnly=$('comparison-only').checked&&['audio-native','minicpm'].includes(engine);payload.ttsProvider=ttsChoice;payload.inputMode=basis;payload.plannerId=plannerChoice;payload.asrId=asrChoice;payload.promptVersion=engine==='cascade'?$('planner-model').selectedOptions[0]?.dataset.promptVersion||'compact-v2':engine==='minicpm-control'?'compact-v2':$('audio-model').selectedOptions[0]?.dataset.promptVersion||'full-v1';payload.generationProfile=$('planner-model').selectedOptions[0]?.dataset.generationProfile||'deterministic';payload.language=isExtraAudio()?$('audio-language').value:engine==='minicpm'?$('minicpm-language').value:replyLanguage();payload.responseLanguage=replyLanguage();payload.audioModelId=$('audio-model').value;
   const number=++requestNumber;currentController=new AbortController();const controller=currentController;busy=true;generationDone=false;playedFirst=false;audioQueue=[];currentBasis=basis;currentStart=endedAt;
   $('metric-context').textContent=isExtraAudio()?(engine==='audio-control'?'음성 모델 직접 판단 → 차량 검증·실행 → 한국어 TTS':'내장 S2S 통합 처리 · 차량 도구 없음'):engine==='minicpm-control'?'MiniCPM 음성 이해·판단 → 차량 검증·실행 → 한국어 TTS':engine==='minicpm'?'MiniCPM S2S 통합 처리 · 단계별 시간 분리 불가':basis==='microphone'?'마지막 발화 시점 기준':basis==='file'?'음성 파일 제출 기준':'텍스트 제출 기준';
   for(const id of ['asr-ms','llm-ms','tts-ms','first-audio-ms'])metric(id,null);
@@ -263,10 +272,10 @@ document.querySelectorAll('[data-prompt]').forEach(button=>button.addEventListen
 $('tts-provider').addEventListener('change',e=>{
   if(busy){e.target.value=ttsChoice;toast('답변이 끝나면 응답 음성을 변경할 수 있어요.');return;}
   ttsChoice=e.target.value;
-  $('model-tts').replaceChildren(document.createElement('i'),document.createTextNode(ttsChoice==='polly'?'Amazon Polly · Seoyeon':'Qwen3-TTS · Sohee'));
+  $('model-tts').replaceChildren(document.createElement('i'),document.createTextNode(ttsChoice==='polly'?pollyLabel():'Qwen3-TTS · Sohee'));
 });
 $('sample-audio').addEventListener('click',async()=>{
-  try{const r=await fetch('/sample-command.wav');if(!r.ok)throw new Error('샘플 음성을 불러오지 못했어요.');await submit({audio:base64(new Uint8Array(await r.arrayBuffer()))},{basis:'file'});}catch(e){toast(e.message);}
+  try{const r=await fetch(replyLanguage()==='en'?'/sample-english.wav':'/sample-command.wav');if(!r.ok)throw new Error('샘플 음성을 불러오지 못했어요.');await submit({audio:base64(new Uint8Array(await r.arrayBuffer()))},{basis:'file'});}catch(e){toast(e.message);}
 });
 document.querySelectorAll('[data-rating]').forEach(button=>button.addEventListener('click',async()=>{
   if(!lastTurnId)return;
@@ -285,6 +294,17 @@ $('audio-file').addEventListener('change',async e=>{
 });
 document.addEventListener('vehicle-assistant-prompt',e=>{void submit({text:e.detail.text});});
 document.addEventListener('vehicle-radio-state',()=>{if(cabinState)renderState(cabinState);});
-document.addEventListener('vehicle-ui-language',()=>{void checkHealth();});
+let languageSwitch=Promise.resolve();
+document.addEventListener('vehicle-ui-language',()=>{
+  languageSwitch=languageSwitch.then(async()=>{
+    const resumeMic=micEnabled;
+    if(micEnabled)await toggleMic();
+    if(sessionId)await interrupt(false);
+    syncConversationLanguage();
+    await checkHealth();
+    if(resumeMic&&ready)await toggleMic();
+  }).catch(error=>toast(error.message));
+});
+syncConversationLanguage();
 window.addEventListener('beforeunload',()=>{mediaStream?.getTracks().forEach(t=>t.stop());sonicVoice?.close();stopPlayback();});
 try{const d=await(await api('session',{method:'POST',body:'{}'})).json();sessionId=d.id;configureAssistant(api);renderState(d.state);await checkHealth();setInterval(checkHealth,10000);}catch(e){toast('서버에 연결할 수 없어요. '+e.message);}

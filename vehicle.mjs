@@ -39,8 +39,9 @@ export function parsePlan(raw) {
   if(parsed.actions.length && parsed.intent!=='control') throw new Error('제어 의도가 아닌 응답의 동작을 거부했습니다.');
   return parsed;
 }
-export function executePlan(current, previous, plan) {
-  if(!plan.actions.length) return {state:current, previous, reply:plan.reply||'어떤 기능을 도와드릴까요?', results:[]};
+export function executePlan(current, previous, plan, language='ko') {
+  const say=text=>localizeVehicleText(text,language);
+  if(!plan.actions.length) return {state:current, previous, reply:say(plan.reply||'어떤 기능을 도와드릴까요?'), results:[]};
   let state=structuredClone(current), before=structuredClone(current), results=[];
   for(const a of plan.actions) {
     if(!a||typeof a!=='object') throw new Error('잘못된 차량 명령입니다.');
@@ -68,11 +69,47 @@ export function executePlan(current, previous, plan) {
       case 'navigationStop':state.navigation.active=false;results.push('모의 길 안내를 종료했어요.');break;
       case 'undo':
         if(plan.actions.length!==1)throw new Error('되돌리기는 단독으로 요청해 주세요.');
-        if(!previous)return {state:current,previous,reply:'되돌릴 차량 명령이 없어요.',results:[]};
+        if(!previous)return {state:current,previous,reply:say('되돌릴 차량 명령이 없어요.'),results:[]};
         state=structuredClone(previous);results.push('직전 차량 설정을 되돌렸어요.');break;
       default:throw new Error('지원하지 않는 차량 동작입니다.');
     }
   }
   state.revision=current.revision+1;
-  return {state,previous:before,reply:results.join(' '),results};
+  return {state,previous:before,reply:results.map(say).join(' '),results:results.map(say)};
+}
+
+// Translate only executor-authored receipts. Never rewrite free-form model answers
+// or user-provided destination names, and never report success before validation.
+export function localizeVehicleText(text,language='ko') {
+  if(language!=='en')return text;
+  const fixed={
+    '어떤 기능을 도와드릴까요?':'How can I help?',
+    '되돌릴 차량 명령이 없어요.':'There is no vehicle command to undo.',
+    '직전 차량 설정을 되돌렸어요.':'Restored the previous vehicle settings.',
+    '열선을 껐어요.':'Turned off the seat heating.',
+    '다음 곡으로 바꿨어요.':'Skipped to the next track.',
+    '음악을 재생했어요.':'Started simulated music playback.',
+    '음악을 멈췄어요.':'Paused simulated music playback.',
+    '모의 길 안내를 종료했어요.':'Stopped simulated navigation.',
+    '좌석을 확인해 주세요.':'Please specify the seat.',
+    '켜기 또는 끄기를 지정해 주세요.':'Please specify on or off.',
+    '목적지를 다시 말씀해 주세요.':'Please specify a destination.',
+    '되돌리기는 단독으로 요청해 주세요.':'Please request undo separately.',
+    '지원하지 않는 차량 동작입니다.':'That vehicle action is not supported.',
+    '잘못된 차량 명령입니다.':'Invalid vehicle command.',
+    '지원하지 않는 미디어 명령입니다.':'That media action is not supported.',
+    '온도는 16~30도 사이로 말씀해 주세요.':'Please choose a temperature between 16 and 30 degrees Celsius.',
+    '바람 세기는 1~7단 사이로 말씀해 주세요.':'Please choose a fan level from 1 to 7.',
+    '열선은 0~3단 사이로 말씀해 주세요.':'Please choose a seat heating level from 0 to 3.'
+  };
+  if(fixed[text])return fixed[text];
+  if(text.startsWith('설정을 적용하지 않았어요. '))return 'No settings were changed. '+localizeVehicleText(text.slice('설정을 적용하지 않았어요. '.length),language);
+  return text
+    .replace(/^(양쪽|운전석|조수석) 온도를 ([\d.]+)도로 맞췄어요\.$/,(_,zone,value)=>`Set ${zone==='양쪽'?'both cabin zones':zone==='운전석'?'the driver temperature':'the passenger temperature'} to ${value} degrees Celsius.`)
+    .replace(/^바람 세기를 (\d+)단으로 바꿨어요\.$/,'Set the fan to level $1.')
+    .replace(/^(에어컨을|앞유리 김서림 제거 기능을) (켰|껐)어요\.$/,(_,device,on)=>`Turned ${on==='켰'?'on':'off'} ${device==='에어컨을'?'the air conditioning':'the windshield defroster'}.`)
+    .replace(/^열선을 (\d+)단으로 켰어요\.$/,'Set the seat heating to level $1.')
+    .replace(/^음량을 (\d+)으로 맞췄어요\.$/,'Set the volume to $1.')
+    .replace(/^(.+)을 모의 목적지로 설정했어요\.$/,'Set the simulated destination to $1.')
+    .replace(/^값은 (\d+)~(\d+)( 정수)?여야 합니다\.$/,(_,min,max,integer)=>`Please choose ${integer?'an integer':'a value'} between ${min} and ${max}.`);
 }

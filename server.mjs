@@ -1,8 +1,9 @@
+import {responseLanguage,replyLanguageInstruction,speechOptions} from './response-language.mjs';
 import express from 'express';
 import {mountGame} from './game-api.mjs';
 import {randomUUID} from 'node:crypto';
 import {mkdir,appendFile,readFile} from 'node:fs/promises';
-import {initialState,systemPrompt,parsePlan,executePlan} from './vehicle.mjs';
+import {initialState,systemPrompt,parsePlan,executePlan,localizeVehicleText} from './vehicle.mjs';
 import {PollyClient,SynthesizeSpeechCommand} from '@aws-sdk/client-polly';
 import {awsCredentials} from './aws-auth.mjs';
 import {allowedRequest,startSse,cloudMode} from './web-access.mjs';
@@ -29,10 +30,11 @@ const polly=new PollyClient({region:process.env.AWS_REGION||'ap-northeast-2',...
 function pcmWav(pcm){
   const h=Buffer.alloc(44);h.write('RIFF',0);h.writeUInt32LE(36+pcm.length,4);h.write('WAVEfmt ',8);h.writeUInt32LE(16,16);h.writeUInt16LE(1,20);h.writeUInt16LE(1,22);h.writeUInt32LE(16000,24);h.writeUInt32LE(32000,28);h.writeUInt16LE(2,32);h.writeUInt16LE(16,34);h.write('data',36);h.writeUInt32LE(pcm.length,40);return Buffer.concat([h,pcm]);
 }
-async function synthesize(text,provider,signal,{voiceId='Seoyeon',engine='neural'}={}){
+async function synthesize(text,provider,signal,{voiceId,engine='neural',language='ko'}={}){
+  const speech=speechOptions(language,{voiceId,engine});
   if(provider==='polly'){
     const start=performance.now();
-    const result=await polly.send(new SynthesizeSpeechCommand({Engine:engine,VoiceId:voiceId,LanguageCode:'ko-KR',OutputFormat:'pcm',SampleRate:'16000',TextType:'text',Text:text}),{abortSignal:signal});
+    const result=await polly.send(new SynthesizeSpeechCommand({Engine:speech.engine,VoiceId:speech.voiceId,LanguageCode:speech.languageCode,OutputFormat:'pcm',SampleRate:'16000',TextType:'text',Text:text}),{abortSignal:signal});
     const pcm=Buffer.from(await result.AudioStream.transformToByteArray());return{bytes:pcmWav(pcm),elapsedMs:Math.round(performance.now()-start)};
   }
   const response=await remote(tts+'/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})},signal);
@@ -125,6 +127,7 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
   // Voice-only comparison requires an explicit opt-out. Default routes execute
   // the selected model's own audio plan through the common vehicle executor.
   if(['/api/audio-native','/api/s2s'].includes(req.path)&&req.body.comparisonOnly===true)return next();
+  const language=responseLanguage(req.body.responseLanguage??req.body.language);
   const miniControl=['/api/minicpm-control','/api/s2s'].includes(req.path);
   const otherAudio=['/api/audio-control','/api/audio-native'].includes(req.path),audioControl=miniControl||otherAudio;
   const audioModel=otherAudio?catalog.models.find(m=>m.id===req.body.audioModelId&&m.status==='ready'&&m.audioPlanner):null;
@@ -144,17 +147,17 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
   res.on('close',()=>{if(!res.writableEnded)controller.abort();});
   let record,failureStage='recognition';
   try{
-    let text=req.body.text?.trim(),asrMs=0,rawTranscript=null,asrModel=null;const asrId=req.body.asrId||planner?.demoConfig?.asrId||'whisper';if(!['whisper','nemotron'].includes(asrId))throw new Error('지원하지 않는 음성 인식 모델입니다.');
+    let text=req.body.text?.trim(),asrMs=0,rawTranscript=null,asrModel=null;const asrId=language==='en'?'whisper':req.body.asrId||planner?.demoConfig?.asrId||'whisper';if(!['whisper','nemotron'].includes(asrId))throw new Error('지원하지 않는 음성 인식 모델입니다.');
     send('stage',{stage:audioControl?'audioPlanning':'recognizing',model:audioModel?.name||'MiniCPM'});
     if(!text&&!audioControl){
       const audio=Buffer.from(req.body.audio,'base64');
-      const form=new FormData();form.append('file',new Blob([audio],{type:'audio/wav'}),'speech.wav');
+      const form=new FormData();form.append('file',new Blob([audio],{type:'audio/wav'}),'speech.wav');form.append('language',language);
       const data=asrId==='whisper'?await recognizeOnWhisper(form,controller.signal):await(await remote(core+'/asr',{method:'POST',body:form},controller.signal)).json();rawTranscript=data.text;text=normalizeTranscript(data.text);asrMs=data.elapsedMs;asrModel=data.model;
     }
     if(!text&&!audioControl)throw new Error('음성을 인식하지 못했어요. 다시 말씀해 주세요.');
     if(!audioControl){send('transcript',{text,rawText:rawTranscript,asrMs,asrModel});send('stage',{stage:'thinking'});}
     const currentState=structuredClone(s.state);const requestedPrompt=req.body.promptVersion||(miniControl?'compact-v2':audioModel?.demoConfig?.promptVersion||planner?.demoConfig?.promptVersion||'compact-v2');const promptVersion=['compact-v2','korean-compact-v2'].includes(requestedPrompt)?requestedPrompt:'full-v1';const selectedPrompt=promptVersion==='korean-compact-v2'?compactKoreanPlannerPrompt:promptVersion==='compact-v2'?compactPlannerPrompt:systemPrompt;
-    const messages=[{role:'system',content:selectedPrompt+'\n현재 차량 상태: '+JSON.stringify(currentState)+(audioControl?'\nJSON에 heard 문자열 필드를 추가하여 음성에서 이해한 요청을 적어라. 형식: {"heard":"이해한 요청","intent":"control|question|clarify","actions":[],"reply":"짧은 답변"}. 사용자는 차량 시뮬레이터를 조작할 수 있다. 지원 동작을 수행하지 못한다고 거절하지 마라.':'' )},...s.history.slice(-12)];
+    const messages=[{role:'system',content:selectedPrompt.replace('Korean reply',language==='en'?'English reply':'Korean reply').replace('Korean range explanation',language==='en'?'English range explanation':'Korean range explanation')+'\n'+replyLanguageInstruction(language)+'\n현재 차량 상태: '+JSON.stringify(currentState)+(audioControl?'\nJSON에 heard 문자열 필드를 추가하여 음성에서 이해한 요청을 적어라. 형식: {"heard":"이해한 요청","intent":"control|question|clarify","actions":[],"reply":"짧은 답변"}. 사용자는 차량 시뮬레이터를 조작할 수 있다. 지원 동작을 수행하지 못한다고 거절하지 마라.':'' )},...s.history.slice(-12)];
     let data;failureStage='model-planning';
     const requestedAssistant=!audioControl?inferAssistant(text):null;
     if(requestedAssistant){data={text:JSON.stringify({intent:'question',actions:[],reply:''}),elapsedMs:0,model:'Application tool router',loadMs:0};}
@@ -172,17 +175,17 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
     let assistantResult;const assistantCall=requestedAssistant||(audioControl&&!plan.actions.length?inferAssistant(text):null);
     if(assistantCall){
       failureStage='assistant-tool';send('stage',{stage:'tool',tool:assistantCall.operation});
-      try{assistantResult=await executeAssistant({...assistantCall,language:'ko'},s,{signal:controller.signal});}
-      catch(e){controller.signal.throwIfAborted();assistantResult={ok:false,operation:assistantCall.operation,reply:'정보 조회가 제한 시간 안에 완료되지 않았어요. 잠시 후 다시 시도해 주세요.',error:e.message,sources:[]};}
+      try{assistantResult=await executeAssistant({...assistantCall,language},s,{signal:controller.signal});}
+      catch(e){controller.signal.throwIfAborted();assistantResult={ok:false,operation:assistantCall.operation,reply:language==='en'?'The lookup timed out. Please try again shortly.':'정보 조회가 제한 시간 안에 완료되지 않았어요. 잠시 후 다시 시도해 주세요.',error:e.message,sources:[]};}
       plan={intent:'question',actions:[],reply:assistantResult.reply?.slice(0,350)||'조회 결과를 확인하지 못했어요.'};send('assistant',assistantResult);
     }
     controller.signal.throwIfAborted();
     if(active.get(s.id)!==task||s.state.revision!==revision)throw new Error('새로운 요청으로 차량 상태가 바뀌었습니다. 다시 말씀해 주세요.');
-    failureStage='vehicle-validation';let result,validationError=boundsGate.reason,proposedActions=boundsGate.proposedActions;try{result=executePlan(s.state,s.previous,plan);}catch(error){validationError=error.message;proposedActions=plan.actions;plan={...plan,intent:'clarify',actions:[],reply:'설정을 적용하지 않았어요. '+validationError};result=executePlan(s.state,s.previous,plan);}
+    failureStage='vehicle-validation';let result,validationError=boundsGate.reason,proposedActions=boundsGate.proposedActions;try{result=executePlan(s.state,s.previous,plan,language);}catch(error){validationError=error.message;proposedActions=plan.actions;plan={...plan,intent:'clarify',actions:[],reply:localizeVehicleText('설정을 적용하지 않았어요. '+validationError,language)};result=executePlan(s.state,s.previous,plan,language);}
     s.state=result.state;s.previous=result.previous;s.updated=Date.now();
     s.history.push({role:'user',content:text},{role:'assistant',content:result.reply});
-    const ttsProvider=req.body.ttsProvider==='qwen'?'qwen':'polly';
-    record={id:turnId,at:new Date().toISOString(),intent:plan.intent,modelProposedActions,modelReply,generationProfile:data.generationProfile,validationError,proposedActions,promptVersion,engine:otherAudio?'audio-control':miniControl?'minicpm-control':'cascade',audioModelId:audioModel?.id,quantization:data.quantization,plannerId:planner?.id,plannerMemory:data.memory,input:text,rawTranscript,asrModel,asrId:audioControl?null:asrId,inputMeaning:audioControl?'model-understanding-not-verbatim-transcript':'transcript',reply:result.reply,actions:plan.actions,results:result.results,state:structuredClone(s.state),asrMs:audioControl?null:asrMs,llmMs:data.elapsedMs,planner:data.model,plannerRevision:data.revision,modelLoadMs:data.loadMs||0,vehicleTools:true,plannerPasses:data.plannerPasses||1,ttsProvider,ttsMeasurement:ttsProvider==='polly'?'aws-api-round-trip':'gpu-inference',inputMode:req.body.text?'text':['microphone','file'].includes(req.body.inputMode)?req.body.inputMode:'audio',feedback:null};
+    const ttsProvider=language==='en'?'polly':req.body.ttsProvider==='qwen'?'qwen':'polly';
+    record={id:turnId,at:new Date().toISOString(),intent:plan.intent,responseLanguage:language,modelProposedActions,modelReply,generationProfile:data.generationProfile,validationError,proposedActions,promptVersion,engine:otherAudio?'audio-control':miniControl?'minicpm-control':'cascade',audioModelId:audioModel?.id,quantization:data.quantization,plannerId:planner?.id,plannerMemory:data.memory,input:text,rawTranscript,asrModel,asrId:audioControl?null:asrId,inputMeaning:audioControl?'model-understanding-not-verbatim-transcript':'transcript',reply:result.reply,actions:plan.actions,results:result.results,state:structuredClone(s.state),asrMs:audioControl?null:asrMs,llmMs:data.elapsedMs,planner:data.model,plannerRevision:data.revision,modelLoadMs:data.loadMs||0,vehicleTools:true,plannerPasses:data.plannerPasses||1,ttsProvider,ttsMeasurement:ttsProvider==='polly'?'aws-api-round-trip':'gpu-inference',inputMode:req.body.text?'text':['microphone','file'].includes(req.body.inputMode)?req.body.inputMode:'audio',feedback:null};
     s.turns.push(record);
     if(assistantResult){record.assistant=assistantResult;record.toolMs=assistantResult.elapsedMs;record.planner='Application tool router';}
     if(miniGate?.reason){record.guardReason=miniGate.reason;record.proposedActions=miniGate.proposedActions;}
@@ -193,7 +196,7 @@ app.post(['/api/turn','/api/minicpm-control','/api/audio-control','/api/audio-na
     record.ttsMs=0;record.ttsCharacters=0;record.plannerQueueMs=data.queueMs??null;
     for(let index=0;index<sentences.length;index++){
       record.ttsCharacters+=sentences[index].length;
-      const audioResponse=await synthesize(sentences[index],ttsProvider,controller.signal);
+      const audioResponse=await synthesize(sentences[index],ttsProvider,controller.signal,{language});
       const bytes=audioResponse.bytes;
       record.ttsMs+=audioResponse.elapsedMs;
       if(index===0)record.serverAudioReadyMs=Math.round(performance.now()-start);
@@ -287,16 +290,17 @@ wss.on('connection',(ws,req,url)=>{
     recordStart=performance.now();s.turns.push(record);send('turn',{turnId:record.id});return record;
   };
   const stop=()=>{if(stopped)return;stopped=true;clearTimeout(idleTimer);clearTimeout(lifetime);if(record&&!record.completed)record.interrupted=true;sonic.close();if(sonicConnections.get(s.id)?.stop===stop)sonicConnections.delete(s.id);if(ws.readyState===1)ws.close();};
-  const sonic=new SonicSession({state:s.state,language:url.searchParams.get('language')==='en'?'en':'ko',executeTool:args=>{
+  const language=responseLanguage(url.searchParams.get('language'));
+  const sonic=new SonicSession({state:s.state,language,executeTool:args=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
     const proposedPlan=parsePlan(JSON.stringify({intent:args.actions?.length?'control':'question',actions:args.actions,reply:''}));const gate=guardExplicitBounds(normalizeTranscript(record?.input||''),proposedPlan),plan=gate.plan;
-    const result=executePlan(s.state,s.previous,plan);s.state=result.state;s.previous=result.previous;s.updated=Date.now();
+    const result=executePlan(s.state,s.previous,plan,language);s.state=result.state;s.previous=result.previous;s.updated=Date.now();
     if(!record||record.completed)newRecord();record.modelProposedActions.push(...proposedPlan.actions);if(gate.reason)record.validationError=gate.reason;record.actions.push(...plan.actions);record.results.push(...result.results);record.state=structuredClone(s.state);
     return{ok:true,state:s.state,reply:result.reply,results:result.results,actions:plan.actions};
   },executeAssistantTool:async(args,signal)=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw Error('Canceled assistant tool');
     if(!record||record.completed)newRecord();const currentRecord=record;
-    const result=await executeAssistant(args,s,{signal});
+    const result=await executeAssistant({...args,language},s,{signal});
     if(stopped||currentRecord!==record)throw Error('Canceled assistant result');
     currentRecord.assistant=result;currentRecord.toolMs=result.elapsedMs;s.updated=Date.now();return result;
   },emit:(event,data)=>{
