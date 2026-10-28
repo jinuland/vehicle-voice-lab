@@ -1,0 +1,198 @@
+{
+  "at": "2026-10-28T07:08:54.716184+00:00",
+  "method": "Synthetic speech only; includes failed intermediate checks. No visitor transcript, recording or destination. API radio effects mean prepared, not browser-confirmed playback.",
+  "speechChecks": [
+    {
+      "id": "seven-controls-plus-radio",
+      "input": "synthetic-speech",
+      "inputSeconds": 19.6075,
+      "pass": false,
+      "traceCount": 4,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "서울역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "reply": "시트 열선 1단 설정, 음량 20 조정, 그리고 서울역 목적지 설정을 모두 완료했습니다.",
+      "errors": [],
+      "phase": "before-numeric-fix"
+    },
+    {
+      "id": "seven-controls-plus-radio",
+      "input": "synthetic-speech",
+      "inputSeconds": 19.6075,
+      "pass": false,
+      "traceCount": 5,
+      "state": {
+        "revision": 4,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "서울역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "reply": "\" \"actions\":}}]\"navigate\",\"value\":\"서울역\"}]",
+      "errors": [],
+      "phase": "execution-fixed-narration-failed",
+      "note": "All settings applied, but JSON fragments in spoken output invalidate the response."
+    },
+    {
+      "id": "seven-controls-plus-radio",
+      "input": "synthetic-speech",
+      "inputSeconds": 19.645,
+      "pass": true,
+      "traceCount": 5,
+      "state": {
+        "revision": 3,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "서울역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "reply": "열선 일단 설정, 음량 이십, 서울역 목적지 설정 모두 완료했습니다.",
+      "errors": [],
+      "phase": "final"
+    }
+  ],
+  "textChecks": [
+    {
+      "id": "six-controls-plus-radio",
+      "input": "synthetic-text",
+      "inputSeconds": null,
+      "pass": true,
+      "traceCount": 2,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "서울역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "reply": "라디오 플레이어가 준비되었습니다. 요청하신 온도 조절과 에어컨, 김서림 제거, 열선 설정 그리고 서울역 목적지 설정까지 모두 완료했습니다.",
+      "errors": []
+    },
+    {
+      "id": "seven-controls-plus-radio",
+      "input": "synthetic-text",
+      "inputSeconds": null,
+      "pass": true,
+      "traceCount": 3,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "서울역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "reply": "요청하신 차량 설정과 목적지 설정을 모두 완료했고 라디오 플레이어가 준비되었습니다.",
+      "errors": []
+    },
+    {
+      "id": "four-controls-plus-radio",
+      "input": "synthetic-text",
+      "inputSeconds": null,
+      "pass": true,
+      "traceCount": 2,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 30
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "reply": "운전석 이십오도, 조수석 삼십도로 설정하고 에어컨은 끄고 김서림 제거 기능을 켰습니다.",
+      "errors": []
+    }
+  ],
+  "browser": {
+    "retainedMessages": 26,
+    "scrollTopWhileReading": 0,
+    "firstMessageRetained": true
+  },
+  "unitTestsPassed": 98
+}

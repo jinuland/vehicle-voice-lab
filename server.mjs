@@ -1,3 +1,4 @@
+import {appendSonicToolTrace,guardSonicRadio} from './sonic-tool-trace.mjs';
 import {responseLanguage,replyLanguageInstruction,speechOptions} from './response-language.mjs';
 import express from 'express';
 import {mountGame} from './game-api.mjs';
@@ -293,10 +294,11 @@ wss.on('connection',(ws,req,url)=>{
   const language=responseLanguage(url.searchParams.get('language'));
   const sonic=new SonicSession({state:s.state,language,executeTool:args=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
+    guardSonicRadio(record?.input,args.actions||[]);
     const proposedPlan=parsePlan(JSON.stringify({intent:args.actions?.length?'control':'question',actions:args.actions,reply:''}));const gate=guardExplicitBounds(normalizeTranscript(record?.input||''),proposedPlan),plan=gate.plan;
     const result=executePlan(s.state,s.previous,plan,language);s.state=result.state;s.previous=result.previous;s.updated=Date.now();
     if(!record||record.completed)newRecord();record.modelProposedActions.push(...proposedPlan.actions);if(gate.reason)record.validationError=gate.reason;record.actions.push(...plan.actions);record.results.push(...result.results);record.state=structuredClone(s.state);
-    return{ok:true,state:s.state,reply:result.reply,results:result.results,actions:plan.actions};
+    return{ok:!gate.reason,error:gate.reason?localizeVehicleText(gate.reason,language):undefined,validationError:gate.reason,state:s.state,reply:result.reply,results:result.results,actions:plan.actions};
   },executeAssistantTool:async(args,signal)=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw Error('Canceled assistant tool');
     if(!record||record.completed)newRecord();const currentRecord=record;
@@ -305,6 +307,7 @@ wss.on('connection',(ws,req,url)=>{
     currentRecord.assistant=result;currentRecord.toolMs=result.elapsedMs;s.updated=Date.now();return result;
   },emit:(event,data)=>{
     s.updated=Date.now();
+    if(event==='tool'){if(!record||record.completed)newRecord();appendSonicToolTrace(record,data);}
     if(event==='text'){
       if(data.role==='USER'){if(!record||record.completed)newRecord();record.input+=data.text;}
       else if(record)record.reply+=data.text;
@@ -312,6 +315,7 @@ wss.on('connection',(ws,req,url)=>{
     if(event==='audio'&&record&&record.serverAudioReadyMs==null){record.serverAudioReadyMs=Math.round(performance.now()-recordStart);record.serverTimingBasis='ASR transcript arrival or text submission';}
     if(event==='done'&&record){record.completed=true;s.history.push({role:'user',content:record.input},{role:'assistant',content:record.reply});}
     if(event==='usage'&&record)record.usage=data;
+    if(event==='error'&&record)record.responseError={...data,stage:data.code==='invalid-spoken-tool-call'?'spoken-response':'stream'};
     if(event==='interrupted'&&record)record.interrupted=true;
     send(event,{...data,turnId:record?.id});
     if(event==='error'||event==='closed')stop();

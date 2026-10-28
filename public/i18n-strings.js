@@ -546,5 +546,6 @@ Object.assign(english,{
  "실제 라디오 재생 중":"Live radio playing",
  "라디오 일시 정지":"Radio paused",
  "모델·음성 설정":"Model and voice settings",
- "최근 6개 메시지 표시 · 전체 대화는 기록 내려받기로 확인하세요.":"Showing the latest 6 messages. Download the session for full history."
+ "이전 대화도 위로 스크롤해 확인할 수 있어요.":"Scroll up to read earlier messages.",
+ "이전 기록 불러오기":"Load previous session"
 });

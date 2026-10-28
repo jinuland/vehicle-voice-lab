@@ -1,3 +1,4 @@
+import {followConversation,transcriptMessages} from './conversation-history.js';
 import {configureAssistant,renderAssistantResult,stopRadio,syncRadioState,duckRadio,getRadioState} from './assistant-ui.js';
 const $=id=>document.getElementById(id);
 let sessionId,ready=false,micEnabled=false,audioContext,mediaStream,recorder,source,muteGain;
@@ -22,6 +23,8 @@ const isExtraAudio=()=>engine.startsWith('audio-');
 const isAudioInput=()=>engine.startsWith('minicpm')||isExtraAudio();
 const audioModelName=()=>$('audio-model').selectedOptions[0]?.textContent||'음성 모델';
 const sonicBubbles=new Map();
+let conversationPinned=true;
+function scrollConversation(){followConversation($('conversation'),conversationPinned);}
 function clearSonicPreviews(){for(const[id,item]of sonicBubbles)if(item.preview){item.el.remove();sonicBubbles.delete(id);}}
 let bargeInEnabled=false;
 let speech=false,frames=[],preRoll=[],voiceMs=0,silenceMs=0,noiseFloor=.004,lastVoiceAt=0;
@@ -47,9 +50,8 @@ function bubble(text,type){
   $('welcome')?.remove();const el=document.createElement('div');el.className='bubble '+type;
   const label=document.createElement('span');label.className='label';label.textContent=type==='user'?'YOU':type==='error'?'안내':'온';el.append(label,document.createTextNode(text));
   const list=$('conversation');list.append(el);
-  const messages=[...list.querySelectorAll('.bubble')];for(const old of messages.slice(0,-6))old.remove();
   for(const[id,item]of sonicBubbles)if(!item.el.isConnected)sonicBubbles.delete(id);
-  list.scrollTop=list.scrollHeight;return el;
+  scrollConversation();return el;
 }
 async function checkHealth(){
   try{const h=await(await fetch('/api/health')).json();$('conversation-engine').querySelector('[value="minicpm-control"]').disabled=!h.minicpmControl;for(const mode of ['audio-control','audio-native'])$('conversation-engine').querySelector(`[value="${mode}"]`).disabled=(mode==='audio-native'&&!$('comparison-only').checked)||!h.researchWorkers?.speech?.ready||![...$('audio-model').options].some(o=>o.dataset.ready==='true'&&(mode==='audio-control'?o.dataset.audioPlanner==='true':o.dataset.nativeAudio==='true'));ready=isExtraAudio()?!!(h.researchWorkers?.speech?.ready&&h.researchWorkers.speech.available?.includes($('audio-model').value)&&!$('audio-model').selectedOptions[0]?.disabled):engine==='minicpm-control'?!!(h.minicpmControl&&h.researchWorkers?.minicpm?.ready&&h.researchWorkers.minicpm.audioPlanner):engine==='sonic'?!!h.sonic:engine.startsWith('minicpm')?!!h.researchWorkers?.minicpm?.ready:h.ready&&(asrChoice!=='whisper'||h.asrWorkers?.whisper?.ready);
@@ -138,9 +140,9 @@ async function submit(payload,{basis='text',endedAt=performance.now()}={}){
           renderState(d.state);syncRadioState(d.state,d.actions);$('state-change').textContent=d.results.length?d.results.join(' '):'차량 설정 변경 없음';metric('llm-ms',d.llmMs);
           lastTurnId=d.turnId;$('feedback').hidden=false;document.querySelectorAll('[data-rating]').forEach(b=>b.classList.remove('selected'));
           if(d.modelLoadMs>1000)toast(`${isExtraAudio()?'음성':'판단'} 모델 전환·로딩에 ${(d.modelLoadMs/1000).toFixed(1)}초 걸렸어요. 다음 요청부터는 로딩 시간을 제외하고 비교할 수 있어요.`);
-          $('conversation').scrollTop=$('conversation').scrollHeight;
+          scrollConversation();
         }else if(event==='s2sText'){
-          spokenBubble??=bubble('','assistant');spokenText+=d.text;spokenBubble.lastChild.textContent=spokenText;$('conversation').scrollTop=$('conversation').scrollHeight;lastTurnId=d.turnId;$('feedback').hidden=false;
+          spokenBubble??=bubble('','assistant');spokenText+=d.text;spokenBubble.lastChild.textContent=spokenText;scrollConversation();lastTurnId=d.turnId;$('feedback').hidden=false;
         }else if(event==='audio'){
           metric('tts-ms',d.ttsMs);playAudio(d.audio,number);
         }else if(event==='done'){
@@ -228,12 +230,12 @@ async function ensureSonic(){
       else{
         if(!item){item={el:bubble('','assistant')};sonicBubbles.set(data.id,item);}
         item.preview=!data.final;item.el.lastChild.textContent=data.text;item.el.querySelector('.label').textContent=data.final?'온':'온 · 응답 미리보기';
-        $('conversation').scrollTop=$('conversation').scrollHeight;
+        scrollConversation();
       }
     }
     if(event==='text'&&data.role==='USER'){
       const key=data.id;let item=sonicBubbles.get(key);
-      if(!item){item={el:bubble('',data.role==='USER'?'user':'assistant'),text:''};sonicBubbles.set(key,item);}item.text+=data.text;item.el.lastChild.textContent=item.text;$('conversation').scrollTop=$('conversation').scrollHeight;
+      if(!item){item={el:bubble('',data.role==='USER'?'user':'assistant'),text:''};sonicBubbles.set(key,item);}item.text+=data.text;item.el.lastChild.textContent=item.text;scrollConversation();
       if(data.role==='USER'){busy=true;resetSonicMetrics();setStatus('Sonic이 요청을 처리하고 있어요…','busy');}
     }
     if(event==='tool'){if(data.operation)renderAssistantResult(data);if(data.state){renderState(data.state);syncRadioState(data.state,data.actions);}$('state-change').textContent=data.operation?`${data.operation} · ${data.elapsedMs??'—'} ms`:data.ok?(data.results?.join(' ')||'차량 상태 조회'):data.error;}
@@ -263,6 +265,19 @@ $('sonic-patience').addEventListener('change',e=>{if(sonicVoice){sonicVoice.pati
 $('sonic-language').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);idleStatus();});
 $('sonic-english').addEventListener('click',async()=>{
   try{const response=await fetch(engine==='minicpm'?'/sample-greeting.wav':'/sample-english.wav');if(!response.ok)throw new Error('영어 샘플을 불러오지 못했어요.');await submit({audio:base64(new Uint8Array(await response.arrayBuffer()))},{basis:'file'});}catch(error){toast(error.message);}
+});
+$('conversation').addEventListener('scroll',()=>{const list=$('conversation');conversationPinned=list.scrollHeight-list.scrollTop-list.clientHeight<48;});
+$('restore-history')?.addEventListener('click',()=>$('history-file').click());
+$('history-file')?.addEventListener('change',async event=>{
+ const file=event.target.files[0];if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw Error('5MB 이하의 차량 대화 기록을 선택해 주세요.');
+  const messages=transcriptMessages(JSON.parse(await file.text()));
+  if(messages.length>10000)throw Error('대화 기록이 너무 큽니다.');
+  for(const message of messages)bubble(message.text,message.type);
+  conversationPinned=true;scrollConversation();
+  toast(replyLanguage()==='en'?'Previous messages added. Current vehicle settings are preserved.':'이전 대화를 추가했어요. 현재 차량 설정은 유지합니다.');
+ }catch(error){toast(error.message);}finally{event.target.value='';}
 });
 $('mic').addEventListener('click',toggleMic);
 $('barge-in').addEventListener('change',e=>{bargeInEnabled=e.target.checked;});

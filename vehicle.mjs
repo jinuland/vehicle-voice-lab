@@ -1,3 +1,4 @@
+export const MAX_VEHICLE_ACTIONS=16;
 export const initialState = () => ({ revision: 0, temperature: {driver: 22, passenger: 22}, fan: 2, ac: true, defrost: false, seatHeat: 0, media: {playing: false, volume: 35, track: '드라이브 플레이리스트'}, navigation: {destination: null, active: false}, speed: 0 });
 export const systemPrompt = `너는 한국어 차량 음성 비서 '온'이다. 모든 차량 동작은 시뮬레이터에서만 실행된다.
 짧고 자연스럽게 한국어로 대답한다. 아래 형식의 JSON 객체만 출력하라. 생각 과정, 마크다운, 설명은 출력하지 마라.
@@ -35,7 +36,7 @@ export function parsePlan(raw) {
   let parsed;
   try { parsed=JSON.parse(clean); }
   catch { throw new Error('판단 모델이 차량 명령을 완성하지 못했어요. 다시 말씀해 주세요.'); }
-  if(!['control','question','clarify'].includes(parsed.intent)||!Array.isArray(parsed.actions)||parsed.actions.length>6||typeof parsed.reply!=='string'||parsed.reply.length>350) throw new Error('모델 응답 형식이 올바르지 않습니다.');
+  if(!['control','question','clarify'].includes(parsed.intent)||!Array.isArray(parsed.actions)||parsed.actions.length>MAX_VEHICLE_ACTIONS||typeof parsed.reply!=='string'||parsed.reply.length>350) throw new Error('모델 응답 형식이 올바르지 않습니다.');
   if(parsed.actions.length && parsed.intent!=='control') throw new Error('제어 의도가 아닌 응답의 동작을 거부했습니다.');
   return parsed;
 }
