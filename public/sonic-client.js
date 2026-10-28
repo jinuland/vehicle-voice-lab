@@ -1,6 +1,6 @@
 // Continuous PCM input/output. AWS credentials and tool execution stay on the server.
 window.SonicVoice=class {
-  constructor({sessionId,language,onEvent}){this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;}
+  constructor({sessionId,language,onEvent,patienceMs=2500}){this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;this.patienceMs=[1000,2500,4000].includes(patienceMs)?patienceMs:2500;this.pendingAudio=[];this.pendingSeconds=0;}
   async connect(){
     this.context=new AudioContext();await this.context.resume();
     const url=new URL('/api/sonic',location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';url.searchParams.set('session',this.sessionId);url.searchParams.set('language',this.language);
@@ -23,10 +23,11 @@ window.SonicVoice=class {
   sendPCM(bytes){if(this.socket?.readyState!==WebSocket.OPEN)return;if(this.socket.bufferedAmount>256000){this.onEvent('error',{error:'Sonic 연결이 지연되고 있어요. 다시 시작해 주세요.'});this.close();return;}this.socket.send(bytes);}
   noteInput(basis){this.basis=basis;this.inputStarted=performance.now();this.lastVoiceAt=0;this.firstPlayed=false;this.awaiting=true;}
   text(text){this.noteInput('text');this.send({type:'text',text});}
-  mic(chunk,rate,bargeIn){
+  mic(chunk,rate){
     this.liveMic=true;
     const pcm=window.voiceLabPCM16(chunk,rate);let sum=0;for(const x of chunk)sum+=x*x;const rms=Math.sqrt(sum/chunk.length);
-    if(!bargeIn&&(this.awaiting||this.sources.size)){this.sendPCM(new Uint8Array(pcm.byteLength));return;}
+    // Keep native Sonic full duplex: transcript/response events must never mute the user.
+    // Sonic detects barge-in and notifies us to discard already-buffered playback.
     if(rms>.018){if(!this.lastVoiceAt||performance.now()-this.lastVoiceAt>1000){this.firstPlayed=false;this.basis='microphone';}this.lastVoiceAt=performance.now();}
     this.sendPCM(pcm);
   }
@@ -41,9 +42,21 @@ window.SonicVoice=class {
   handle(type,data){
     if(type==='text'&&data.role==='USER'){this.awaiting=true;if(this.basis==='microphone')this.firstPlayed=false;}
     if(type==='interrupted'){this.clearPlayback();this.awaiting=false;this.firstPlayed=false;}
-    if(type==='audio')this.play(data);
-    if(type==='done'){this.awaiting=false;if(!this.sources.size)this.onEvent('playbackEnd',{});}
+    if(type==='audio'){this.queueAudio(data);return;}
+    if(type==='done'){this.awaiting=false;if(!this.sources.size&&!this.pendingAudio.length)this.onEvent('playbackEnd',{});}
     this.onEvent(type,data);
+  }
+  queueAudio(data){
+    this.pendingAudio.push(data);this.pendingSeconds+=data.audio.length*.75/2/data.sampleRate;
+    if(this.pendingSeconds>30){this.onEvent('error',{error:'음성 재생 대기열이 길어 Sonic 연결을 종료했어요. 다시 시작해 주세요.'});this.close();return;}
+    this.flushAudio();
+  }
+  flushAudio(){
+    clearTimeout(this.flushTimer);if(this.closed||!this.pendingAudio.length)return;
+    const remaining=this.liveMic&&this.basis==='microphone'&&this.lastVoiceAt?this.patienceMs-(performance.now()-this.lastVoiceAt):0;
+    if(remaining>0){this.onEvent('playbackWait',{});this.flushTimer=setTimeout(()=>this.flushAudio(),remaining+20);return;}
+    const audio=this.pendingAudio;this.pendingAudio=[];this.pendingSeconds=0;
+    for(const data of audio){this.play(data);if(this.closed)return;this.onEvent('audio',data);}
   }
   play(data){
     if(this.closed)return;
@@ -57,9 +70,9 @@ window.SonicVoice=class {
       this.send({type:'metrics',firstPlaybackMs:elapsed,basis:this.basis==='microphone'?'last audible input estimate to scheduled playback':this.basis==='file'?'file playback end to scheduled output':'text submission to scheduled playback'});
       this.onEvent('firstPlayback',{ms:elapsed,basis:this.basis});
     }
-    source.onended=()=>{this.sources.delete(source);source.disconnect();if(!this.sources.size&&!this.awaiting)this.onEvent('playbackEnd',{});};source.start(at);
+    source.onended=()=>{this.sources.delete(source);source.disconnect();if(!this.sources.size&&!this.awaiting&&!this.pendingAudio.length)this.onEvent('playbackEnd',{});};source.start(at);
   }
-  clearPlayback(){for(const source of this.sources){source.onended=null;try{source.stop();}catch{}source.disconnect();}this.sources.clear();this.nextTime=0;}
+  clearPlayback(){clearTimeout(this.flushTimer);this.pendingAudio=[];this.pendingSeconds=0;for(const source of this.sources){source.onended=null;try{source.stop();}catch{}source.disconnect();}this.sources.clear();this.nextTime=0;}
   close(){if(this.closed)return;this.closed=true;this.clearPlayback();clearInterval(this.silence);this.send({type:'stop'});this.socket?.close();this.context?.close().catch(()=>{});}
 };
 window.voiceLabPCM16=(input,rate)=>{

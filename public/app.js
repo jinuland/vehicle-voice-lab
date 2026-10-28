@@ -157,7 +157,7 @@ function onPCM(chunk){
   if(!micEnabled)return;
   let sum=0;for(const x of chunk)sum+=x*x;const rms=Math.sqrt(sum/chunk.length),duration=chunk.length/audioContext.sampleRate*1000;
   $('level-bar').style.width=Math.min(100,rms*1800)+'%';
-  if(engine==='sonic'){sonicVoice?.mic(chunk,audioContext.sampleRate,bargeInEnabled);return;}
+  if(engine==='sonic'){sonicVoice?.mic(chunk,audioContext.sampleRate);return;}
   if(busy&&!bargeInEnabled){speech=false;frames=[];preRoll=[];voiceMs=0;silenceMs=0;return;}
   const threshold=Math.max(.012,Math.min(.06,noiseFloor*3.2));
   const voiced=rms>threshold;
@@ -209,7 +209,7 @@ async function ensureSonic(){
   if(sonicVoice&&!sonicVoice.closed)return sonicVoice;
   if(sonicConnecting)return sonicConnecting;
   setStatus('Nova 2.5 Sonic에 연결하고 있어요…','busy');
-  const voice=new window.SonicVoice({sessionId,language:$('sonic-language').value,onEvent:(event,data)=>{
+  const voice=new window.SonicVoice({sessionId,language:$('sonic-language').value,patienceMs:Number($('sonic-patience').value),onEvent:(event,data)=>{
     if(voice!==sonicVoice)return;
     if(event==='ready')setStatus('Sonic 연결됨 · 말씀하거나 샘플을 눌러 주세요','listening');
     if(event==='turn'){lastTurnId=data.turnId;$('feedback').hidden=false;}
@@ -228,6 +228,7 @@ async function ensureSonic(){
       if(data.role==='USER'){busy=true;resetSonicMetrics();setStatus('Sonic이 요청을 처리하고 있어요…','busy');}
     }
     if(event==='tool'){if(data.operation)renderAssistantResult(data);if(data.state){renderState(data.state);syncRadioState(data.state,data.actions);}$('state-change').textContent=data.operation?`${data.operation} · ${data.elapsedMs??'—'} ms`:data.ok?(data.results?.join(' ')||'차량 상태 조회'):data.error;}
+    if(event==='playbackWait'){busy=true;setStatus('말씀을 더 기다리고 있어요…','listening');}
     if(event==='audio'){duckRadio(true);busy=true;setStatus('Sonic이 말하고 있어요…','busy');}
     if(event==='firstPlayback'){metric('first-audio-ms',data.ms);$('metric-context').textContent=data.basis==='text'?'Sonic · 텍스트 제출 → 재생 예약':data.basis==='file'?'Sonic · 입력 음성 종료 → 재생 예약':'Sonic · 마지막 발화 추정 → 재생 예약';}
     if(event==='playbackEnd'){duckRadio(false);busy=false;idleStatus();}
@@ -239,7 +240,7 @@ async function ensureSonic(){
 }
 $('conversation-engine').addEventListener('change',async e=>{
   if(micEnabled)await toggleMic();await interrupt(false);engine=e.target.value;
-  $('sonic-options').hidden=engine!=='sonic';$('sonic-english').hidden=engine!=='sonic';$('tts-provider').parentElement.hidden=engine==='sonic';
+  $('barge-in-option').hidden=engine==='sonic';$('sonic-options').hidden=engine!=='sonic';$('sonic-english').hidden=engine!=='sonic';$('tts-provider').parentElement.hidden=engine==='sonic';
   $('minicpm-options').hidden=engine!=='minicpm';$('minicpm-control-notice').hidden=engine!=='minicpm-control';$('planner-row').hidden=engine!=='cascade';$('asr-row').hidden=engine!=='cascade';$('planner-notice').hidden=engine!=='cascade'||!['hyperclova-05b','exaone4-12b','smollm3'].includes(plannerChoice);$('audio-model-row').hidden=!isExtraAudio();$('audio-language').parentElement.hidden=engine==='audio-control';$('tts-provider').parentElement.hidden=!['cascade','minicpm-control','audio-control'].includes(engine);$('sonic-english').hidden=engine==='cascade';
   document.querySelectorAll('[data-prompt]').forEach(button=>button.hidden=isAudioInput());
   $('pipeline-description').textContent=isExtraAudio()?(engine==='audio-control'?'음성 직접 판단 → 차량 실행 → 한국어 TTS · 하이브리드 실험':'모델 내장 S2S · 발화 단위 입력 · 차량 제어 미연결'):engine==='sonic'?'실시간 음성 스트림 · Sonic 내장 턴 감지 · 한국어 미지원 실험 · 실제 차량 연결 없음':engine==='minicpm-control'?'MiniCPM 음성 판단 → 차량 실행 → 한국어 TTS · 하이브리드 실험':engine==='minicpm'?'MiniCPM 자체 S2S · 발화 단위 입력 · 출력 스트리밍 · 차량 제어 미연결':'발화 단위 인식 · 문장 단위 음성 응답 · 실제 차량 연결 없음';
@@ -249,6 +250,7 @@ $('comparison-only').addEventListener('change',async e=>{for(const id of ['minic
 $('audio-model').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);await checkHealth();});
 $('asr-model').addEventListener('change',async e=>{if(micEnabled)await toggleMic();await interrupt(false);asrChoice=e.target.value;await checkHealth();});
 $('planner-model').addEventListener('change',async e=>{if(micEnabled)await toggleMic();await interrupt(false);plannerChoice=e.target.value;await checkHealth();});
+$('sonic-patience').addEventListener('change',e=>{if(sonicVoice){sonicVoice.patienceMs=Number(e.target.value);sonicVoice.flushAudio();}});
 $('sonic-language').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);idleStatus();});
 $('sonic-english').addEventListener('click',async()=>{
   try{const response=await fetch(engine==='minicpm'?'/sample-greeting.wav':'/sample-english.wav');if(!response.ok)throw new Error('영어 샘플을 불러오지 못했어요.');await submit({audio:base64(new Uint8Array(await response.arrayBuffer()))},{basis:'file'});}catch(error){toast(error.message);}

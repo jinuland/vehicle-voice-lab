@@ -73,3 +73,12 @@ test('continuous Sonic microphone turns sharing completionId each finish exactly
   }
   assert.deepEqual(events.filter(e=>e.type==='done').map(e=>e.data.sonicTurn),[1,2,3]);s.close();
 });
+
+test('Sonic defaults to patient turn detection and validates comparison settings',()=>{
+ for(const sensitivity of ['LOW','MEDIUM','HIGH']){
+  const s=new SonicSession({state:initialState(),emit:()=>{},...(sensitivity==='LOW'?{}:{endpointingSensitivity:sensitivity})});
+  const start=JSON.parse(s.queue.values[0].chunk.bytes.toString()).event.sessionStart;
+  assert.equal(start.turnDetectionConfiguration.endpointingSensitivity,sensitivity);s.close();
+ }
+ assert.throws(()=>new SonicSession({endpointingSensitivity:'arbitrary'}));
+});
