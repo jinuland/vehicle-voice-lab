@@ -2,7 +2,7 @@
 import WebSocket from 'ws';import{writeFile,mkdir}from'node:fs/promises';
 const base=process.env.TEST_BASE;if(!base)throw Error('Set TEST_BASE');
 const audioInput=process.env.TEST_INPUT==='audio',selected=process.env.TEST_CASES?.split(',');
-const cases=[['weather','수원 날씨 알려줘'],['radio','혹시 라디오 채널이 뭐가 있나요?'],['timer','오 초 타이머 맞춰줘'],['notes','메모해줘 주차 위치 지하 2층 B12'],['calculate','20 곱하기 350 계산해줘'],['holidays','다음 공휴일 언제야'],['exchange','100달러 원화로 환율 계산해줘'],['sun','강릉 일몰 알려줘'],['wiki','경복궁 설명해줘'],['route','서울시청에서 서울역까지 거리 알려줘'],['web','전기차 최근 뉴스 웹검색해줘']].filter(([id])=>!selected||selected.includes(id));
+const cases=[['weather',process.env.TEST_WEATHER_QUERY||'수원 날씨 알려줘'],['radio','혹시 라디오 채널이 뭐가 있나요?'],['timer','오 초 타이머 맞춰줘'],['notes','메모해줘 주차 위치 지하 2층 B12'],['calculate','20 곱하기 350 계산해줘'],['holidays','다음 공휴일 언제야'],['exchange','100달러 원화로 환율 계산해줘'],['sun','강릉 일몰 알려줘'],['wiki','경복궁 설명해줘'],['route','서울시청에서 서울역까지 거리 알려줘'],['web','전기차 최근 뉴스 웹검색해줘']].filter(([id])=>!selected||selected.includes(id));
 let polly,command;
 if(audioInput){const sdk=await import('@aws-sdk/client-polly'),{awsCredentials}=await import('../aws-auth.mjs');polly=new sdk.PollyClient({region:'ap-northeast-2',...awsCredentials});command=sdk.SynthesizeSpeechCommand;}
 async function probe([operation,text]){
@@ -31,7 +31,7 @@ async function probe([operation,text]){
  });
  const tool=row.tools.find(x=>x.operation===operation&&x.ok);
  row.pass=!!(tool&&row.audioBytes&&!row.error&&!row.captions.some(t=>/assistant_tool\s*[{(:]|<\|/i.test(t)));
- if(operation==='weather')row.pass&&=tool?.position?.name?.includes('수원')===true;
+ if(operation==='weather')row.pass&&=tool?.position?.name?.includes(process.env.TEST_WEATHER_CITY||'수원')===true;
  if(operation==='radio')row.pass&&=tool?.effect===null&&tool?.items?.length===4;
  if(operation==='timer')row.pass&&=tool?.effect?.timers?.length>0;
  console.log(JSON.stringify({operation:row.operation,input:row.input,pass:row.pass,reply:row.reply,error:row.error,tools:row.tools.map(t=>({operation:t.operation,ok:t.ok,position:t.position,effect:t.effect,elapsedMs:t.elapsedMs}))}));return row;

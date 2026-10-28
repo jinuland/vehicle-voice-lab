@@ -60,3 +60,14 @@ test('an unresolvable named place never returns default Seoul weather',async t=>
  const result=await providerLookup({operation:'weather',query:'없는도시테스트 날씨 알려줘',latitude:37.5665,longitude:126.978,language:'ko'});
  assert.equal(result.ok,false);assert.equal(result.needsLocation,true);assert.match(result.reply,/시·군 이름/);assert.equal(urls.length,1);assert.match(urls[0],/geocoding-api/);
 });
+
+test('overseas city names, Korean spacing and localized homonyms preserve the top global match',async t=>{
+ const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original;});const queries=[];
+ globalThis.fetch=async url=>{const u=new URL(url);queries.push(u);return new Response(JSON.stringify({results:[{name:'샌프란시스코',latitude:37.77493,longitude:-122.41942,country_code:'US'},{name:'San Francisco',latitude:8.53556,longitude:125.95,country_code:'PH'}]}),{headers:{'Content-Type':'application/json'}});};
+ const {coordinates,requestedLocation}=await import('../assistant-providers.mjs');
+ for(const query of ['샌프란시스코 날씨 알려줘','샌프란 시스코 날씨 알려줘','San Francisco weather','Weather in San Francisco']){
+  const location=await coordinates(query,{operation:'weather',language:'ko',latitude:37.5665,longitude:126.978});assert.equal(location.latitude,37.77493,query);assert.equal(location.longitude,-122.41942);
+ }
+ assert.ok(queries.length>0);for(const u of queries){assert.equal(u.searchParams.has('countryCode'),false);assert.ok(['샌프란시스코','San Francisco'].includes(u.searchParams.get('name')));}
+ assert.equal(requestedLocation("What's the weather like?",'weather'),'');
+});

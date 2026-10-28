@@ -35,3 +35,9 @@ AWS_PROFILE=game-forge TEST_BASE=https://d3q7tlfor72b22.cloudfront.net TEST_INPU
 ```
 
 Speech fixtures use Polly Seoyeon; they contain no visitor audio. Both vehicle web deployments and the existing provider Lambda were updated. GPU model services and their configuration were preserved. Deploy the allowlisted assistant files with `python3 scripts/deploy-sonic-turn-taking.py --include-assistant`; update the existing Lambda provider bundle separately when its shared provider module changes.
+
+## Overseas weather correction · 2026-10-28
+
+The preceding geocoding change incorrectly inferred `countryCode=KR` from Korean characters, excluding overseas cities written in Korean. Removed that restriction, normalized spaces between Hangul characters (e.g. `샌프란 시스코` → `샌프란시스코`), and added the English `<city> weather` order. The geocoder's ranking is preserved: a lower-ranked English-spelled namesake must not outrank the localized name of the primary result.
+
+Both deployed sites passed `샌프란시스코 날씨 알려줘`, `샌프란 시스코 날씨 알려줘`, and `San Francisco weather`, all at 37.77493, −122.41942 in California. One Korean Polly speech fixture also passed Sonic's actual weather tool call and native spoken answer. The existing AgentCore Lambda was updated; fallback source was synchronized to both hosts without restarting active voice sessions or GPU services. Reproduce the speech check with `TEST_WEATHER_QUERY='샌프란 시스코 날씨 알려줘' TEST_WEATHER_CITY=샌프란시스코` added to the audio audit command above. New unit coverage includes overseas search, spacing, localized homonyms, and a generic question without a named place.

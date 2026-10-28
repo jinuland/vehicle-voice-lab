@@ -51,8 +51,9 @@ export function requestedLocation(query,operation){
  if(!['weather','sun'].includes(operation))return '';
  const q=String(query).trim().replace(/[?!？。.!]/g,'');
  const english=q.match(/(?:weather|forecast|sunrise|sunset)(?:\s+(?:like|today|tomorrow|now))?\s+(?:in|for|at)\s+(.+)/i);
- let name=english?.[1]||q.match(/^(.+?)\s*(?:날씨|일출|일몰|비\s*(?:와|오|올))/)?.[1]||q.match(/(?:날씨|일출|일몰)\s+(?:는\s+)?([가-힣A-Za-z][가-힣A-Za-z -]*)$/)?.[1]||'';
- name=name.replace(/^(?:(?:혹시|그럼|오늘|내일|지금|현재|이번|주말|모레)\s*)+/,'').replace(/(?:에서|에는|에|의|은|는)$/,'').replace(/\s+(?:today|tomorrow|now|please).*$/i,'').trim();
+ const englishPrefix=q.match(/^(.+?)\s+(?:weather|forecast|sunrise|sunset)\b/i);
+ let name=english?.[1]||englishPrefix?.[1]||q.match(/^(.+?)\s*(?:날씨|일출|일몰|비\s*(?:와|오|올))/)?.[1]||q.match(/(?:날씨|일출|일몰)\s+(?:는\s+)?([가-힣A-Za-z][가-힣A-Za-z -]*)$/)?.[1]||'';
+ name=name.replace(/^(?:(?:what(?:'s| is)|how(?:'s| is)|tell me|please|the)\s*)+/i,'').replace(/^(?:(?:혹시|그럼|오늘|내일|지금|현재|이번|주말|모레)\s*)+/,'').replace(/(?:에서|에는|에|의|은|는)$/,'').replace(/\s+(?:today|tomorrow|now|please).*$/i,'').trim();
  return /^(?:어때|알려줘|알려|어떻게|여기|현재위치|지금|내일|오늘|현재|tomorrow|today|here|my location)$/i.test(name)?'':name.slice(0,80);
 }
 export async function coordinates(label,a,signal){
@@ -62,11 +63,12 @@ export async function coordinates(label,a,signal){
  if(requested){
   for(const[pattern,latitude,longitude,name]of cities)if(new RegExp(pattern,'i').test(requested))return{latitude,longitude,name:ko(a)?name:requested};
   try{
-   const url='https://geocoding-api.open-meteo.com/v1/search?'+new URLSearchParams({name:requested,count:'5',language:ko(a)?'ko':'en',...(/[가-힣]/.test(requested)?{countryCode:'KR'}:{})});
+   const url='https://geocoding-api.open-meteo.com/v1/search?'+new URLSearchParams({name:requested.replace(/(?<=[가-힣])\s+(?=[가-힣])/g,''),count:'5',language:ko(a)?'ko':'en'});
    const data=await json(url,{signal,ttl:86400000});
    const locations=(data.results||[]).filter(x=>Number.isFinite(x.latitude)&&Number.isFinite(x.longitude));
-   const normalized=x=>x.toLowerCase().replace(/\s|시$/g,'');
-   const location=locations.find(x=>normalized(x.name)===normalized(requested))||locations.find(x=>['PPLC','PPLA','PPLA2','PPLA3','PPLA4'].includes(x.feature_code))||locations[0];
+   // Keep the geocoder's ranking: a localized US city name must not lose to
+   // a lower-ranked namesake merely because that namesake is spelled in English.
+   const location=locations[0];
    if(location)return{latitude:location.latitude,longitude:location.longitude,name:location.name,geocoded:true};
   }catch(error){signal?.throwIfAborted();return{name:requested,missing:true,error:'Location lookup unavailable'};}
   return{name:requested,missing:true};
