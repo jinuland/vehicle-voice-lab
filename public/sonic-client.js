@@ -1,9 +1,11 @@
 // Continuous PCM input/output. AWS credentials and tool execution stay on the server.
 window.SonicVoice=class {
-  constructor({sessionId,language,onEvent,patienceMs=2500}){this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;this.patienceMs=[1000,2500,4000].includes(patienceMs)?patienceMs:2500;this.pendingAudio=[];this.pendingSeconds=0;}
+  constructor({sessionId,language,onEvent,patienceMs=2500,endpoint='/api/sonic',input='native'}){this.endpoint=endpoint;this.input=input;this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;this.patienceMs=[1000,2500,4000].includes(patienceMs)?patienceMs:2500;this.pendingAudio=[];this.pendingSeconds=0;}
   async connect(){
     this.context=new AudioContext();await this.context.resume();
-    const url=new URL('/api/sonic',location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';url.searchParams.set('session',this.sessionId);url.searchParams.set('language',this.language);
+    if(this.closed)throw new Error('Sonic 연결이 종료됐어요.');
+    const url=new URL(this.endpoint,location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';url.searchParams.set('session',this.sessionId);url.searchParams.set('language',this.language);
+    if(this.input==='transcribe')url.searchParams.set('input','transcribe');
     this.socket=new WebSocket(url);this.socket.binaryType='arraybuffer';
     await new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>{this.close();reject(new Error('Sonic 연결 시간이 초과됐어요.'));},15000);
@@ -16,13 +18,22 @@ window.SonicVoice=class {
       };
       this.socket.onclose=()=>{clearTimeout(timer);this.closed=true;this.clearPlayback();this.context?.close().catch(()=>{});clearInterval(this.silence);reject(new Error('Sonic 연결이 종료됐어요.'));this.onEvent('closed',{});};
     });
-    this.silence=setInterval(()=>{if(!this.liveMic&&!this.filePlaying)this.sendPCM(new Uint8Array(3200));},100);
+    if(this.input!=='transcribe')this.silence=setInterval(()=>{if(!this.liveMic&&!this.filePlaying)this.sendPCM(new Uint8Array(3200));},100);
     return this;
   }
   send(data){if(this.socket?.readyState===WebSocket.OPEN)this.socket.send(JSON.stringify(data));}
   sendPCM(bytes){if(this.socket?.readyState!==WebSocket.OPEN)return;if(this.socket.bufferedAmount>256000){this.onEvent('error',{error:'Sonic 연결이 지연되고 있어요. 다시 시작해 주세요.'});this.close();return;}this.socket.send(bytes);}
   noteInput(basis){this.basis=basis;this.inputStarted=performance.now();this.lastVoiceAt=0;this.firstPlayed=false;this.awaiting=true;}
-  text(text){this.noteInput('text');this.send({type:'text',text});}
+  text(text,{basis='text',startedAt}={}){
+    this.noteInput(basis);if(Number.isFinite(startedAt))this.inputStarted=startedAt;
+    this.send({type:'text',text});
+  }
+  beginAsr(mode){this.asrActive=true;this.send({type:'asr-start',mode});}
+  cancelAsr(){if(this.asrActive){this.asrActive=false;this.send({type:'asr-cancel'});}}
+  finishAsr(mode,startedAt){
+    if(!this.asrActive)return;
+    this.asrActive=false;this.noteInput('transcribe-'+mode);this.inputStarted=startedAt;this.send({type:'asr-end'});
+  }
   mic(chunk,rate){
     this.liveMic=true;
     const pcm=window.voiceLabPCM16(chunk,rate);let sum=0;for(const x of chunk)sum+=x*x;const rms=Math.sqrt(sum/chunk.length);
@@ -35,11 +46,19 @@ window.SonicVoice=class {
     if(this.filePlaying)throw new Error('샘플 음성이 이미 재생 중이에요.');
     const audio=await this.context.decodeAudioData(wav.slice(0));if(audio.duration>30)throw new Error('30초 이하 음성을 사용해 주세요.');
     const mono=new Float32Array(audio.length);for(let c=0;c<audio.numberOfChannels;c++){const data=audio.getChannelData(c);for(let i=0;i<data.length;i++)mono[i]+=data[i]/audio.numberOfChannels;}
-    const pcm=window.voiceLabPCM16(mono,audio.sampleRate);this.noteInput('file');this.send({type:'mode',mode:'file'});this.filePlaying=true;
-    try{for(let pos=0;pos<pcm.length&&!this.closed;pos+=3200){this.sendPCM(pcm.slice(pos,pos+3200));await new Promise(resolve=>setTimeout(resolve,100));}this.lastVoiceAt=performance.now();}
+    const pcm=window.voiceLabPCM16(mono,audio.sampleRate),stream=this.input==='transcribe';
+    if(stream)this.beginAsr('file');else{this.noteInput('file');this.send({type:'mode',mode:'file'});}
+    this.filePlaying=true;
+    try{
+      for(let pos=0;pos<pcm.length&&!this.closed&&(!stream||this.asrActive);pos+=3200){
+        const part=pcm.subarray(pos,pos+3200);this.sendPCM(part);await new Promise(resolve=>setTimeout(resolve,part.length/32));
+      }
+      if(stream)this.finishAsr('file',performance.now());else if(!this.closed){this.lastVoiceAt=performance.now();this.send({type:'audio-end'});}
+    }
     finally{this.filePlaying=false;}
   }
   handle(type,data){
+    if(type==='asr-error'){this.asrActive=false;this.awaiting=false;}
     if(type==='text'&&data.role==='USER'){this.awaiting=true;if(this.basis==='microphone')this.firstPlayed=false;}
     if(type==='interrupted'){this.clearPlayback();this.awaiting=false;this.firstPlayed=false;}
     if(type==='audio'){this.queueAudio(data);return;}
@@ -67,7 +86,7 @@ window.SonicVoice=class {
     const source=this.context.createBufferSource();source.buffer=buffer;source.connect(this.context.destination);
     const at=Math.max(this.context.currentTime+.035,this.nextTime);this.nextTime=at+buffer.duration;this.sources.add(source);
     if(!this.firstPlayed){this.firstPlayed=true;const elapsed=performance.now()-(this.lastVoiceAt||this.inputStarted||performance.now())+(at-this.context.currentTime)*1000;
-      this.send({type:'metrics',firstPlaybackMs:elapsed,basis:this.basis==='microphone'?'last audible input estimate to scheduled playback':this.basis==='file'?'file playback end to scheduled output':'text submission to scheduled playback'});
+      this.send({type:'metrics',firstPlaybackMs:elapsed,basis:this.basis==='microphone'?'last audible input estimate to scheduled playback':this.basis==='file'?'file playback end to scheduled output':this.basis==='asr-microphone'||this.basis==='transcribe-microphone'?'last audible input estimate through external ASR to scheduled playback':this.basis==='transcribe-file'?'streamed file end through Transcribe to scheduled playback':this.basis==='asr-file'?'file submission through external ASR to scheduled playback':'text submission to scheduled playback'});
       this.onEvent('firstPlayback',{ms:elapsed,basis:this.basis});
     }
     source.onended=()=>{this.sources.delete(source);source.disconnect();if(!this.sources.size&&!this.awaiting&&!this.pendingAudio.length)this.onEvent('playbackEnd',{});};source.start(at);

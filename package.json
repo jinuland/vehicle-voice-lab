@@ -13,6 +13,7 @@
     "@aws-sdk/client-bedrock-agentcore": "3.1156.0",
     "@aws-sdk/client-bedrock-runtime": "^3.1152.0",
     "@aws-sdk/client-polly": "^3.1152.0",
+    "@aws-sdk/client-transcribe-streaming": "3.1166.0",
     "@aws-sdk/credential-provider-node": "^3.972.86",
     "@aws-sdk/credential-providers": "^3.1152.0",
     "@smithy/hash-node": "^4.5.2",

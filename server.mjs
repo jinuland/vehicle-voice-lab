@@ -10,6 +10,9 @@ import {awsCredentials} from './aws-auth.mjs';
 import {allowedRequest,startSse,cloudMode} from './web-access.mjs';
 import {WebSocketServer} from 'ws';
 import {SonicSession,SONIC_MODEL,SONIC_REGION} from './sonic.mjs';
+import {sonicAsrRoute} from './sonic-asr.mjs';
+import {createTranscribeInput,TRANSCRIBE_REGION} from './sonic-transcribe.mjs';
+import {createNativeWriteGate,correctionError,numericGuardReply} from './sonic-number-guard.mjs';
 import {guardExplicitBounds} from './plan-guards.mjs';
 import {compactPlannerPrompt,compactKoreanPlannerPrompt} from './planner-prompt-v2.mjs';
 import {normalizeTranscript} from './transcript.mjs';
@@ -94,10 +97,11 @@ async function recognizeOnWhisper(form,signal){
   try{return await(await remote(worker.url+'/asr',{method:'POST',body:form},signal)).json();}
   finally{worker.active--;}
 }
+app.post('/api/sonic-asr',sonicAsrRoute({session,recognize:recognizeOnWhisper}));
 app.get('/api/health',async(req,res)=>{
   const result=await Promise.allSettled([Promise.all(corePool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false,error:'GPU 연결 대기'};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:corePool[i].active,requests:corePool[i].requests}))})),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),Promise.all(whisperPool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:whisperPool[i].active,requests:whisperPool[i].requests}))}))]);
   const states=result.map(r=>r.status==='fulfilled'?r.value:{ready:false,error:'GPU 연결 대기'}),workers=states.slice(0,2);
-  res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4]},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
+  res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4],transcribe:{ready:true,region:TRANSCRIBE_REGION}},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
 });
 app.post('/api/session',(req,res)=>{
   if(sessions.size>=1000)return res.status(503).json({error:'공유 데모 접속이 많습니다. 잠시 후 다시 시도해 주세요.'});
@@ -284,20 +288,36 @@ server.on('upgrade',(req,socket,head)=>{
 });
 wss.on('connection',(ws,req,url)=>{
   const s=sessions.get(url.searchParams.get('session'));sonicConnections.get(s.id)?.stop();active.get(s.id)?.controller.abort();
-  let record,recordStart=0,stopped=false,idleTimer;
+  let record,recordStart=0,stopped=false,idleTimer,transcribe,sonicKeepAlive,sonicTranscriptId;
+  const writeGate=createNativeWriteGate();
   const send=(event,data)=>{if(ws.readyState===1)ws.send(JSON.stringify({event,data}));};
   const newRecord=(text='',mode='microphone')=>{
     record={id:randomUUID(),at:new Date().toISOString(),input:text,reply:'',actions:[],modelProposedActions:[],vehicleTools:true,results:[],state:structuredClone(s.state),engine:'sonic',model:SONIC_MODEL,region:SONIC_REGION,ttsProvider:'sonic',koreanSupported:false,inputMode:mode,feedback:null};
     recordStart=performance.now();s.turns.push(record);send('turn',{turnId:record.id});return record;
   };
-  const stop=()=>{if(stopped)return;stopped=true;clearTimeout(idleTimer);clearTimeout(lifetime);if(record&&!record.completed)record.interrupted=true;sonic.close();if(sonicConnections.get(s.id)?.stop===stop)sonicConnections.delete(s.id);if(ws.readyState===1)ws.close();};
+  const stop=()=>{if(stopped)return;stopped=true;clearTimeout(idleTimer);clearTimeout(lifetime);clearInterval(sonicKeepAlive);transcribe?.close();writeGate.close();if(record&&!record.completed)record.interrupted=true;sonic.close();if(sonicConnections.get(s.id)?.stop===stop)sonicConnections.delete(s.id);if(ws.readyState===1)ws.close();};
   const language=responseLanguage(url.searchParams.get('language'));
-  const sonic=new SonicSession({state:s.state,language,executeTool:args=>{
+  const sonic=new SonicSession({state:s.state,language,executeTool:async args=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
     guardSonicRadio(record?.input,args.actions||[]);
-    const proposedPlan=parsePlan(JSON.stringify({intent:args.actions?.length?'control':'question',actions:args.actions,reply:''}));const gate=guardExplicitBounds(normalizeTranscript(record?.input||''),proposedPlan),plan=gate.plan;
+    const proposedPlan=parsePlan(JSON.stringify({intent:args.actions?.length?'control':'question',actions:args.actions,reply:''}));
+    const correction=language==='ko'?correctionError(record?.input,proposedPlan.actions):null;
+    const delayStart=performance.now();
+    const nativeAudio=!transcribe&&record?.inputMode!=='text';
+    const mayWrite=!!correction||!nativeAudio||await writeGate.wait(proposedPlan.actions);
+    if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
+    const refusal=correction||(!mayWrite?{code:'speech-resumed'}:null);
+    if(refusal){
+      if(!record||record.completed)newRecord();
+      record.modelProposedActions.push(...proposedPlan.actions);
+      record.numericGuard={...refusal,waitMs:Math.round(performance.now()-delayStart)};
+      const error=numericGuardReply(refusal,language);
+      return{ok:false,error,reply:error,validationError:refusal.code,state:s.state,actions:[],results:[]};
+    }
+    const gate=guardExplicitBounds(normalizeTranscript(record?.input||''),proposedPlan),plan=gate.plan;
     const result=executePlan(s.state,s.previous,plan,language);s.state=result.state;s.previous=result.previous;s.updated=Date.now();
     if(!record||record.completed)newRecord();record.modelProposedActions.push(...proposedPlan.actions);if(gate.reason)record.validationError=gate.reason;record.actions.push(...plan.actions);record.results.push(...result.results);record.state=structuredClone(s.state);
+    if(nativeAudio)record.numericCommitWaitMs=(record.numericCommitWaitMs||0)+Math.round(performance.now()-delayStart);
     return{ok:!gate.reason,error:gate.reason?localizeVehicleText(gate.reason,language):undefined,validationError:gate.reason,state:s.state,reply:result.reply,results:result.results,actions:plan.actions};
   },executeAssistantTool:async(args,signal)=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw Error('Canceled assistant tool');
@@ -309,7 +329,11 @@ wss.on('connection',(ws,req,url)=>{
     s.updated=Date.now();
     if(event==='tool'){if(!record||record.completed)newRecord();appendSonicToolTrace(record,data);}
     if(event==='text'){
-      if(data.role==='USER'){if(!record||record.completed)newRecord();record.input+=data.text;}
+      if(data.role==='USER'){
+        if(!record||record.completed)newRecord();
+        if(data.id!==sonicTranscriptId){sonicTranscriptId=data.id;writeGate.transcript(data.id);if(record.input)record.input+=' ';}
+        record.input+=data.text;
+      }
       else if(record)record.reply+=data.text;
     }
     if(event==='audio'&&record&&record.serverAudioReadyMs==null){record.serverAudioReadyMs=Math.round(performance.now()-recordStart);record.serverTimingBasis='ASR transcript arrival or text submission';}
@@ -322,14 +346,30 @@ wss.on('connection',(ws,req,url)=>{
   }});
   const lifetime=setTimeout(()=>{send('closed',{reason:'15분 세션 제한 · 다시 시작해 주세요.'});stop();},15*60*1000);
   const touch=()=>{clearTimeout(idleTimer);idleTimer=setTimeout(()=>{send('closed',{reason:'60초간 입력이 없어 Sonic 연결을 종료했어요.'});stop();},60000);};touch();
+  if(url.searchParams.get('input')==='transcribe'){
+    const viewer=String(req.headers['x-forwarded-for']||req.socket.remoteAddress).split(',').at(-1).trim();
+    transcribe=createTranscribeInput({language,viewer,onError:data=>send('asr-error',data),onFinal:data=>{
+      if(stopped||ws.readyState!==1)return;
+      touch();
+      Object.assign(newRecord(data.text,'transcribe-'+data.mode),{rawTranscript:data.rawText,asrModel:'Amazon Transcribe',asrRegion:data.region,asrFinalizeMs:data.finalizeMs});
+      send('asr-final',data);sonic.text(data.text);
+    }});
+    // The real mic is sent only to Transcribe; maintain Sonic cross-modal input with silence.
+    const silence=Buffer.alloc(3200);sonicKeepAlive=setInterval(()=>sonic.audio(silence),100).unref();
+  }
   sonicConnections.set(s.id,{stop});
   ws.on('message',(raw,binary)=>{
     try{
-      if(binary){if(raw.length>6400||raw.length%2)throw new Error('잘못된 PCM 입력');sonic.audio(raw);if(raw.some(byte=>byte!==0))touch();}
+      if(binary){if(raw.length>6400||raw.length%2)throw new Error('잘못된 PCM 입력');if(transcribe)transcribe.push(raw);else{writeGate.observe(raw);sonic.audio(raw);}if(raw.some(byte=>byte!==0))touch();}
       else{const data=JSON.parse(raw.toString());
-        if(data.type==='text'&&typeof data.text==='string'&&data.text.trim()&&data.text.length<=500){touch();newRecord(data.text.trim(),'text');sonic.text(data.text.trim());}
+        if(transcribe&&data.type==='asr-start'){
+          touch();if(record&&!record.completed)send('asr-error',{code:'busy'});else transcribe.start(data.mode);
+        }else if(transcribe&&data.type==='asr-end'){touch();transcribe.finish();}
+        else if(transcribe&&data.type==='asr-cancel')transcribe.close();
+        else if(data.type==='text'&&typeof data.text==='string'&&data.text.trim()&&data.text.length<=500&&!transcribe?.active){touch();newRecord(data.text.trim(),'text');sonic.text(data.text.trim());}
         else if(data.type==='metrics'&&record&&Number.isFinite(data.firstPlaybackMs)&&data.firstPlaybackMs>=0&&data.firstPlaybackMs<300000){record.firstPlaybackMs=data.firstPlaybackMs;record.firstPlaybackBasis=String(data.basis||'').slice(0,100);}
-        else if(data.type==='mode'&&['file','microphone'].includes(data.mode)){touch();if(!record||record.completed)newRecord('',data.mode);}
+        else if(data.type==='mode'&&['file','microphone'].includes(data.mode)){touch();writeGate.mode(data.mode);if(!record||record.completed)newRecord('',data.mode);}
+        else if(data.type==='audio-end'&&!transcribe)writeGate.audioEnd();
         else if(data.type==='stop')stop();else throw new Error('지원하지 않는 Sonic 입력');
       }
     }catch(error){send('error',{error:error.message});stop();}
