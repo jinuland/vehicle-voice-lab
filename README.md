@@ -8,6 +8,29 @@ Compare how well speech models and small language models turn **vehicle requests
 
 [Open the shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=en) · [Test scenarios](#try-these-test-scenarios) · [Benchmark at a glance](#benchmark-at-a-glance)
 
+## Compare Sonic speech input modes
+
+Both the [shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=ko) and the [L4 demo](https://d3q7tlfor72b22.cloudfront.net/?lang=ko) support the three paths. In **Conversation mode**, select **Nova 2.5 Sonic · Realtime S2S**, then choose **Sonic input mode**:
+
+1. **Sonic native recognition · Realtime S2S**: Sonic receives the audio, reasons, calls vehicle tools, and generates speech.
+2. **Whisper + Sonic**: the demo's self-hosted Whisper large-v3-turbo transcribes the utterance; Sonic receives the text and handles reasoning, vehicle tools, and spoken output.
+3. **Amazon Transcribe + Sonic · Streaming**: Amazon Transcribe streams recognition and sends the final transcript to Sonic for the same reasoning, tools, and spoken output. No self-hosted GPU is required for this path.
+
+Select the same language and input mode, reset the cabin, and replay the same file or speak the same request. In the Korean UI, try **“조수석 온도를 25도로 맞춰줘”**, a compound request, and **“조수석 29도… 아니, 24도로 바꿔줘.”** Check the transcript, actions, intermediate changes, final cabin state, and reply. Whisper and Transcribe modes wait for a complete turn; their microphone end-of-speech wait defaults to 0.85 seconds and is configurable under **Model and voice settings**. Native Sonic supports barge-in; hybrid modes use the stop button. Sonic Korean speech is experimental and not officially supported in this demo.
+
+### Korean speech pilot (November 11, 2026)
+
+We replayed 24 human-read [FLEURS Korean](https://huggingface.co/datasets/google/fleurs) test recordings once per path, both clean and mixed offline with recorded [DEMAND TCAR cabin noise](https://zenodo.org/records/1227121) at +5 dB SNR. This is 48 inputs per path, not recordings made by speaking in a moving car. The table reports **character error rate (CER; lower is better)** after case, spacing, punctuation, and the explicitly observed equivalent number/unit forms were normalized. For example, “70km” and “칠십 킬로미터” count as equivalent; an incorrect number still counts as an error.
+
+| Condition | Sonic only | Whisper + Sonic | Transcribe + Sonic |
+| --- | ---: | ---: | ---: |
+| Clean human speech, number-normalized CER | 10.70% | 6.45% | 6.45% |
+| Human speech + recorded cabin noise, number-normalized CER | 11.80% | 6.04% | 7.96% |
+
+The small sample and single run are exploratory, not a production accuracy estimate. Some source sentences repeat across recordings. These are general read speech, **not vehicle commands**, so vehicle-command success and self-correction success cannot be derived from this table. A separate three-case synthetic smoke test on the original demo verified the compound and negated commands across all three modes; for the 29→24°C correction, native Sonic and Whisper applied 24°C, while Transcribe missed the final number and asked again without changing the temperature. A single case is not a success rate.
+
+For the 24-recording pilot, the clean file-end-to-first-server-audio median was 0.95 s for Whisper and 0.51 s for Transcribe; the noisy medians were 0.86 s and 0.52 s. Sonic produced audio before file end in 9/24 cases in each condition; its median among the remaining 15 cases was 0.42 s clean and 0.45 s noisy, so it is **not directly comparable** to the other medians. File-end is not necessarily the last spoken sound, and an early packet is not proof of audible interruption. These timings exclude microphone endpointing, the browser's playback buffer, speaker playback and cold starts. They do not establish which mode is fastest in live conversation. The test used the L4 demo with up to three concurrent cases; actual load and deployment can change timing. [More details and earlier synthetic tests](docs/SONIC_TURN_TAKING.md).
+
 ## Smaller-GPU deployment and serving cost
 
 A separate Seoul **L4 / g6.xlarge** experiment compares Qwen 4B BF16/NF4 and Phi-4 mini, then measures one planner worker, two Docker copies sharing the GPU, and vLLM continuous batching. The original shared demo remains available. [Try the L4 deployment](https://d3q7tlfor72b22.cloudfront.net/) · [Interactive cost / measured performance](https://d3q7tlfor72b22.cloudfront.net/costs.html) · [Method, raw results and deployment instructions](docs/GPU_RIGHTSIZING.md). [GPU headroom and cheaper 4-bit follow-up](docs/GPU_HEADROOM.md).
@@ -22,7 +45,7 @@ Speak, type, or upload an audio file to change the simulated driver/passenger te
 - Audio-model path: selected audio model → validated vehicle executor → selected Korean TTS; native voice-only comparisons are explicitly separate.
 - Sonic path: Bedrock bidirectional speech → `vehicle_control` tool → shared executor → Sonic native audio.
 - Per-visitor vehicle state and conversation, response interruption, feedback, session export, model comparison tables, and synthetic reply samples.
-- **UI language selector** in the header. `/?lang=en` opens English; `/?lang=ko` opens Korean. Selection persists in the browser. UI language does not change speech language, model behavior, evaluation data, or conversation text.
+- **UI language selector** in the header. `/?lang=en` opens English; `/?lang=ko` opens Korean. Selection persists in the browser. Switching the UI language also sets the response and speech language for new turns; existing conversation text and evaluation data remain unchanged.
 
 ## Try these test scenarios
 
@@ -40,7 +63,7 @@ For the **English voice demo**, open the [English UI](https://dys3pnz3y08gk.clou
 
 For your own tests, click **Start microphone** and say the English requests below, or type them into the command box. Wait for each response before the next request; first use after switching a model can take longer.
 
-The default **Self-hosted · STT → sLLM → TTS** configuration currently uses Korean ASR and Korean confirmations. Changing the UI language alone does not change that speech pipeline. Use the [Korean guide](README.ko.md#바로-따라-하는-테스트-시나리오) for its Korean examples. The benchmark scores below were measured with Korean audio; they are not scores for these English scenarios.
+For the self-hosted path, the English UI selects Whisper and Polly Joanna for new English turns. Use the [Korean guide](README.ko.md#바로-따라-하는-테스트-시나리오) for Korean examples. The benchmark scores below were measured with Korean audio; they are not scores for these English scenarios.
 
 ### A three-turn conversation
 
