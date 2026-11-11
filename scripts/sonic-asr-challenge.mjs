@@ -7,6 +7,7 @@ import {awsCredentials} from '../aws-auth.mjs';
 import {sonicWavPCM} from '../sonic-asr.mjs';
 
 const base=new URL(process.env.TEST_BASE||'http://localhost:8787').origin;
+const originHeaders=process.env.TEST_ORIGIN_KEY?{'X-Vehicle-Origin-Key':process.env.TEST_ORIGIN_KEY}:{};
 const syntheticCases=[
   {id:'compound-seven',voice:'Seoyeon',text:'운전석은 이십오 도, 조수석은 이십칠 도로 맞추고, 에어컨은 끄고, 앞유리 김서림 제거는 켜 줘. 시트 열선은 이 단, 바람은 삼 단, 음량은 이십으로 맞춰 줘.',check:s=>s.temperature.driver===25&&s.temperature.passenger===27&&!s.ac&&s.defrost&&s.seatHeat===2&&s.fan===3&&s.media.volume===20},
   {id:'correction-pause',voice:'Jihye',parts:['조수석을 이십구 도로 해 줘.','아니 잠깐, 이십사 도로 바꿔 줘. 운전석 온도는 그대로 둬.'],pauseMs:1250,check:s=>s.temperature.passenger===24&&s.temperature.driver===22},
@@ -81,13 +82,14 @@ function edits(a,b){
   return prev[b.length];
 }
 async function run(c,pcm,mode){
-  const sessionReply=await fetch(base+'/api/session',{method:'POST'});if(!sessionReply.ok)throw Error('Could not start demo session');
-  const session=await sessionReply.json(),headers={'X-Session-Id':session.id,'Content-Type':'application/json'};
+  const sessionReply=await fetch(base+'/api/session',{method:'POST',headers:originHeaders});if(!sessionReply.ok)throw Error('Could not start demo session');
+  const session=await sessionReply.json(),headers={...originHeaders,'X-Session-Id':session.id,'Content-Type':'application/json'};
   const row={id:c.id,mode,voice:c.voice,sourceId:c.sourceId,condition:c.condition,snr:c.snr??null,pauseMs:c.pauseMs??null,seconds:pcm.length/32000,reference:c.parts?.join(' ')||c.text,transcript:'',reply:'',tools:[],audioBytes:0};
   const socketUrl=new URL('/api/sonic',base);socketUrl.protocol=socketUrl.protocol==='https:'?'wss:':'ws:';
   socketUrl.searchParams.set('session',session.id);socketUrl.searchParams.set('language','ko');
+  if(process.env.TEST_RUNTIME)socketUrl.searchParams.set('runtime',process.env.TEST_RUNTIME);
   if(mode==='transcribe')socketUrl.searchParams.set('input','transcribe');
-  const ws=new WebSocket(socketUrl,{origin:base});let live=true,endedAt,firstAudioAt,keepalive,settle,done=false;
+  const ws=new WebSocket(socketUrl,{origin:process.env.TEST_WS_ORIGIN||base,headers:originHeaders});let live=true,endedAt,firstAudioAt,keepalive,settle,done=false;
   const t=()=>performance.now();
   await new Promise(resolve=>{
     const finish=()=>{if(!live)return;live=false;clearTimeout(limit);clearTimeout(settle);clearInterval(keepalive);ws.close();resolve();};

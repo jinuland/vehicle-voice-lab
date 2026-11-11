@@ -1,5 +1,10 @@
 import WebSocket from 'ws';
 import {randomUUID} from 'node:crypto';
+import {SignatureV4} from '@smithy/signature-v4';
+import {HttpRequest} from '@smithy/protocol-http';
+import {Hash} from '@smithy/hash-node';
+import {defaultProvider} from '@aws-sdk/credential-provider-node';
+import {awsCredentials} from './aws-auth.mjs';
 import {sonicSystemPrompt,vehicleTool,SONIC_MODEL,SONIC_REGION} from './sonic.mjs';
 import {assistantTool} from './assistant-service.mjs';
 
@@ -12,10 +17,17 @@ export class StrandsSonicSession {
   }
   async start(){
     try{
-      const endpoint=process.env.STRANDS_BIDI_URL||'ws://127.0.0.1:8080/ws';
+      let endpoint=process.env.STRANDS_BIDI_URL||'ws://127.0.0.1:8080/ws',headers={};
+      if(process.env.AGENTCORE_RUNTIME_ARN){
+        const region=process.env.AGENTCORE_RUNTIME_REGION||SONIC_REGION,host=`bedrock-agentcore.${region}.amazonaws.com`;
+        const path=`/runtimes/${encodeURIComponent(process.env.AGENTCORE_RUNTIME_ARN)}/ws`;
+        const signer=new SignatureV4({credentials:awsCredentials.credentials||defaultProvider(),region,service:'bedrock-agentcore',sha256:Hash.bind(null,'sha256')});
+        const signed=await signer.sign(new HttpRequest({protocol:'https:',hostname:host,method:'GET',path,headers:{host}}));
+        headers={...signed.headers,'X-Amzn-Bedrock-AgentCore-Runtime-Session-Id':randomUUID()};endpoint=`wss://${host}${path}`;
+      }
       const parsed=new URL(endpoint);
       if(!['localhost','127.0.0.1','::1','[::1]'].includes(parsed.hostname) && parsed.protocol!=='wss:')throw Error('Remote Strands endpoint must use TLS');
-      this.ws=new WebSocket(endpoint,{maxPayload:2*1024*1024});
+      this.ws=new WebSocket(endpoint,{headers,maxPayload:2*1024*1024});
       await new Promise((resolve,reject)=>{this.ws.once('open',resolve);this.ws.once('error',reject)});
       if(this.closed){this.ws.close();return;}
       const specs=[vehicleTool,...(this.executeAssistantTool?[assistantTool]:[])].map(({toolSpec:s})=>({name:s.name,description:s.description,schema:JSON.parse(s.inputSchema.json)}));

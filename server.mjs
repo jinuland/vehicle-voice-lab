@@ -1,7 +1,6 @@
 import {appendSonicToolTrace,guardSonicRadio} from './sonic-tool-trace.mjs';
 import {responseLanguage,replyLanguageInstruction,speechOptions} from './response-language.mjs';
 import express from 'express';
-import {mountGame} from './game-api.mjs';
 import {randomUUID} from 'node:crypto';
 import {mkdir,appendFile,readFile} from 'node:fs/promises';
 import {initialState,systemPrompt,parsePlan,executePlan,localizeVehicleText} from './vehicle.mjs';
@@ -61,7 +60,6 @@ app.use('/api',(req,res,next)=>{res.setHeader('Cache-Control','no-store');if(clo
  const ip=String(req.headers['x-forwarded-for']||req.socket.remoteAddress).split(',').at(-1).trim(),now=Date.now(),b=budgets.get(ip);
  if(!b||now-b.start>60000)budgets.set(ip,{start:now,count:1});else if(++b.count>90){res.setHeader('Retry-After','60');return res.status(429).json({error:'요청이 많아요. 잠시 후 다시 시도해 주세요.'});}
  }next();});setInterval(()=>{for(const[ip,b]of budgets)if(Date.now()-b.start>60000)budgets.delete(ip);},60000).unref();
-mountGame(app,{recognize:recognizeOnWhisper,synthesize,cloud:cloudMode});
 app.use(express.static('public'));
 app.get('/api/catalog',async(req,res)=>res.json(JSON.parse(await readFile('model-catalog.json','utf8'))));
 app.get('/api/benchmark-csv',(req,res)=>res.download('vehicle-model-comparison.csv','vehicle-model-comparison.csv',{root:'research'}));
@@ -103,7 +101,7 @@ app.post('/api/sonic-asr',sonicAsrRoute({session,recognize:recognizeOnWhisper}))
 app.get('/api/health',async(req,res)=>{
   const result=await Promise.allSettled([Promise.all(corePool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false,error:'GPU 연결 대기'};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:corePool[i].active,requests:corePool[i].requests}))})),fetch(tts+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(mini+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),fetch(speechWorker+'/health',{signal:AbortSignal.timeout(2000)}).then(r=>r.json()),Promise.all(whisperPool.map(async worker=>{try{return await(await fetch(worker.url+'/health',{signal:AbortSignal.timeout(2000)})).json();}catch{return{ready:false};}})).then(replicas=>({...replicas[0],ready:replicas.every(r=>r.ready),replicas:replicas.map((r,i)=>({...r,index:i,active:whisperPool[i].active,requests:whisperPool[i].requests}))}))]);
   const states=result.map(r=>r.status==='fulfilled'?r.value:{ready:false,error:'GPU 연결 대기'}),workers=states.slice(0,2);
-  res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4],transcribe:{ready:true,region:TRANSCRIBE_REGION}},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false}});
+  res.json({ready:compactServing?!!(states[0].ready&&states[4].ready):workers.every(w=>w.ready),workers,researchWorkers:{minicpm:states[2],speech:states[3]},asrWorkers:{whisper:states[4],transcribe:{ready:true,region:TRANSCRIBE_REGION}},minicpmControl:!compactServing,region:'ap-northeast-2',profile:process.env.AWS_PROFILE||'default',instanceType:process.env.INSTANCE_TYPE||'g6e.2xlarge',servingProfile:compactServing?'compact':'comparison',mode:'발화 단위 ASR · 문장 단위 음성 응답',simulated:true,deployment:{kind:cloudMode?'cloudfront':'local',gpuKeepRunning:true},sonic:{model:SONIC_MODEL,region:SONIC_REGION,koreanSupported:false,agentcoreAvailable:!!process.env.AGENTCORE_RUNTIME_ARN}});
 });
 app.post('/api/session',(req,res)=>{
   if(sessions.size>=1000)return res.status(503).json({error:'공유 데모 접속이 많습니다. 잠시 후 다시 시도해 주세요.'});
@@ -308,7 +306,10 @@ wss.on('connection',(ws,req,url)=>{
   };
   const stop=()=>{if(stopped)return;stopped=true;clearTimeout(idleTimer);clearTimeout(lifetime);clearInterval(sonicKeepAlive);transcribe?.close();writeGate.close();if(record&&!record.completed)record.interrupted=true;sonic.close();if(sonicConnections.get(s.id)?.stop===stop)sonicConnections.delete(s.id);if(ws.readyState===1)ws.close();};
   const language=responseLanguage(url.searchParams.get('language'));
-  const SonicImplementation=process.env.SONIC_ENGINE==='strands'?StrandsSonicSession:SonicSession;
+  const requestedRuntime=url.searchParams.get('runtime');
+  const useStrands=requestedRuntime==='agentcore'&&!!process.env.AGENTCORE_RUNTIME_ARN || !process.env.AGENTCORE_RUNTIME_ARN&&process.env.SONIC_ENGINE==='strands';
+  if(requestedRuntime==='agentcore'&&!process.env.AGENTCORE_RUNTIME_ARN){send('error',{error:'AgentCore Runtime is not configured'});ws.close();return;}
+  const SonicImplementation=useStrands?StrandsSonicSession:SonicSession;
   const sonic=new SonicImplementation({state:s.state,language,executeTool:async args=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
     guardSonicRadio(record?.input,args.actions||[]);

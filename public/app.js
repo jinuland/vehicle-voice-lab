@@ -58,7 +58,7 @@ function bubble(text,type){
   scrollConversation();return el;
 }
 async function checkHealth(){
-  try{const h=await(await fetch('/api/health')).json();$('conversation-engine').querySelector('[value="minicpm-control"]').disabled=!h.minicpmControl;for(const mode of ['audio-control','audio-native'])$('conversation-engine').querySelector(`[value="${mode}"]`).disabled=(mode==='audio-native'&&!$('comparison-only').checked)||!h.researchWorkers?.speech?.ready||![...$('audio-model').options].some(o=>o.dataset.ready==='true'&&(mode==='audio-control'?o.dataset.audioPlanner==='true':o.dataset.nativeAudio==='true'));ready=isExtraAudio()?!!(h.researchWorkers?.speech?.ready&&h.researchWorkers.speech.available?.includes($('audio-model').value)&&!$('audio-model').selectedOptions[0]?.disabled):engine==='minicpm-control'?!!(h.minicpmControl&&h.researchWorkers?.minicpm?.ready&&h.researchWorkers.minicpm.audioPlanner):engine==='sonic'?!!h.sonic:engine.startsWith('minicpm')?!!h.researchWorkers?.minicpm?.ready:h.ready&&(asrChoice!=='whisper'||h.asrWorkers?.whisper?.ready);
+  try{const h=await(await fetch('/api/health')).json();$('sonic-runtime').querySelector('[value="agentcore"]').disabled=!h.sonic?.agentcoreAvailable;$('conversation-engine').querySelector('[value="minicpm-control"]').disabled=!h.minicpmControl;for(const mode of ['audio-control','audio-native'])$('conversation-engine').querySelector(`[value="${mode}"]`).disabled=(mode==='audio-native'&&!$('comparison-only').checked)||!h.researchWorkers?.speech?.ready||![...$('audio-model').options].some(o=>o.dataset.ready==='true'&&(mode==='audio-control'?o.dataset.audioPlanner==='true':o.dataset.nativeAudio==='true'));ready=isExtraAudio()?!!(h.researchWorkers?.speech?.ready&&h.researchWorkers.speech.available?.includes($('audio-model').value)&&!$('audio-model').selectedOptions[0]?.disabled):engine==='minicpm-control'?!!(h.minicpmControl&&h.researchWorkers?.minicpm?.ready&&h.researchWorkers.minicpm.audioPlanner):engine==='sonic'?!!h.sonic:engine.startsWith('minicpm')?!!h.researchWorkers?.minicpm?.ready:h.ready&&(asrChoice!=='whisper'||h.asrWorkers?.whisper?.ready);
     $('connection').className='connection'+(ready?' ready':'');$('connection').replaceChildren(Object.assign(document.createElement('i'),{}),document.createTextNode(isExtraAudio()?(h.researchWorkers?.speech?.loading?'음성 모델 교체·로딩 중':ready?'추가 음성 GPU 연결됨':'음성 GPU 준비 중'):engine==='sonic'?'Sonic · 도쿄 API 준비':engine.startsWith('minicpm')?(ready?'MiniCPM · GPU 연결됨':'MiniCPM 모델 준비 중'):ready?'GPU 연결됨':'GPU 모델 준비 중'));
     const m=h.workers.flatMap(w=>Object.keys(w.models||{}));
     for(const key of ['asr','llm','tts'])$('model-'+key).classList.toggle('ready',engine!=='cascade'?ready:m.includes(key));
@@ -304,7 +304,7 @@ function resetSonicMetrics(){for(const id of ['asr-ms','llm-ms','tts-ms','first-
 async function ensureSonic(){
   if(sonicVoice&&!sonicVoice.closed)return sonicConnecting||sonicVoice;
   if(!usesSonicAsr()||(!busy&&!speech))setStatus('Nova 2.5 Sonic에 연결하고 있어요…','busy');
-  const voice=new window.SonicVoice({sessionId,language:$('sonic-language').value,patienceMs:Number($('sonic-patience').value),input:sonicInput(),onEvent:(event,data)=>{
+  const voice=new window.SonicVoice({sessionId,language:$('sonic-language').value,patienceMs:Number($('sonic-patience').value),input:sonicInput(),runtime:$('sonic-runtime').value,onEvent:(event,data)=>{
     if(voice!==sonicVoice)return;
     if(event==='ready'&&!busy&&!speech)setStatus('Sonic 연결됨 · 말씀하거나 샘플을 눌러 주세요','listening');
     if(event==='turn'){lastTurnId=data.turnId;$('feedback').hidden=false;}
@@ -370,6 +370,7 @@ $('audio-model').addEventListener('change',async()=>{if(micEnabled)await toggleM
 $('asr-model').addEventListener('change',async e=>{if(micEnabled)await toggleMic();await interrupt(false);asrChoice=e.target.value;await checkHealth();});
 $('planner-model').addEventListener('change',async e=>{if(micEnabled)await toggleMic();await interrupt(false);plannerChoice=e.target.value;await checkHealth();});
 $('sonic-patience').addEventListener('change',e=>{if(sonicVoice){sonicVoice.patienceMs=Number(e.target.value);sonicVoice.flushAudio();}});
+$('sonic-runtime').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);sonicVoice?.close();sonicVoice=null;await checkHealth();});
 $('sonic-input').addEventListener('change',async()=>{
   if(micEnabled)await toggleMic();
   await interrupt(false);renderSonicInput();resetSonicMetrics();await checkHealth();

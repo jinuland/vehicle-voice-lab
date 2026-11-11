@@ -1,14 +1,14 @@
 // Continuous PCM input/output. AWS credentials and tool execution stay on the server.
 window.SonicVoice=class {
-  constructor({sessionId,language,onEvent,patienceMs=2500,endpoint='/api/sonic',input='native'}){this.endpoint=endpoint;this.input=input;this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;this.patienceMs=[1000,2500,4000].includes(patienceMs)?patienceMs:2500;this.pendingAudio=[];this.pendingSeconds=0;}
+  constructor({sessionId,language,onEvent,patienceMs=2500,endpoint='/api/sonic',input='native',runtime='direct'}){this.endpoint=endpoint;this.input=input;this.runtime=runtime;this.sessionId=sessionId;this.language=language;this.onEvent=onEvent;this.sources=new Set();this.nextTime=0;this.liveMic=false;this.awaiting=false;this.firstPlayed=false;this.closed=false;this.lastVoiceAt=0;this.inputStarted=0;this.patienceMs=[1000,2500,4000].includes(patienceMs)?patienceMs:2500;this.pendingAudio=[];this.pendingSeconds=0;}
   async connect(){
     this.context=new AudioContext();await this.context.resume();
     if(this.closed)throw new Error('Sonic 연결이 종료됐어요.');
-    const url=new URL(this.endpoint,location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';url.searchParams.set('session',this.sessionId);url.searchParams.set('language',this.language);
+    const url=new URL(this.endpoint,location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';url.searchParams.set('session',this.sessionId);url.searchParams.set('language',this.language);url.searchParams.set('runtime',this.runtime);
     if(this.input==='transcribe')url.searchParams.set('input','transcribe');
     this.socket=new WebSocket(url);this.socket.binaryType='arraybuffer';
     await new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>{this.close();reject(new Error('Sonic 연결 시간이 초과됐어요.'));},15000);
+      const timer=setTimeout(()=>{this.close();reject(new Error('Sonic 연결 시간이 초과됐어요.'));},this.runtime==='agentcore'?45000:15000);
       this.socket.onerror=()=>{clearTimeout(timer);reject(new Error('Sonic 연결에 실패했어요.'));};
       this.socket.onmessage=event=>{
         const message=JSON.parse(event.data),{event:type,data}=message;

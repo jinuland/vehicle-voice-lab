@@ -42,7 +42,7 @@ sudo systemctl enable --no-reload vehicle-vllm-adapter
 sudo systemctl daemon-reload
 extra_args=()
 if [ "${VLLM_TEXT_ONLY:-0}" = 1 ]; then extra_args+=(--language-model-only); fi
-# Qwen3.5 game/agent callers use native function calls; ordinary vehicle JSON remains supported.
+# Qwen3.5 callers can use native function calls.
 if [[ "$model_id" = Qwen/Qwen3.5-* ]]; then extra_args+=(--enable-auto-tool-choice --tool-call-parser qwen3_coder); fi
 if [ "$quantization" = awq ]; then extra_args+=(--quantization awq); fi
 if [ -n "${VLLM_ATTENTION_BACKEND:-}" ]; then extra_args+=(--attention-backend "$VLLM_ATTENTION_BACKEND"); fi

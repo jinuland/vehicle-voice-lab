@@ -1,0 +1,3771 @@
+{
+  "at": "2026-11-11T16:47:35.986Z",
+  "base": "http://127.0.0.1:18888",
+  "synthetic": true,
+  "summary": {
+    "native": {
+      "n": 12,
+      "completed": 12,
+      "passed": 11,
+      "cerPct": 5.9,
+      "firstAudioMedianMs": 1513,
+      "firstAudioP95Ms": 2671,
+      "timed": 12,
+      "earlyAudio": 0,
+      "earlyTool": 0,
+      "asrFinalMedianMs": 720
+    },
+    "whisper": {
+      "n": 12,
+      "completed": 12,
+      "passed": 11,
+      "cerPct": 3.4,
+      "firstAudioMedianMs": 953,
+      "firstAudioP95Ms": 1732,
+      "timed": 12,
+      "earlyAudio": 0,
+      "earlyTool": 0,
+      "asrFinalMedianMs": 184
+    },
+    "transcribe": {
+      "n": 12,
+      "completed": 12,
+      "passed": 10,
+      "cerPct": 3.4,
+      "firstAudioMedianMs": 831,
+      "firstAudioP95Ms": 1454,
+      "timed": 12,
+      "earlyAudio": 0,
+      "earlyTool": 0,
+      "asrFinalMedianMs": 80
+    }
+  },
+  "rows": [
+    {
+      "id": "compound-seven",
+      "mode": "native",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 11.89,
+      "reference": "운전석은 이십오 도, 조수석은 이십칠 도로 맞추고, 에어컨은 끄고, 앞유리 김서림 제거는 켜 줘. 시트 열선은 이 단, 바람은 삼 단, 음량은 이십으로 맞춰 줘.",
+      "transcript": "운전석은 이십오도 조수석은 이십칠도로 맞추고  에어컨은 끄고 압률이 김서림 제거는 켜줘  시트의 열선은 이단 발음은 삼단 음량은 이십으로 맞춰줘",
+      "reply": "요청하신 대로 온도와 에어컨, 김서림 제거, 시트 열선, 바람 세기 그리고 음량 설정을 모두 완료했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 25,
+              "passenger": 27
+            },
+            "fan": 3,
+            "ac": false,
+            "defrost": true,
+            "seatHeat": 2,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 25도로 맞췄어요. 조수석 온도를 27도로 맞췄어요. 에어컨을 껐어요. 앞유리 김서림 제거 기능을 켰어요. 열선을 2단으로 켰어요. 바람 세기를 3단으로 바꿨어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "운전석 온도를 25도로 맞췄어요.",
+            "조수석 온도를 27도로 맞췄어요.",
+            "에어컨을 껐어요.",
+            "앞유리 김서림 제거 기능을 켰어요.",
+            "열선을 2단으로 켰어요.",
+            "바람 세기를 3단으로 바꿨어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 27,
+              "zone": "passenger"
+            },
+            {
+              "type": "ac",
+              "value": false
+            },
+            {
+              "type": "defrost",
+              "value": true
+            },
+            {
+              "type": "seatHeat",
+              "value": 2,
+              "zone": "both"
+            },
+            {
+              "type": "fan",
+              "value": 3
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "d69a94cb-bb26-4009-9d50-6b8393431118",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 27,
+                "zone": "passenger"
+              },
+              {
+                "type": "ac",
+                "value": false
+              },
+              {
+                "type": "defrost",
+                "value": true
+              },
+              {
+                "type": "seatHeat",
+                "value": 2,
+                "zone": "both"
+              },
+              {
+                "type": "fan",
+                "value": 3
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "7f7a4d7f-22a6-4056-b500-7501335f871a"
+        }
+      ],
+      "audioBytes": 374400,
+      "asrFinalMs": 586,
+      "firstAudioMs": 2019,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 57,
+      "charEdits": 6,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 3,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 2,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "compound-seven",
+      "mode": "whisper",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 11.89,
+      "reference": "운전석은 이십오 도, 조수석은 이십칠 도로 맞추고, 에어컨은 끄고, 앞유리 김서림 제거는 켜 줘. 시트 열선은 이 단, 바람은 삼 단, 음량은 이십으로 맞춰 줘.",
+      "transcript": "운전석은 25도, 조수석은 27도로 맞추고 에어컨은 끄고 앞유리 김서림 제거는 켜줘. 시트 열선은 2단 바람은 3단 음량은 20으로 맞춰줘.",
+      "reply": "요청하신 대로 온도와 에어컨, 김서림 제거, 시트 열선, 바람 세기 그리고 음량을 모두 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 25,
+              "passenger": 27
+            },
+            "fan": 3,
+            "ac": false,
+            "defrost": true,
+            "seatHeat": 2,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 25도로 맞췄어요. 조수석 온도를 27도로 맞췄어요. 에어컨을 껐어요. 앞유리 김서림 제거 기능을 켰어요. 열선을 2단으로 켰어요. 바람 세기를 3단으로 바꿨어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "운전석 온도를 25도로 맞췄어요.",
+            "조수석 온도를 27도로 맞췄어요.",
+            "에어컨을 껐어요.",
+            "앞유리 김서림 제거 기능을 켰어요.",
+            "열선을 2단으로 켰어요.",
+            "바람 세기를 3단으로 바꿨어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 27,
+              "zone": "passenger"
+            },
+            {
+              "type": "ac",
+              "value": false
+            },
+            {
+              "type": "defrost",
+              "value": true
+            },
+            {
+              "type": "seatHeat",
+              "value": 2
+            },
+            {
+              "type": "fan",
+              "value": 3
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "9fe068b7-bb8b-4d3c-b364-01bfef2382ee",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 27,
+                "zone": "passenger"
+              },
+              {
+                "type": "ac",
+                "value": false
+              },
+              {
+                "type": "defrost",
+                "value": true
+              },
+              {
+                "type": "seatHeat",
+                "value": 2
+              },
+              {
+                "type": "fan",
+                "value": 3
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "9a203800-a2af-416e-bbb8-500d836459c1"
+        }
+      ],
+      "audioBytes": 368640,
+      "asrFinalMs": 343,
+      "asrServerMs": 332,
+      "firstAudioMs": 1732,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 57,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 3,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 2,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "compound-seven",
+      "mode": "transcribe",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 11.89,
+      "reference": "운전석은 이십오 도, 조수석은 이십칠 도로 맞추고, 에어컨은 끄고, 앞유리 김서림 제거는 켜 줘. 시트 열선은 이 단, 바람은 삼 단, 음량은 이십으로 맞춰 줘.",
+      "transcript": "운전석은 이십오 도, 조수석은 이십칠도로 맞추고, 에어컨은 끄고, 앞유리 김서림 재거는 켜죠. 시트 열선은 이 단, 바람은 삼 단 음량은 이십으로 맞춰줘.",
+      "reply": "요청하신 대로 온도와 에어컨, 김서림 제거, 시트 열선, 바람 세기 그리고 음량을 모두 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 25,
+              "passenger": 27
+            },
+            "fan": 3,
+            "ac": false,
+            "defrost": true,
+            "seatHeat": 2,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 25도로 맞췄어요. 조수석 온도를 27도로 맞췄어요. 에어컨을 껐어요. 앞유리 김서림 제거 기능을 켰어요. 열선을 2단으로 켰어요. 바람 세기를 3단으로 바꿨어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "운전석 온도를 25도로 맞췄어요.",
+            "조수석 온도를 27도로 맞췄어요.",
+            "에어컨을 껐어요.",
+            "앞유리 김서림 제거 기능을 켰어요.",
+            "열선을 2단으로 켰어요.",
+            "바람 세기를 3단으로 바꿨어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 27,
+              "zone": "passenger"
+            },
+            {
+              "type": "ac",
+              "value": false
+            },
+            {
+              "type": "defrost",
+              "value": true
+            },
+            {
+              "type": "seatHeat",
+              "value": 2
+            },
+            {
+              "type": "fan",
+              "value": 3
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "e8788769-4063-453a-a725-45021f3192e5",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 27,
+                "zone": "passenger"
+              },
+              {
+                "type": "ac",
+                "value": false
+              },
+              {
+                "type": "defrost",
+                "value": true
+              },
+              {
+                "type": "seatHeat",
+                "value": 2
+              },
+              {
+                "type": "fan",
+                "value": 3
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "e3f05d04-81cd-46ce-a863-c330fa771052"
+        }
+      ],
+      "audioBytes": 362880,
+      "asrFinalMs": 73,
+      "asrServerMs": 72,
+      "firstAudioMs": 1454,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 57,
+      "charEdits": 2,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 25,
+          "passenger": 27
+        },
+        "fan": 3,
+        "ac": false,
+        "defrost": true,
+        "seatHeat": 2,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "correction-pause",
+      "mode": "native",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": 1250,
+      "seconds": 7.72,
+      "reference": "조수석을 이십구 도로 해 줘. 아니 잠깐, 이십사 도로 바꿔 줘. 운전석 온도는 그대로 둬.",
+      "transcript": "조수석을 이십구도로 해줘 아니 잠깐 이십사도로 바꿔줘 운전석 운동  는 그대로 둬",
+      "reply": "조수석 온도를 이십사도로 맞췄습니다.",
+      "tools": [
+        {
+          "ok": false,
+          "error": "말씀을 이어가셔서 앞 명령은 적용하지 않았어요. 새 발화가 끝난 뒤 최종 요청으로만 다시 판단하세요.",
+          "reply": "말씀을 이어가셔서 앞 명령은 적용하지 않았어요. 새 발화가 끝난 뒤 최종 요청으로만 다시 판단하세요.",
+          "validationError": "speech-resumed",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "actions": [],
+          "results": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "8c2f97f9-dd39-4bdb-b02b-ae5dcebe3bc0",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 29,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "ee46b4e9-1f0c-4461-9d25-ba7cf7caf816"
+        },
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 24
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 24도로 맞췄어요.",
+          "results": [
+            "조수석 온도를 24도로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 24,
+              "zone": "passenger"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "cf0d6fd1-d290-4dd4-99ca-18ca6ecaaf27",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 24,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "ee46b4e9-1f0c-4461-9d25-ba7cf7caf816"
+        }
+      ],
+      "audioBytes": 124800,
+      "asrFinalMs": 738,
+      "firstAudioMs": 1420,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 31,
+      "charEdits": 2,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 24
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [
+        {
+          "code": "speech-resumed",
+          "waitMs": 30
+        }
+      ],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "correction-pause",
+      "mode": "whisper",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": 1250,
+      "seconds": 7.72,
+      "reference": "조수석을 이십구 도로 해 줘. 아니 잠깐, 이십사 도로 바꿔 줘. 운전석 온도는 그대로 둬.",
+      "transcript": "조수석을 29도로 해줘 아니 잠깐 24도로 바꿔줘 운전석 온도는 그대로 더",
+      "reply": "조수석 온도를 이십사 도로 맞췄어요.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 24
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 24도로 맞췄어요.",
+          "results": [
+            "조수석 온도를 24도로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 24,
+              "zone": "passenger"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "47074f0e-23a5-4c66-a4fb-8e1fde2d2f61",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 24,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "772ccbfb-d030-4d2e-a0c7-24cc7ee44a68"
+        }
+      ],
+      "audioBytes": 119040,
+      "asrFinalMs": 188,
+      "asrServerMs": 183,
+      "firstAudioMs": 854,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 31,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 24
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "correction-pause",
+      "mode": "transcribe",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": 1250,
+      "seconds": 7.72,
+      "reference": "조수석을 이십구 도로 해 줘. 아니 잠깐, 이십사 도로 바꿔 줘. 운전석 온도는 그대로 둬.",
+      "transcript": "조수석을 29 도로 해줘. 아니 잠깐 이 도로 바꿔줘. 운전석 온도는 그대로 더",
+      "reply": "죄송합니다. 설정 가능한 온도 범위를 벗어나 변경하지 못했습니다. 온도를 다시 말씀해 주세요.",
+      "tools": [
+        {
+          "ok": false,
+          "error": "설정을 변경하지 않았어요. 최종 온도를 몇 도로 맞출지 다시 확인해 주세요.",
+          "reply": "설정을 변경하지 않았어요. 최종 온도를 몇 도로 맞출지 다시 확인해 주세요.",
+          "validationError": "temperature-correction",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "actions": [],
+          "results": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "efebf3c6-9e3f-4273-bbe2-1d8c2320f926",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 2,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "79f68265-b9ee-4b07-acd3-e2c54b3675b4"
+        }
+      ],
+      "audioBytes": 316800,
+      "asrFinalMs": 81,
+      "asrServerMs": 81,
+      "firstAudioMs": 820,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 31,
+      "charEdits": 2,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [
+        {
+          "code": "temperature-correction",
+          "value": null,
+          "waitMs": 0
+        }
+      ],
+      "numericCommitWaitMs": 0,
+      "pass": false
+    },
+    {
+      "id": "negative",
+      "mode": "native",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.5,
+      "reference": "에어컨은 끄지 말고 앞유리 김서림 제거만 켜 줘. 풍량은 그대로 두고.",
+      "transcript": "에어컨은 끄지 말고 앞유리 김서림 제거만 켜줘  풍량은 그대로 두고",
+      "reply": "앞유리 김서림 제거 기능을 켰어요.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": true,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "앞유리 김서림 제거 기능을 켰어요.",
+          "results": [
+            "앞유리 김서림 제거 기능을 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "defrost",
+              "value": true
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "447251c2-134f-4195-aa28-17c70ea230e0",
+          "arguments": {
+            "actions": [
+              {
+                "type": "defrost",
+                "value": true
+              }
+            ]
+          },
+          "turnId": "7adee0f2-664f-47ed-b5b1-0095ffa2cc0a"
+        }
+      ],
+      "audioBytes": 124800,
+      "asrFinalMs": 771,
+      "firstAudioMs": 1345,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 27,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "negative",
+      "mode": "whisper",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.5,
+      "reference": "에어컨은 끄지 말고 앞유리 김서림 제거만 켜 줘. 풍량은 그대로 두고.",
+      "transcript": "에어컨은 끄지 말고 앞뷰리 김서림 제거만 켜줘. 풍량은 그대로 두고.",
+      "reply": "앞유리 김서림 제거 기능을 켰어요.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": true,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "앞유리 김서림 제거 기능을 켰어요.",
+          "results": [
+            "앞유리 김서림 제거 기능을 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "defrost",
+              "value": true
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "c25a3f15-e79c-4c34-a5cc-6869e6ba506b",
+          "arguments": {
+            "actions": [
+              {
+                "type": "defrost",
+                "value": true
+              }
+            ]
+          },
+          "turnId": "4c0d7d0b-8403-4923-bdba-7fc1429ab165"
+        }
+      ],
+      "audioBytes": 122880,
+      "asrFinalMs": 217,
+      "asrServerMs": 213,
+      "firstAudioMs": 829,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 27,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "negative",
+      "mode": "transcribe",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.5,
+      "reference": "에어컨은 끄지 말고 앞유리 김서림 제거만 켜 줘. 풍량은 그대로 두고.",
+      "transcript": "에어컨은 끄지 말고 앞뒤리 김서림 제거만 켜줘. 풍량은 그대로 두고.",
+      "reply": "앞유리 김서림 제거 기능을 켰어요.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": true,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "앞유리 김서림 제거 기능을 켰어요.",
+          "results": [
+            "앞유리 김서림 제거 기능을 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "defrost",
+              "value": true
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "aaf8b3a6-9e82-454f-8f17-abd24eaa3682",
+          "arguments": {
+            "actions": [
+              {
+                "type": "defrost",
+                "value": true
+              }
+            ]
+          },
+          "turnId": "3a6b80ff-933b-4605-a45d-408e7de394d0"
+        }
+      ],
+      "audioBytes": 126720,
+      "asrFinalMs": 119,
+      "asrServerMs": 119,
+      "firstAudioMs": 739,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 27,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "proper-noun",
+      "mode": "native",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.61,
+      "reference": "목적지는 수원 컨벤션센터 말고 광교중앙역으로 설정해 줘.",
+      "transcript": "목적지는 수원 컨벤션센터 말고 광교 중앙역으로 설정  해줘",
+      "reply": "목적지를 광교 중앙역으로 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "광교 중앙역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "광교 중앙역을 모의 목적지로 설정했어요.",
+          "results": [
+            "광교 중앙역을 모의 목적지로 설정했어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "광교 중앙역"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "93ca56e7-e88b-49db-b71e-b960fac35921",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "광교 중앙역"
+              }
+            ]
+          },
+          "turnId": "59954f93-d9e9-4fbb-b731-df258c0c7573"
+        }
+      ],
+      "audioBytes": 142080,
+      "asrFinalMs": 595,
+      "firstAudioMs": 1203,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 24,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "광교 중앙역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "proper-noun",
+      "mode": "whisper",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.61,
+      "reference": "목적지는 수원 컨벤션센터 말고 광교중앙역으로 설정해 줘.",
+      "transcript": "목적지는 수원 컨벤션 센터 말고 광교 중앙역으로 설정해줘.",
+      "reply": "목적지를 광교 중앙역으로 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "광교 중앙역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "광교 중앙역을 모의 목적지로 설정했어요.",
+          "results": [
+            "광교 중앙역을 모의 목적지로 설정했어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "광교 중앙역"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "bfa26401-fea4-4332-9a4b-fd0b52eec2ed",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "광교 중앙역"
+              }
+            ]
+          },
+          "turnId": "521cc1e1-0dd9-4c0a-b694-89227e429763"
+        }
+      ],
+      "audioBytes": 165120,
+      "asrFinalMs": 182,
+      "asrServerMs": 179,
+      "firstAudioMs": 877,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 24,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "광교 중앙역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "proper-noun",
+      "mode": "transcribe",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.61,
+      "reference": "목적지는 수원 컨벤션센터 말고 광교중앙역으로 설정해 줘.",
+      "transcript": "목적지는 수원 컨벤션센터 말고 광교 중앙역으로 설정해 줘.",
+      "reply": "목적지를 광교 중앙역으로 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "광교 중앙역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "광교 중앙역을 모의 목적지로 설정했어요.",
+          "results": [
+            "광교 중앙역을 모의 목적지로 설정했어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "광교 중앙역"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "80ec830d-0a45-4e32-bdf7-8bb8e3acf73d",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "광교 중앙역"
+              }
+            ]
+          },
+          "turnId": "87e65417-7735-488c-b216-29275ed08967"
+        }
+      ],
+      "audioBytes": 140160,
+      "asrFinalMs": 77,
+      "asrServerMs": 76,
+      "firstAudioMs": 697,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 24,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "광교 중앙역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "mixed-language",
+      "mode": "native",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.17,
+      "reference": "KTX 광명역으로 안내해 줘. 그리고 에어컨은 꺼 줘.",
+      "transcript": "ktx 광명역으로 안내해줘 그리고 에어컨은 꺼져",
+      "reply": "ktx 광명역으로 안내를 시작하고 에어컨을 껐습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": false,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "ktx 광명역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "ktx 광명역을 모의 목적지로 설정했어요. 에어컨을 껐어요.",
+          "results": [
+            "ktx 광명역을 모의 목적지로 설정했어요.",
+            "에어컨을 껐어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "ktx 광명역"
+            },
+            {
+              "type": "ac",
+              "value": false
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "62ee0ba7-1edb-4467-a3bb-a56a6b3480c7",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "ktx 광명역"
+              },
+              {
+                "type": "ac",
+                "value": false
+              }
+            ]
+          },
+          "turnId": "5ebc70c4-026f-4e11-ad8d-11cbc1f5ea1b"
+        }
+      ],
+      "audioBytes": 201600,
+      "asrFinalMs": 291,
+      "firstAudioMs": 1337,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "ktx 광명역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "mixed-language",
+      "mode": "whisper",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.17,
+      "reference": "KTX 광명역으로 안내해 줘. 그리고 에어컨은 꺼 줘.",
+      "transcript": "KTX 광명역으로 안내해줘. 그리고 에어컨은 꺼져.",
+      "reply": "KTX 광명역으로 안내를 시작하고 에어컨을 껐습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": false,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "KTX 광명역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "KTX 광명역을 모의 목적지로 설정했어요. 에어컨을 껐어요.",
+          "results": [
+            "KTX 광명역을 모의 목적지로 설정했어요.",
+            "에어컨을 껐어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "KTX 광명역"
+            },
+            {
+              "type": "ac",
+              "value": false
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "d831c7b2-d501-4a8e-a18f-7e2de71ca795",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "KTX 광명역"
+              },
+              {
+                "type": "ac",
+                "value": false
+              }
+            ]
+          },
+          "turnId": "0a751dbf-4330-4f00-88f3-6aa56582009d"
+        }
+      ],
+      "audioBytes": 180480,
+      "asrFinalMs": 177,
+      "asrServerMs": 174,
+      "firstAudioMs": 972,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "KTX 광명역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "mixed-language",
+      "mode": "transcribe",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.17,
+      "reference": "KTX 광명역으로 안내해 줘. 그리고 에어컨은 꺼 줘.",
+      "transcript": "KTX 광명역으로 안내해 줘. 그리고 에어컨은 꺼져.",
+      "reply": "KTX 광명역으로 안내를 시작하고 에어컨을 껐습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": false,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": "KTX 광명역",
+              "active": true
+            },
+            "speed": 0
+          },
+          "reply": "KTX 광명역을 모의 목적지로 설정했어요. 에어컨을 껐어요.",
+          "results": [
+            "KTX 광명역을 모의 목적지로 설정했어요.",
+            "에어컨을 껐어요."
+          ],
+          "actions": [
+            {
+              "type": "navigate",
+              "value": "KTX 광명역"
+            },
+            {
+              "type": "ac",
+              "value": false
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "bbd104d3-9127-470f-9539-3ec01ac38e52",
+          "arguments": {
+            "actions": [
+              {
+                "type": "navigate",
+                "value": "KTX 광명역"
+              },
+              {
+                "type": "ac",
+                "value": false
+              }
+            ]
+          },
+          "turnId": "91342759-607d-48d3-ad5d-8312cd13ad08"
+        }
+      ],
+      "audioBytes": 172800,
+      "asrFinalMs": 58,
+      "asrServerMs": 58,
+      "firstAudioMs": 841,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": false,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": "KTX 광명역",
+          "active": true
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "noise-seat-temp",
+      "mode": "native",
+      "voice": "Hyunduk",
+      "snr": 7,
+      "pauseMs": null,
+      "seconds": 6.29,
+      "reference": "운전석 온도는 십구 도로, 조수석은 스물여섯 도로 설정해 줘. 열선은 일 단만 켜 줘.",
+      "transcript": "운전석 온도는 십구 도로 조수석은 스물여섯 도로 설정  해줘 열선은 일단만 켜줘",
+      "reply": "운전석은 십구 도, 조수석은 스물여섯 도로 설정했고 열선은 일단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 19,
+              "passenger": 26
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 19도로 맞췄어요. 조수석 온도를 26도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "운전석 온도를 19도로 맞췄어요.",
+            "조수석 온도를 26도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 19,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 26,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "053389ad-3b20-4690-88f9-8b05e0c7d45e",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 19,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 26,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "96bc6f2c-d88b-4276-ba77-17709682aafb"
+        }
+      ],
+      "audioBytes": 280320,
+      "asrFinalMs": 842,
+      "firstAudioMs": 1871,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 30,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 19,
+          "passenger": 26
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "noise-seat-temp",
+      "mode": "whisper",
+      "voice": "Hyunduk",
+      "snr": 7,
+      "pauseMs": null,
+      "seconds": 6.29,
+      "reference": "운전석 온도는 십구 도로, 조수석은 스물여섯 도로 설정해 줘. 열선은 일 단만 켜 줘.",
+      "transcript": "운전석 온도는 19도로, 조수석은 26도로 설정해줘. 열선은 1단만 켜줘.",
+      "reply": "운전석 온도는 19도, 조수석 온도는 26도로 설정했고 열선은 1단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 19,
+              "passenger": 26
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 19도로 맞췄어요. 조수석 온도를 26도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "운전석 온도를 19도로 맞췄어요.",
+            "조수석 온도를 26도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 19,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 26,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "3e4fa197-a5c9-4faa-934f-74428e167a79",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 19,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 26,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "23c925ef-80a3-4593-9b62-8a05a0066d0a"
+        }
+      ],
+      "audioBytes": 305280,
+      "asrFinalMs": 223,
+      "asrServerMs": 218,
+      "firstAudioMs": 1296,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 30,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 19,
+          "passenger": 26
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "noise-seat-temp",
+      "mode": "transcribe",
+      "voice": "Hyunduk",
+      "snr": 7,
+      "pauseMs": null,
+      "seconds": 6.29,
+      "reference": "운전석 온도는 십구 도로, 조수석은 스물여섯 도로 설정해 줘. 열선은 일 단만 켜 줘.",
+      "transcript": "운전석 온도는 19도로 조수석은 26도로 설정해 줘. 열선은 1탄만 켜줘.",
+      "reply": "운전석 온도는 19도, 조수석 온도는 26도로 설정했고 열선은 1단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 19,
+              "passenger": 26
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "운전석 온도를 19도로 맞췄어요. 조수석 온도를 26도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "운전석 온도를 19도로 맞췄어요.",
+            "조수석 온도를 26도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 19,
+              "zone": "driver"
+            },
+            {
+              "type": "temperature",
+              "value": 26,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "f212e37c-f1a5-4051-a4fa-f4a34cd41724",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 19,
+                "zone": "driver"
+              },
+              {
+                "type": "temperature",
+                "value": 26,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "45b37e4a-0980-4359-9588-7d9dcd6f1cf9"
+        }
+      ],
+      "audioBytes": 301440,
+      "asrFinalMs": 86,
+      "asrServerMs": 86,
+      "firstAudioMs": 1124,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 30,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 19,
+          "passenger": 26
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "noise-volume-fan",
+      "mode": "native",
+      "voice": "Seoyeon",
+      "snr": 3,
+      "pauseMs": null,
+      "seconds": 3.72,
+      "reference": "음량을 사십오로 올리고 바람 세기는 육 단으로 바꿔 줘.",
+      "transcript": "육량을 사십오로 올리고 가람새기는 육단으로 바꿔줘",
+      "reply": "음량을 사십오로 맞췄고 바람 세기를 육단으로 변경했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 6,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 45,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "음량을 45으로 맞췄어요. 바람 세기를 6단으로 바꿨어요.",
+          "results": [
+            "음량을 45으로 맞췄어요.",
+            "바람 세기를 6단으로 바꿨어요."
+          ],
+          "actions": [
+            {
+              "type": "volume",
+              "value": 45
+            },
+            {
+              "type": "fan",
+              "value": 6
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "9b58f229-bb3e-459d-8584-9978d7aa262a",
+          "arguments": {
+            "actions": [
+              {
+                "type": "volume",
+                "value": 45
+              },
+              {
+                "type": "fan",
+                "value": 6
+              }
+            ]
+          },
+          "turnId": "8e0e0375-1893-4c91-80b8-f97eb8d03b0f"
+        }
+      ],
+      "audioBytes": 205440,
+      "asrFinalMs": 881,
+      "firstAudioMs": 2671,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 3,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 6,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 45,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "noise-volume-fan",
+      "mode": "whisper",
+      "voice": "Seoyeon",
+      "snr": 3,
+      "pauseMs": null,
+      "seconds": 3.72,
+      "reference": "음량을 사십오로 올리고 바람 세기는 육 단으로 바꿔 줘.",
+      "transcript": "음량을 40으로 올리고 바람색이는 육단으로 바꿔줘",
+      "reply": "음량을 사십으로 맞췄고 바람 세기를 육단으로 변경했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 6,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 40,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "음량을 40으로 맞췄어요. 바람 세기를 6단으로 바꿨어요.",
+          "results": [
+            "음량을 40으로 맞췄어요.",
+            "바람 세기를 6단으로 바꿨어요."
+          ],
+          "actions": [
+            {
+              "type": "volume",
+              "value": 40
+            },
+            {
+              "type": "fan",
+              "value": 6
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "3184942e-fa7b-44f2-b84b-0197b4037ee8",
+          "arguments": {
+            "actions": [
+              {
+                "type": "volume",
+                "value": 40
+              },
+              {
+                "type": "fan",
+                "value": 6
+              }
+            ]
+          },
+          "turnId": "7c6e2956-e216-4b76-ac3c-a4c80ec492f3"
+        }
+      ],
+      "audioBytes": 197760,
+      "asrFinalMs": 161,
+      "asrServerMs": 158,
+      "firstAudioMs": 934,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 4,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 6,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 40,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": false
+    },
+    {
+      "id": "noise-volume-fan",
+      "mode": "transcribe",
+      "voice": "Seoyeon",
+      "snr": 3,
+      "pauseMs": null,
+      "seconds": 3.72,
+      "reference": "음량을 사십오로 올리고 바람 세기는 육 단으로 바꿔 줘.",
+      "transcript": "음양을 사십오로 올리고 바람새기는 밑단으로 바꿔줘.",
+      "reply": "음량을 마흔다섯으로 맞췄고 바람 세기를 일단으로 바꿨습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 1,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 45,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "음량을 45으로 맞췄어요. 바람 세기를 1단으로 바꿨어요.",
+          "results": [
+            "음량을 45으로 맞췄어요.",
+            "바람 세기를 1단으로 바꿨어요."
+          ],
+          "actions": [
+            {
+              "type": "volume",
+              "value": 45
+            },
+            {
+              "type": "fan",
+              "value": 1
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "f73a6fcc-fc38-4279-b4f0-d787441d8c4d",
+          "arguments": {
+            "actions": [
+              {
+                "type": "volume",
+                "value": 45
+              },
+              {
+                "type": "fan",
+                "value": 1
+              }
+            ]
+          },
+          "turnId": "bbee1137-46d1-47d3-bba7-2852a64db14e"
+        }
+      ],
+      "audioBytes": 207360,
+      "asrFinalMs": 71,
+      "asrServerMs": 71,
+      "firstAudioMs": 808,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 3,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 1,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 45,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": false
+    },
+    {
+      "id": "quiet-command",
+      "mode": "native",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.7,
+      "reference": "조수석 온도만 이십팔 도로 높이고, 시트 열선은 삼 단으로 올려 줘.",
+      "transcript": "조수석 온도만 이십팔도로 높이고 시트 열선은 삼단으로  올려져",
+      "reply": "조수석 온도를 이십팔도로 맞추고 시트 열선을 삼단으로 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 28
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 3,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 28도로 맞췄어요. 열선을 3단으로 켰어요.",
+          "results": [
+            "조수석 온도를 28도로 맞췄어요.",
+            "열선을 3단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 28,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 3,
+              "zone": "passenger"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "2b40953f-a31b-4001-884a-fe52fe4849b4",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 28,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 3,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "342cd6e3-a0a2-421b-9dc5-866d1a5f1a85"
+        }
+      ],
+      "audioBytes": 247680,
+      "asrFinalMs": 701,
+      "firstAudioMs": 1505,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 25,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 28
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 3,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "quiet-command",
+      "mode": "whisper",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.7,
+      "reference": "조수석 온도만 이십팔 도로 높이고, 시트 열선은 삼 단으로 올려 줘.",
+      "transcript": "조수석 온도만 28도로 높이고 시트 열선은 3단으로 올려줘.",
+      "reply": "조수석 온도를 이십팔 도로 맞췄고 시트 열선을 삼 단으로 올렸습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 28
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 3,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 28도로 맞췄어요. 열선을 3단으로 켰어요.",
+          "results": [
+            "조수석 온도를 28도로 맞췄어요.",
+            "열선을 3단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 28,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 3,
+              "zone": "passenger"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "43408977-ab4f-405f-9c88-516ed33d38f7",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 28,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 3,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "2c8a9bef-ce6c-47df-92ad-f06ab9a26d88"
+        }
+      ],
+      "audioBytes": 228480,
+      "asrFinalMs": 185,
+      "asrServerMs": 181,
+      "firstAudioMs": 1053,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 25,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 28
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 3,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "quiet-command",
+      "mode": "transcribe",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.7,
+      "reference": "조수석 온도만 이십팔 도로 높이고, 시트 열선은 삼 단으로 올려 줘.",
+      "transcript": "조수석 온도만 28도로 높이고 시트 열선은 3단으로 올려줘.",
+      "reply": "조수석 온도를 이십팔 도로 맞췄고 시트 열선을 삼 단으로 올렸습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 28
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 3,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 28도로 맞췄어요. 열선을 3단으로 켰어요.",
+          "results": [
+            "조수석 온도를 28도로 맞췄어요.",
+            "열선을 3단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 28,
+              "zone": "passenger"
+            },
+            {
+              "type": "seatHeat",
+              "value": 3,
+              "zone": "passenger"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "c8d32e56-0222-4060-aa15-845f9faffceb",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 28,
+                "zone": "passenger"
+              },
+              {
+                "type": "seatHeat",
+                "value": 3,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "4402b043-7dc0-4585-8495-cd07f5618016"
+        }
+      ],
+      "audioBytes": 213120,
+      "asrFinalMs": 87,
+      "asrServerMs": 87,
+      "firstAudioMs": 957,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 25,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 28
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 3,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "timer-unit",
+      "mode": "native",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 3.29,
+      "reference": "구십 초 뒤에 알려 줘. 휴식 타이머로 설정해 줘.",
+      "transcript": "구십 초 뒤에 알려줘 휴식 타임으로 설정해줘",
+      "reply": "구십 초 뒤 휴식 타임으로 타이머를 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "reply": "90초 타이머를 맞췄어요. 알림을 받으려면 이 데모 탭을 열어 두세요.",
+          "effect": {
+            "type": "timers",
+            "timers": [
+              {
+                "id": "79ece13d-bfd5-4e2f-a22d-533bc0bbcd8b",
+                "deadline": 1794415707603,
+                "label": "휴식 타이머"
+              }
+            ]
+          },
+          "operation": "timer",
+          "elapsedMs": 1,
+          "transport": "local",
+          "sources": [],
+          "toolName": "assistant_tool",
+          "toolUseId": "f75f1d7f-1c9e-4708-9fd7-577c4ed06b9d",
+          "arguments": {
+            "operation": "timer",
+            "query": "구십 초 뒤에 휴식 타임으로 알려줘",
+            "language": "ko"
+          },
+          "turnId": "68f96e45-6409-47f4-9329-20a871e0466a"
+        }
+      ],
+      "audioBytes": 161280,
+      "asrFinalMs": 960,
+      "firstAudioMs": 1675,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 18,
+      "charEdits": 2,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "timer-unit",
+      "mode": "whisper",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 3.29,
+      "reference": "구십 초 뒤에 알려 줘. 휴식 타이머로 설정해 줘.",
+      "transcript": "90초 뒤에 알려줘. 휴식 타임으로 설정해줘.",
+      "reply": "구십 초 뒤 휴식 타임으로 타이머를 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "reply": "90초 타이머를 맞췄어요. 알림을 받으려면 이 데모 탭을 열어 두세요.",
+          "effect": {
+            "type": "timers",
+            "timers": [
+              {
+                "id": "16818797-107b-4393-b388-7a4a10f34ee1",
+                "deadline": 1794415704537,
+                "label": "휴식 타이머"
+              }
+            ]
+          },
+          "operation": "timer",
+          "elapsedMs": 0,
+          "transport": "local",
+          "sources": [],
+          "toolName": "assistant_tool",
+          "toolUseId": "31f27ea2-79a6-4b83-970a-9bebbcaa8532",
+          "arguments": {
+            "operation": "timer",
+            "query": "90초 뒤에 휴식 타임으로 알려줘",
+            "language": "ko"
+          },
+          "turnId": "71c6626a-5541-4ce0-b88c-336f6630deef"
+        }
+      ],
+      "audioBytes": 157440,
+      "asrFinalMs": 156,
+      "asrServerMs": 153,
+      "firstAudioMs": 918,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 18,
+      "charEdits": 2,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "timer-unit",
+      "mode": "transcribe",
+      "voice": "Hyunduk",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 3.29,
+      "reference": "구십 초 뒤에 알려 줘. 휴식 타이머로 설정해 줘.",
+      "transcript": "90초 뒤에 알려줘. 휴식 타이머로 설정해 줘.",
+      "reply": "휴식 타이머 구십 초 뒤로 설정했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "reply": "90초 타이머를 맞췄어요. 알림을 받으려면 이 데모 탭을 열어 두세요.",
+          "effect": {
+            "type": "timers",
+            "timers": [
+              {
+                "id": "02c529d6-ce7d-4a2c-9178-84b0cdf942f7",
+                "deadline": 1794415707721,
+                "label": "휴식 타이머"
+              }
+            ]
+          },
+          "operation": "timer",
+          "elapsedMs": 0,
+          "transport": "local",
+          "sources": [],
+          "toolName": "assistant_tool",
+          "toolUseId": "22b3c316-e399-4c67-879f-d95024100b94",
+          "arguments": {
+            "operation": "timer",
+            "query": "휴식 타이머 구십 초 뒤에 알려줘",
+            "language": "ko"
+          },
+          "turnId": "ac66dc78-b04d-4d8f-9f43-d7772c8b68d4"
+        }
+      ],
+      "audioBytes": 149760,
+      "asrFinalMs": 79,
+      "asrServerMs": 79,
+      "firstAudioMs": 793,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 18,
+      "charEdits": 0,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "out-of-range",
+      "mode": "native",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.65,
+      "reference": "조수석 온도를 사십 도로 올려 줘. 운전석은 건드리지 마.",
+      "transcript": "조수석 온도를 사십 도로 올려줘 운전석은 건드리지마",
+      "reply": "설정 가능한 온도는 십육 도에서 삼십 도 사이입니다. 조수석 온도를 삼십 도로 설정할까요?",
+      "tools": [
+        {
+          "ok": false,
+          "error": "말씀을 이어가셔서 앞 명령은 적용하지 않았어요. 새 발화가 끝난 뒤 최종 요청으로만 다시 판단하세요.",
+          "reply": "말씀을 이어가셔서 앞 명령은 적용하지 않았어요. 새 발화가 끝난 뒤 최종 요청으로만 다시 판단하세요.",
+          "validationError": "speech-resumed",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "actions": [],
+          "results": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "806d1235-1e08-45ae-a2f2-d0828c3b0b65",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 30,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "e1a05f57-dc35-4304-8d35-8a423ecd3c70"
+        },
+        {
+          "ok": false,
+          "error": "온도는 16~30도 사이로 말씀해 주세요.",
+          "validationError": "온도는 16~30도 사이로 말씀해 주세요.",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "설정을 적용하지 않았어요. 온도는 16~30도 사이로 말씀해 주세요.",
+          "results": [],
+          "actions": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "edbd36da-64f9-44ba-8050-075d7f7c5847",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 30,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "e1a05f57-dc35-4304-8d35-8a423ecd3c70"
+        }
+      ],
+      "audioBytes": 312960,
+      "asrFinalMs": 686,
+      "firstAudioMs": 1467,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 22,
+      "charEdits": 0,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [
+        {
+          "code": "speech-resumed",
+          "waitMs": 89
+        }
+      ],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "out-of-range",
+      "mode": "whisper",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.65,
+      "reference": "조수석 온도를 사십 도로 올려 줘. 운전석은 건드리지 마.",
+      "transcript": "조수석 온도를 40도로 올려줘 운전석은 건드리지 마",
+      "reply": "온도는 십육도에서 삼십도 사이로만 설정할 수 있어요. 다시 말씀해 주세요.",
+      "tools": [
+        {
+          "ok": false,
+          "error": "온도는 16~30도 사이로 말씀해 주세요.",
+          "validationError": "온도는 16~30도 사이로 말씀해 주세요.",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "설정을 적용하지 않았어요. 온도는 16~30도 사이로 말씀해 주세요.",
+          "results": [],
+          "actions": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "09167028-03c7-4a8f-8a06-74cc492bea7f",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 40,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "8e28a5b6-87aa-4bd0-b0c1-2f2e53097893"
+        }
+      ],
+      "audioBytes": 245760,
+      "asrFinalMs": 168,
+      "asrServerMs": 164,
+      "firstAudioMs": 900,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 22,
+      "charEdits": 0,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "out-of-range",
+      "mode": "transcribe",
+      "voice": "Seoyeon",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.65,
+      "reference": "조수석 온도를 사십 도로 올려 줘. 운전석은 건드리지 마.",
+      "transcript": "조수석 온도를 사십 도로 올려줘. 운전석은 건드리지 마.",
+      "reply": "온도는 십육도에서 삼십도 사이로만 설정할 수 있습니다. 다시 말씀해 주세요.",
+      "tools": [
+        {
+          "ok": false,
+          "error": "온도는 16~30도 사이로 말씀해 주세요.",
+          "validationError": "온도는 16~30도 사이로 말씀해 주세요.",
+          "state": {
+            "revision": 0,
+            "temperature": {
+              "driver": 22,
+              "passenger": 22
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "설정을 적용하지 않았어요. 온도는 16~30도 사이로 말씀해 주세요.",
+          "results": [],
+          "actions": [],
+          "toolName": "vehicle_control",
+          "toolUseId": "a2aedf0a-0fd0-495f-89b3-23c560448f01",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 40,
+                "zone": "passenger"
+              }
+            ]
+          },
+          "turnId": "6efcbdf3-6da7-46e9-8f1f-2d842b89852a"
+        }
+      ],
+      "audioBytes": 264960,
+      "asrFinalMs": 75,
+      "asrServerMs": 75,
+      "firstAudioMs": 818,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 22,
+      "charEdits": 0,
+      "state": {
+        "revision": 0,
+        "temperature": {
+          "driver": 22,
+          "passenger": 22
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "natural-numbers",
+      "mode": "native",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.33,
+      "reference": "두 자리 다 스물세 도로 맞추고, 시트 열선은 한 단만 켜 줘.",
+      "transcript": "두 자리 다 스물세 도로 맞추고 시트 열선은 한 단만  켜줘",
+      "reply": "양쪽 온도를 스물세 도로로 맞췄고 시트 열선은 일 단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 23,
+              "passenger": 23
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "양쪽 온도를 23도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "양쪽 온도를 23도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 23,
+              "zone": "both"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "98aa5a2f-4993-453a-8a5e-dc048392c9c2",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 23,
+                "zone": "both"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "62cdbaf2-4d91-45be-a27d-5a2e0f74fc6d"
+        }
+      ],
+      "audioBytes": 236160,
+      "asrFinalMs": 681,
+      "firstAudioMs": 1521,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 23,
+          "passenger": 23
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "natural-numbers",
+      "mode": "whisper",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.33,
+      "reference": "두 자리 다 스물세 도로 맞추고, 시트 열선은 한 단만 켜 줘.",
+      "transcript": "두 자리 다 스물셋 도로 맞추고 시트 열선은 한단만 켜줘",
+      "reply": "양쪽 온도를 이십삼 도로 맞췄고 시트 열선을 일단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 23,
+              "passenger": 23
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "양쪽 온도를 23도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "양쪽 온도를 23도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 23,
+              "zone": "both"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "8b7e9c84-9712-4db6-aa56-af811ddf69ba",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 23,
+                "zone": "both"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "e0a4ee1f-9cde-4c33-b8ad-4410d7b60597"
+        }
+      ],
+      "audioBytes": 251520,
+      "asrFinalMs": 184,
+      "asrServerMs": 180,
+      "firstAudioMs": 1064,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 23,
+          "passenger": 23
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "natural-numbers",
+      "mode": "transcribe",
+      "voice": "Jihye",
+      "snr": null,
+      "pauseMs": null,
+      "seconds": 4.33,
+      "reference": "두 자리 다 스물세 도로 맞추고, 시트 열선은 한 단만 켜 줘.",
+      "transcript": "두 자리 다 23도로 맞추고 시트 열선은 한단만 켜줘.",
+      "reply": "양쪽 온도를 이십삼 도로 맞췄고 시트 열선을 일단으로 켰습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 23,
+              "passenger": 23
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 1,
+            "media": {
+              "playing": false,
+              "volume": 35,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "양쪽 온도를 23도로 맞췄어요. 열선을 1단으로 켰어요.",
+          "results": [
+            "양쪽 온도를 23도로 맞췄어요.",
+            "열선을 1단으로 켰어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 23,
+              "zone": "both"
+            },
+            {
+              "type": "seatHeat",
+              "value": 1,
+              "zone": "both"
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "d78a2902-3c40-4c90-a686-0fafb265ed1f",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 23,
+                "zone": "both"
+              },
+              {
+                "type": "seatHeat",
+                "value": 1,
+                "zone": "both"
+              }
+            ]
+          },
+          "turnId": "d343a1e2-c0ae-422d-be71-9914b3e0c894"
+        }
+      ],
+      "audioBytes": 230400,
+      "asrFinalMs": 82,
+      "asrServerMs": 82,
+      "firstAudioMs": 1004,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 21,
+      "charEdits": 0,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 23,
+          "passenger": 23
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 1,
+        "media": {
+          "playing": false,
+          "volume": 35,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "abbreviated-noise",
+      "mode": "native",
+      "voice": "Hyunduk",
+      "snr": 5,
+      "pauseMs": null,
+      "seconds": 5.46,
+      "reference": "조수석 스물다섯 도, 앞유리 성에 제거 켜고, 볼륨은 삼십오 말고 이십으로.",
+      "transcript": "조수석 스물다섯도 앞뒤리성이 제걷혀고 볼륨은  삼십오 말고 이십으로",
+      "reply": "조수석 온도를 이십오 도로 맞췄고 김서림 제거 기능을 껐습니다. 볼륨은 이십으로 조절했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 25
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": false,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 25도로 맞췄어요. 앞유리 김서림 제거 기능을 껐어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "조수석 온도를 25도로 맞췄어요.",
+            "앞유리 김서림 제거 기능을 껐어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "passenger"
+            },
+            {
+              "type": "defrost",
+              "value": false
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "b5563f43-5c0a-415a-9833-c77492213b65",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "passenger"
+              },
+              {
+                "type": "defrost",
+                "value": false
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "31b1999f-20b5-452d-a666-c0a975f5d0fe"
+        }
+      ],
+      "audioBytes": 307200,
+      "asrFinalMs": 814,
+      "firstAudioMs": 1719,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 26,
+      "charEdits": 4,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 25
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": false,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": false
+    },
+    {
+      "id": "abbreviated-noise",
+      "mode": "whisper",
+      "voice": "Hyunduk",
+      "snr": 5,
+      "pauseMs": null,
+      "seconds": 5.46,
+      "reference": "조수석 스물다섯 도, 앞유리 성에 제거 켜고, 볼륨은 삼십오 말고 이십으로.",
+      "transcript": "조수석 25도 앞둘리 성의 제거 켜고 볼륨은 35 말고 20으로",
+      "reply": "조수석 온도를 이십오 도로 맞췄고 앞유리 성에 제거를 켰으며 볼륨을 이십으로 조절했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 25
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": true,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 25도로 맞췄어요. 앞유리 김서림 제거 기능을 켰어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "조수석 온도를 25도로 맞췄어요.",
+            "앞유리 김서림 제거 기능을 켰어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "passenger"
+            },
+            {
+              "type": "defrost",
+              "value": true
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "406c9d1e-0bd2-4048-b2ea-8a9acc496f5d",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "passenger"
+              },
+              {
+                "type": "defrost",
+                "value": true
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "dffa01d3-78b4-46f3-8596-258ff8cb941c"
+        }
+      ],
+      "audioBytes": 314880,
+      "asrFinalMs": 184,
+      "asrServerMs": 181,
+      "firstAudioMs": 1178,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 26,
+      "charEdits": 2,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 25
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    },
+    {
+      "id": "abbreviated-noise",
+      "mode": "transcribe",
+      "voice": "Hyunduk",
+      "snr": 5,
+      "pauseMs": null,
+      "seconds": 5.46,
+      "reference": "조수석 스물다섯 도, 앞유리 성에 제거 켜고, 볼륨은 삼십오 말고 이십으로.",
+      "transcript": "조수석 25도 앞줄리 성에 제거 켜고 볼륨은 35 말고 20으로.",
+      "reply": "조수석 온도를 이십오 도로 맞췄고 앞유리 성에 제거를 켰습니다. 볼륨은 이십으로 조절했습니다.",
+      "tools": [
+        {
+          "ok": true,
+          "validationError": null,
+          "state": {
+            "revision": 1,
+            "temperature": {
+              "driver": 22,
+              "passenger": 25
+            },
+            "fan": 2,
+            "ac": true,
+            "defrost": true,
+            "seatHeat": 0,
+            "media": {
+              "playing": false,
+              "volume": 20,
+              "track": "드라이브 플레이리스트"
+            },
+            "navigation": {
+              "destination": null,
+              "active": false
+            },
+            "speed": 0
+          },
+          "reply": "조수석 온도를 25도로 맞췄어요. 앞유리 김서림 제거 기능을 켰어요. 음량을 20으로 맞췄어요.",
+          "results": [
+            "조수석 온도를 25도로 맞췄어요.",
+            "앞유리 김서림 제거 기능을 켰어요.",
+            "음량을 20으로 맞췄어요."
+          ],
+          "actions": [
+            {
+              "type": "temperature",
+              "value": 25,
+              "zone": "passenger"
+            },
+            {
+              "type": "defrost",
+              "value": true
+            },
+            {
+              "type": "volume",
+              "value": 20
+            }
+          ],
+          "toolName": "vehicle_control",
+          "toolUseId": "f863c772-20f8-42ea-9e13-3f6c66bbe4e9",
+          "arguments": {
+            "actions": [
+              {
+                "type": "temperature",
+                "value": 25,
+                "zone": "passenger"
+              },
+              {
+                "type": "defrost",
+                "value": true
+              },
+              {
+                "type": "volume",
+                "value": 20
+              }
+            ]
+          },
+          "turnId": "4034ead9-912e-4309-a976-4656bfe1c903"
+        }
+      ],
+      "audioBytes": 353280,
+      "asrFinalMs": 103,
+      "asrServerMs": 103,
+      "firstAudioMs": 1102,
+      "earlyAudio": false,
+      "earlyTool": false,
+      "referenceChars": 26,
+      "charEdits": 1,
+      "state": {
+        "revision": 1,
+        "temperature": {
+          "driver": 22,
+          "passenger": 25
+        },
+        "fan": 2,
+        "ac": true,
+        "defrost": true,
+        "seatHeat": 0,
+        "media": {
+          "playing": false,
+          "volume": 20,
+          "track": "드라이브 플레이리스트"
+        },
+        "navigation": {
+          "destination": null,
+          "active": false
+        },
+        "speed": 0
+      },
+      "numericGuards": [],
+      "numericCommitWaitMs": 0,
+      "pass": true
+    }
+  ]
+}

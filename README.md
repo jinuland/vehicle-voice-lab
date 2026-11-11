@@ -1,16 +1,15 @@
 # On · Vehicle Voice Lab
 
-**Try the voice-driven 3D game:** [Channel 07: After Hours](https://d3q7tlfor72b22.cloudfront.net/channel07/) is a Korean-language comedy escape prototype. Use the radio to guide Jiu through a 3D office, collect objects, avoid a security robot and clock out. Select the existing vehicle models in vehicle benchmark score order. The chosen model calls character tools, reads actual execution results and decides whether another action or a conversational reply is needed. Whisper and Polly are shared across models; AgentCore Memory plus a local verified-event index supports callbacks across playthroughs. [Gameplay, architecture and deployment guide (Korean)](docs/CHANNEL07.ko.md).
 
 Compare how well speech models and small language models turn **vehicle requests into validated actions and spoken confirmations**. Try English speech with Nova 2.5 Sonic, explore the Korean self-hosted model comparison, and watch the cabin settings change. Compare model accuracy, first-audio latency, and memory use in a **Korean / English UI**.
 
 [한국어 안내](README.ko.md) · [Deployment](docs/DEPLOYMENT.md) · [Architecture & tools](docs/ARCHITECTURE.md) · [Model catalog](model-catalog.json) · [License notices](NOTICE)
 
-[Open the shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=en) · [Test scenarios](#try-these-test-scenarios) · [Benchmark at a glance](#benchmark-at-a-glance)
+[Compare direct Sonic and AgentCore](https://d3nymxwog7uj8p.cloudfront.net/?lang=en) · [Test scenarios](#try-these-test-scenarios) · [Benchmark at a glance](#benchmark-at-a-glance)
 
-## Sonic-first branch: Strands Bidi and AgentCore preparation
+## Sonic-first: Strands Bidi and AgentCore Runtime
 
-This branch defaults the UI to Nova 2.5 Sonic and keeps the existing direct Bedrock transport as the default. No GPU is needed for Sonic or Transcribe + Sonic; Whisper still requires its configured self-hosted ASR. The alternative Strands Bidi engine uses the same system instructions, model, vehicle tools and validation, and is opt-in for comparison. AgentCore Gateway remains the existing optional information-tool integration. The Strands application uses the AgentCore Runtime WebSocket application framework locally; it is **not deployed to AgentCore Runtime by this branch**, and the Node bridge does not yet sign remote Runtime WebSocket requests.
+This branch defaults the UI to Nova 2.5 Sonic and keeps the existing direct Bedrock transport as the default. No GPU is needed for Sonic or Transcribe + Sonic; Whisper still requires its configured self-hosted ASR. The alternative Strands Bidi engine uses the same system instructions, model, vehicle tools and validation, and is opt-in for comparison. AgentCore Gateway remains the existing optional information-tool integration. The comparison deployment runs Strands Bidi in AgentCore Runtime in Tokyo. The backend signs its WebSocket connection with SigV4 and retains vehicle state and validation. Select the direct or AgentCore runtime in **Model and voice settings**.
 
 ```sh
 npm ci
@@ -23,9 +22,31 @@ python3 -m venv .venv
 # Restart npm start with SONIC_ENGINE=strands in .env to use that sidecar.
 ```
 
-Keep the sidecar on loopback: its callback protocol trusts the Node backend and must not be exposed publicly. A real AgentCore Runtime deployment needs authenticated SigV4/OAuth connection handling, IAM, container deployment, and a latency/security review before use. See [Strands Bidi GA](https://strandsagents.com/blog/bidi-agents-now-ga/) and [AgentCore Runtime WebSocket](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.html).
+To package and deploy a Runtime with an existing S3 bucket and execution role (Python 3.12 / Linux ARM64):
 
-A local paired smoke test replayed the same 12 **synthetic Korean** vehicle clips once per transport (including noise and corrections): direct 9/12, Strands 11/12, with median file-end-to-first-server-audio 1.617 s and 1.675 s respectively. Both completed 12/12; both missed the same noisy abbreviated command. A seven-action command and an out-of-range request also failed in the direct run. These small, single-run results show neither equivalent quality nor a reliable performance advantage; they exclude browser playback, microphone endpointing and deployed AgentCore network overhead. Keep direct as default until larger repeated trials and deployed tests pass.
+```sh
+python3 -m pip install uv
+uv pip install --python-platform aarch64-manylinux2014 --python-version 3.12 \
+  --target /tmp/vehicle-agentcore-package --only-binary=:all: -r agentcore/requirements.txt
+cp agentcore/bidi_app.py /tmp/vehicle-agentcore-package/main.py
+(cd /tmp/vehicle-agentcore-package && zip -qr /tmp/vehicle-agentcore.zip .)
+AWS_PROFILE=your-profile python agentcore/deploy.py --bundle /tmp/vehicle-agentcore.zip \
+  --bucket YOUR_PRIVATE_BUCKET --role-arn YOUR_EXECUTION_ROLE_ARN
+```
+
+The role needs access to the deployment object, CloudWatch logging and the Sonic Bedrock model. See [AWS Runtime permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html). The test deployment uses a dedicated private CloudFront origin and a separate backend process; the original public demo remains independent.
+
+Keep the sidecar on loopback: its callback protocol trusts the Node backend and must not be exposed publicly. For a remote Runtime set `AGENTCORE_RUNTIME_ARN` and `AGENTCORE_RUNTIME_REGION`; the backend role needs `bedrock-agentcore:InvokeAgentRuntimeWithWebSocketStream` for that runtime. Deploy the AgentCore app separately with its own execution role and Sonic model access. Review quotas, session lifecycle, latency and security before production. See [Strands Bidi GA](https://strandsagents.com/blog/bidi-agents-now-ga/) and [AgentCore Runtime WebSocket](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.html).
+
+A paired 12-case synthetic Korean stress test exercised both the deployed AgentCore Runtime and direct Sonic with each input mode. Each cell is **vehicle-command success / median first server audio**; it is not a general ASR benchmark.
+
+| Input mode | Direct Sonic | AgentCore + Strands |
+| --- | --- | --- |
+| Sonic native | 10/12 · 1.516 s | 11/12 · 1.513 s |
+| Whisper + Sonic | 11/12 · 0.905 s | 11/12 · 0.953 s |
+| Transcribe + Sonic | 10/12 · 0.799 s | 10/12 · 0.831 s |
+
+All 72 runs returned audio. Numeral-normalized character error rates were 5.9%, 3.4% and 3.4% for native, Whisper and Transcribe respectively in both transports. Transcribe missed the final 24°C in a correction, and both external ASR systems failed a noisy fan/volume command. Samples are synthetic, one run each, with concurrent load. Timing is from file end to first server audio for streaming and from upload start for Whisper; it excludes microphone endpointing, browser playback and connection startup and is not a live latency ranking. Differences in scores can be sampling variation. [Raw synthetic results](research/sonic-agentcore-comparison).
 
 The Sonic settings include a **separate standard Polly voice preview** (Seoyeon/Joanna). Sonic still produces its own real-time audio; the preview is not voice cloning or a replacement for Sonic's audio. Cloning access, a supported API and a voice ID have not been provided or verified; no release date is assumed. Replacing native speech with Polly would require an additional speech-synthesis path and new latency/interruption testing.
 
@@ -39,18 +60,23 @@ Both the [shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=ko) and the [L
 
 Select the same language and input mode, reset the cabin, and replay the same file or speak the same request. In the Korean UI, try **“조수석 온도를 25도로 맞춰줘”**, a compound request, and **“조수석 29도… 아니, 24도로 바꿔줘.”** Check the transcript, actions, intermediate changes, final cabin state, and reply. Whisper and Transcribe modes wait for a complete turn; their microphone end-of-speech wait defaults to 0.85 seconds and is configurable under **Model and voice settings**. Native Sonic supports barge-in; hybrid modes use the stop button. Sonic Korean speech is experimental and not officially supported in this demo.
 
-### Korean speech pilot (November 11, 2026)
+### Original 31 vehicle scenarios: three Sonic input modes
 
-We replayed 24 human-read [FLEURS Korean](https://huggingface.co/datasets/google/fleurs) test recordings once per path, both clean and mixed offline with recorded [DEMAND TCAR cabin noise](https://zenodo.org/records/1227121) at +5 dB SNR. This is 48 inputs per path, not recordings made by speaking in a moving car. The table reports **character error rate (CER; lower is better)** after case, spacing, punctuation, and the explicitly observed equivalent number/unit forms were normalized. For example, “70km” and “칠십 킬로미터” count as equivalent; an incorrect number still counts as an error.
+The original synthetic 31-case suite was replayed once on the current direct-Sonic demo with the **same strict action, state, reply and audio criteria** for all three modes. This is a new run and is not directly equivalent to the older GPU results below: deployment, model behavior and load can differ.
 
-| Condition | Sonic only | Whisper + Sonic | Transcribe + Sonic |
-| --- | ---: | ---: | ---: |
-| Clean human speech, number-normalized CER | 10.70% | 6.45% | 6.45% |
-| Human speech + recorded cabin noise, number-normalized CER | 11.80% | 6.04% | 7.96% |
+| Mode | Strict success | Median / p95 first server audio |
+| --- | ---: | ---: |
+| Sonic only | 23/31 | 1.311 / 2.698 s |
+| Whisper + Sonic | 26/31 | 0.715 / 0.927 s |
+| Transcribe + Sonic | 26/31 | 0.663 / 0.824 s |
 
-The small sample and single run are exploratory, not a production accuracy estimate. Some source sentences repeat across recordings. These are general read speech, **not vehicle commands**, so vehicle-command success and self-correction success cannot be derived from this table. A separate three-case synthetic smoke test on the original demo verified the compound and negated commands across all three modes; for the 29→24°C correction, native Sonic and Whisper applied 24°C, while Transcribe missed the final number and asked again without changing the temperature. A single case is not a success rate.
+All 93 attempts produced audio. The strict scorer can mark functionally correct behavior as failure: for example, a harmless `zone: both` field on the simulator's single seat-heater setting, or a safe refusal of an out-of-range request that produced a tool validation error. If only that `seatHeat` field is normalized, scores become 25/31, 27/31 and 26/31; other strict rules remain unchanged. This is not a general semantic score. The timings have the same streaming/file-upload measurement limitations as the 12-case test above. [Raw rows and scoring script](research/sonic-agentcore-comparison) · [replay script](scripts/sonic-three-mode-vehicle-benchmark.mjs).
 
-For the 24-recording pilot, the clean file-end-to-first-server-audio median was 0.95 s for Whisper and 0.51 s for Transcribe; the noisy medians were 0.86 s and 0.52 s. Sonic produced audio before file end in 9/24 cases in each condition; its median among the remaining 15 cases was 0.42 s clean and 0.45 s noisy, so it is **not directly comparable** to the other medians. File-end is not necessarily the last spoken sound, and an early packet is not proof of audible interruption. These timings exclude microphone endpointing, the browser's playback buffer, speaker playback and cold starts. They do not establish which mode is fastest in live conversation. The test used the L4 demo with up to three concurrent cases; actual load and deployment can change timing. [More details and earlier synthetic tests](docs/SONIC_TURN_TAKING.md).
+### Choosing speech recognition
+
+Sonic can handle audio directly for a simple low-latency full-duplex experience. For Korean speech, adding **Amazon Transcribe Streaming** or self-hosted **Whisper** before Sonic can improve transcription in some conditions; Sonic still handles reasoning, validated tools and spoken replies. In our limited human-speech pilot both external ASR options had lower character error than Sonic alone, but that does not establish vehicle-command success or guarantee improvement on every utterance. Accuracy, turn-taking and latency should be evaluated together. See [the pilot method and limitations](docs/SONIC_TURN_TAKING.md).
+
+**No dedicated GPU** is needed for Sonic or Transcribe + Sonic. Whisper and GPU models such as Qwen can be deployed on EC2 or adapted to SageMaker managed GPU endpoints; SageMaker deployment is not implemented here and does not by itself improve model quality or latency.
 
 ## Smaller-GPU deployment and serving cost
 
