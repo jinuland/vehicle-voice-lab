@@ -18,7 +18,7 @@ function syncConversationLanguage(){
 }
 let plannerChoice='qwen35-4b';let asrChoice='whisper';
 document.addEventListener('vehicle-catalog-ready',()=>{plannerChoice=$('planner-model').value;});
-let engine='cascade',sonicVoice,sonicConnecting;
+let engine='sonic',sonicVoice,sonicConnecting;
 const sonicInput=()=>engine==='sonic'?$('sonic-input').value:'native';
 const usesTranscribe=()=>sonicInput()==='transcribe';
 const usesSonicAsr=()=>['whisper','transcribe'].includes(sonicInput());
@@ -355,13 +355,15 @@ function renderSonicInput(){
   $('sonic-transcribe-note').hidden=!usesTranscribe();
   if(engine==='sonic')$('pipeline-description').textContent=usesTranscribe()?'실시간 Transcribe 인식 → Sonic 판단·도구 호출·음성 응답':hybrid?'발화 단위 Whisper 인식 → Sonic 판단·도구 호출·음성 응답':'실시간 음성 스트림 · Sonic 내장 턴 감지 · 한국어 미지원 실험 · 실제 차량 연결 없음';
 }
-$('conversation-engine').addEventListener('change',async e=>{
-  if(micEnabled)await toggleMic();await interrupt(false);engine=e.target.value;
+function renderEngine(){
   $('barge-in-option').hidden=engine==='sonic';$('sonic-options').hidden=engine!=='sonic';$('sonic-english').hidden=engine!=='sonic';$('tts-provider').parentElement.hidden=engine==='sonic';
   $('minicpm-options').hidden=engine!=='minicpm';$('minicpm-control-notice').hidden=engine!=='minicpm-control';$('planner-row').hidden=engine!=='cascade';$('asr-row').hidden=engine!=='cascade';$('planner-notice').hidden=engine!=='cascade'||!['hyperclova-05b','exaone4-12b','smollm3'].includes(plannerChoice);$('audio-model-row').hidden=!isExtraAudio();$('audio-language').parentElement.hidden=engine==='audio-control';$('tts-provider').parentElement.hidden=!['cascade','minicpm-control','audio-control'].includes(engine);$('sonic-english').hidden=engine==='cascade';
   document.querySelectorAll('[data-prompt]').forEach(button=>button.hidden=isAudioInput());
   $('pipeline-description').textContent=isExtraAudio()?(engine==='audio-control'?'음성 직접 판단 → 차량 실행 → 한국어 TTS · 하이브리드 실험':'모델 내장 S2S · 발화 단위 입력 · 차량 제어 미연결'):engine==='sonic'?'실시간 음성 스트림 · Sonic 내장 턴 감지 · 한국어 미지원 실험 · 실제 차량 연결 없음':engine==='minicpm-control'?'MiniCPM 음성 판단 → 차량 실행 → 한국어 TTS · 하이브리드 실험':engine==='minicpm'?'MiniCPM 자체 S2S · 발화 단위 입력 · 출력 스트리밍 · 차량 제어 미연결':'발화 단위 인식 · 문장 단위 음성 응답 · 실제 차량 연결 없음';
-  renderSonicInput();resetSonicMetrics();if(isExtraAudio())$('metric-context').textContent=engine==='audio-control'?'음성 모델 직접 판단 → 차량 검증·실행 → 한국어 TTS':'모델 내장 S2S · 단계별 시간 분리 불가';if(engine==='minicpm')$('metric-context').textContent='MiniCPM 내장 S2S · 단계별 시간 분리 불가';if(engine==='minicpm-control')$('metric-context').textContent='MiniCPM 음성 이해·판단 → 차량 검증·실행 → 한국어 TTS';if(engine==='cascade')$('metric-context').textContent='측정 대기';await checkHealth();
+  renderSonicInput();resetSonicMetrics();if(isExtraAudio())$('metric-context').textContent=engine==='audio-control'?'음성 모델 직접 판단 → 차량 검증·실행 → 한국어 TTS':'모델 내장 S2S · 단계별 시간 분리 불가';if(engine==='minicpm')$('metric-context').textContent='MiniCPM 내장 S2S · 단계별 시간 분리 불가';if(engine==='minicpm-control')$('metric-context').textContent='MiniCPM 음성 이해·판단 → 차량 검증·실행 → 한국어 TTS';if(engine==='cascade')$('metric-context').textContent='측정 대기';}
+$('conversation-engine').addEventListener('change',async e=>{
+  if(micEnabled)await toggleMic();await interrupt(false);engine=e.target.value;
+  renderEngine();await checkHealth();
 });
 $('comparison-only').addEventListener('change',async e=>{for(const id of ['minicpm','audio-native'])$('conversation-engine').querySelector(`[value="${id}"]`).hidden=!e.target.checked;for(const id of ['minicpm','audio-native'])$('conversation-engine').querySelector(`[value="${id}"]`).disabled=!e.target.checked;if(!e.target.checked&&['audio-native','minicpm'].includes(engine)){$('conversation-engine').value=engine==='minicpm'?'minicpm-control':'audio-control';$('conversation-engine').dispatchEvent(new Event('change'));}});
 $('audio-model').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);await checkHealth();});
@@ -373,6 +375,17 @@ $('sonic-input').addEventListener('change',async()=>{
   await interrupt(false);renderSonicInput();resetSonicMetrics();await checkHealth();
 });
 $('sonic-language').addEventListener('change',async()=>{if(micEnabled)await toggleMic();await interrupt(false);idleStatus();});
+$('polly-preview').addEventListener('click',async()=>{
+  if(busy||micEnabled){toast('대화를 멈춘 뒤 Polly 음성을 미리 들어주세요.');return;}
+  try{
+    const language=replyLanguage(),text=language==='en'?'The passenger temperature is set to 24 degrees.':'조수석 온도를 24도로 맞췄어요.';
+    const response=await api('voice-preview',{method:'POST',body:JSON.stringify({text,language,mode:'polly'})});
+    const data=await response.json();if(!response.ok)throw Error(data.error||'Polly unavailable');
+    const bytes=Uint8Array.from(atob(data.audio),c=>c.charCodeAt(0));
+    const url=URL.createObjectURL(new Blob([bytes],{type:'audio/wav'}));const audio=new Audio(url);
+    audio.addEventListener('ended',()=>URL.revokeObjectURL(url),{once:true});await audio.play();
+  }catch(error){toast(error.message);}
+});
 $('sonic-english').addEventListener('click',async()=>{
   try{const response=await fetch(engine==='minicpm'?'/sample-greeting.wav':'/sample-english.wav');if(!response.ok)throw new Error('영어 샘플을 불러오지 못했어요.');await submit({audio:base64(new Uint8Array(await response.arrayBuffer()))},{basis:'file'});}catch(error){toast(error.message);}
 });
@@ -432,5 +445,6 @@ document.addEventListener('vehicle-ui-language',()=>{
   }).catch(error=>toast(error.message));
 });
 syncConversationLanguage();
+renderEngine();
 window.addEventListener('beforeunload',()=>{mediaStream?.getTracks().forEach(t=>t.stop());sonicVoice?.close();stopPlayback();});
 try{const d=await(await api('session',{method:'POST',body:'{}'})).json();sessionId=d.id;configureAssistant(api);renderState(d.state);await checkHealth();setInterval(checkHealth,10000);}catch(e){toast('서버에 연결할 수 없어요. '+e.message);}

@@ -16,7 +16,7 @@ test('microphone activity cannot cancel a pending reply unless barge-in is enabl
   });
   const source=readFileSync(new URL('../public/app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
   vm.runInContext(source.slice(0,source.indexOf("$('mic').addEventListener")),context);
-  vm.runInContext('micEnabled=true;busy=true;audioContext={sampleRate:16000};',context);
+  vm.runInContext("engine='cascade';micEnabled=true;busy=true;audioContext={sampleRate:16000};",context);
   for(let i=0;i<20;i++)vm.runInContext('onPCM(new Float32Array(1600).fill(.2))',context);
   assert.equal(vm.runInContext('requestNumber',context),0);
   assert.equal(vm.runInContext('speech',context),false);

@@ -10,6 +10,8 @@ import {awsCredentials} from './aws-auth.mjs';
 import {allowedRequest,startSse,cloudMode} from './web-access.mjs';
 import {WebSocketServer} from 'ws';
 import {SonicSession,SONIC_MODEL,SONIC_REGION} from './sonic.mjs';
+import {StrandsSonicSession} from './strands-sonic.mjs';
+import {createVoiceOutput} from './voice-output.mjs';
 import {sonicAsrRoute} from './sonic-asr.mjs';
 import {createTranscribeInput,TRANSCRIBE_REGION} from './sonic-transcribe.mjs';
 import {createNativeWriteGate,correctionError,numericGuardReply} from './sonic-number-guard.mjs';
@@ -107,6 +109,15 @@ app.post('/api/session',(req,res)=>{
   if(sessions.size>=1000)return res.status(503).json({error:'공유 데모 접속이 많습니다. 잠시 후 다시 시도해 주세요.'});
   const id=randomUUID();sessions.set(id,{id,miniConversation:randomUUID(),state:initialState(),previous:null,history:[],turns:[],updated:Date.now()});
   res.json({id,state:sessions.get(id).state});
+});
+const previewVoice=createVoiceOutput({synthesize});
+app.post('/api/voice-preview',async(req,res)=>{
+  try{
+    session(req);
+    const controller=new AbortController();res.once('close',()=>{if(!res.writableEnded)controller.abort();});
+    const result=await previewVoice.render(req.body||{},controller.signal);
+    res.json({audio:result.bytes.toString('base64'),provider:result.provider,mode:result.mode,language:result.language,elapsedMs:result.elapsedMs});
+  }catch(error){res.status(error.code==='CLONE_NOT_AVAILABLE'?501:400).json({error:error.message,code:error.code});}
 });
 app.get('/api/tools',async(req,res)=>res.json(await toolCatalog()));
 app.post('/api/location',(req,res)=>{
@@ -297,7 +308,8 @@ wss.on('connection',(ws,req,url)=>{
   };
   const stop=()=>{if(stopped)return;stopped=true;clearTimeout(idleTimer);clearTimeout(lifetime);clearInterval(sonicKeepAlive);transcribe?.close();writeGate.close();if(record&&!record.completed)record.interrupted=true;sonic.close();if(sonicConnections.get(s.id)?.stop===stop)sonicConnections.delete(s.id);if(ws.readyState===1)ws.close();};
   const language=responseLanguage(url.searchParams.get('language'));
-  const sonic=new SonicSession({state:s.state,language,executeTool:async args=>{
+  const SonicImplementation=process.env.SONIC_ENGINE==='strands'?StrandsSonicSession:SonicSession;
+  const sonic=new SonicImplementation({state:s.state,language,executeTool:async args=>{
     if(stopped||sonicConnections.get(s.id)?.stop!==stop)throw new Error('취소된 차량 명령입니다.');
     guardSonicRadio(record?.input,args.actions||[]);
     const proposedPlan=parsePlan(JSON.stringify({intent:args.actions?.length?'control':'question',actions:args.actions,reply:''}));

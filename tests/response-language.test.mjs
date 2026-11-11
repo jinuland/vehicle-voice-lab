@@ -51,8 +51,8 @@ test('HTTP turns switch reply language within the same session and pass English 
 test('switching the UI reconnects an existing Sonic session without resetting cabin or conversation',async()=>{
  const vm=await import('node:vm'),{readFileSync}=await import('node:fs');
  const listeners=new Map(),elements=new Map();
- const document={documentElement:{lang:'ko'},addEventListener:(name,fn)=>listeners.set(name,fn),querySelectorAll:()=>[],getElementById(id){
-  if(!elements.has(id))elements.set(id,{value:'ko',addEventListener(){},querySelector(selector){return document.getElementById(id+selector);}});return elements.get(id);
+ const document={createTextNode:()=>({}),createElement:()=>({}),documentElement:{lang:'ko'},addEventListener:(name,fn)=>listeners.set(name,fn),querySelectorAll:()=>[],getElementById(id){
+  if(!elements.has(id))elements.set(id,{value:'ko',parentElement:{hidden:false},replaceChildren(){},addEventListener(){},querySelector(selector){return document.getElementById(id+selector);}});return elements.get(id);
  }};
  const context=vm.createContext({document,window:{},fetch:async()=>({json:async()=>({})}),performance:{now:()=>0}});
  const source=readFileSync(new URL('../public/app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');

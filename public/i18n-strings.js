@@ -70,6 +70,8 @@ export const english = {
   "MiniCPM이 음성을 직접 이해·판단하고, 서버가 차량 시뮬레이터에 적용한 결과를 한국어 TTS로 안내합니다. 내장 S2S와 구분되는 하이브리드 실험입니다.": "MiniCPM interprets audio; the server executes validated vehicle commands and confirms with Korean TTS. This is a hybrid experiment.",
   "Sonic 대화 언어": "Sonic speech language",
   "Sonic 입력 방식": "Sonic input mode",
+  "Polly는 별도 음성 출력 미리보기입니다. Sonic 내장 음성은 그대로 유지됩니다.": "Polly is a separate voice preview; Sonic keeps its native voice.",
+  "Polly 한국어 음성 미리 듣기": "Preview Polly voice",
   "Sonic 내장 ASR · 실시간 S2S": "Sonic native recognition · Realtime S2S",
   "Whisper + Sonic · 한국어 인식 비교": "Whisper + Sonic · Korean recognition comparison",
   "Amazon Transcribe + Sonic · 스트리밍": "Amazon Transcribe + Sonic · Streaming",

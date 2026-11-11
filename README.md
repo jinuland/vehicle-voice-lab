@@ -8,6 +8,27 @@ Compare how well speech models and small language models turn **vehicle requests
 
 [Open the shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=en) · [Test scenarios](#try-these-test-scenarios) · [Benchmark at a glance](#benchmark-at-a-glance)
 
+## Sonic-first branch: Strands Bidi and AgentCore preparation
+
+This branch defaults the UI to Nova 2.5 Sonic and keeps the existing direct Bedrock transport as the default. No GPU is needed for Sonic or Transcribe + Sonic; Whisper still requires its configured self-hosted ASR. The alternative Strands Bidi engine uses the same system instructions, model, vehicle tools and validation, and is opt-in for comparison. AgentCore Gateway remains the existing optional information-tool integration. The Strands application uses the AgentCore Runtime WebSocket application framework locally; it is **not deployed to AgentCore Runtime by this branch**, and the Node bridge does not yet sign remote Runtime WebSocket requests.
+
+```sh
+npm ci
+cp .env.example .env # configure AWS credentials and Bedrock model access
+npm start            # direct Sonic, http://localhost:8787
+# Optional: in a second terminal, install and run the local Strands sidecar:
+python3 -m venv .venv
+.venv/bin/pip install -r agentcore/requirements.txt
+.venv/bin/python agentcore/bidi_app.py
+# Restart npm start with SONIC_ENGINE=strands in .env to use that sidecar.
+```
+
+Keep the sidecar on loopback: its callback protocol trusts the Node backend and must not be exposed publicly. A real AgentCore Runtime deployment needs authenticated SigV4/OAuth connection handling, IAM, container deployment, and a latency/security review before use. See [Strands Bidi GA](https://strandsagents.com/blog/bidi-agents-now-ga/) and [AgentCore Runtime WebSocket](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.html).
+
+A local paired smoke test replayed the same 12 **synthetic Korean** vehicle clips once per transport (including noise and corrections): direct 9/12, Strands 11/12, with median file-end-to-first-server-audio 1.617 s and 1.675 s respectively. Both completed 12/12; both missed the same noisy abbreviated command. A seven-action command and an out-of-range request also failed in the direct run. These small, single-run results show neither equivalent quality nor a reliable performance advantage; they exclude browser playback, microphone endpointing and deployed AgentCore network overhead. Keep direct as default until larger repeated trials and deployed tests pass.
+
+The Sonic settings include a **separate standard Polly voice preview** (Seoyeon/Joanna). Sonic still produces its own real-time audio; the preview is not voice cloning or a replacement for Sonic's audio. Cloning access, a supported API and a voice ID have not been provided or verified; no release date is assumed. Replacing native speech with Polly would require an additional speech-synthesis path and new latency/interruption testing.
+
 ## Compare Sonic speech input modes
 
 Both the [shared demo](https://dys3pnz3y08gk.cloudfront.net/?lang=ko) and the [L4 demo](https://d3q7tlfor72b22.cloudfront.net/?lang=ko) support the three paths. In **Conversation mode**, select **Nova 2.5 Sonic · Realtime S2S**, then choose **Sonic input mode**:
@@ -108,7 +129,7 @@ We ran **14 control configurations × the same 31 Korean synthetic audio cases =
 
 | Tested configuration | Application pass rate | First audio median / p95 | Voice used in this score |
 | --- | --- | --- | --- |
-| **Qwen3.5-4B · NF4 (default)** | 30/31 · 97/100 | 2.04 s / 3.22 s | Polly Seoyeon |
+| **Qwen3.5-4B · NF4 (historical self-hosted default)** | 30/31 · 97/100 | 2.04 s / 3.22 s | Polly Seoyeon |
 | Qwen3.5-4B · BF16 | 30/31 · 97/100 | 1.45 s / 2.78 s | Polly Seoyeon |
 | Gemma 4 · E2B IT | 28/31 · 90/100 | 1.89 s / 2.45 s | Polly Seoyeon |
 | Phi-4 mini Instruct | 28/31 · 90/100 | 1.18 s / 2.25 s | Polly Seoyeon |
@@ -201,7 +222,7 @@ AWS references: [custom inference containers](https://docs.aws.amazon.com/sagema
 
 ## Evaluation details and interpretation
 
-The default path is **Whisper large-v3-turbo → Qwen3.5-4B NF4 → vehicle executor → Polly Seoyeon**. The shared evaluation contains 31 synthetic Korean audio cases per control configuration and 10 additional holdout cases for finalists.
+The historical self-hosted path was **Whisper large-v3-turbo → Qwen3.5-4B NF4 → vehicle executor → Polly Seoyeon**. The shared evaluation contains 31 synthetic Korean audio cases per control configuration and 10 additional holdout cases for finalists.
 
 | Qwen3.5-4B precision | Application pass rate | Holdout | First audio median / p95 | Planner CUDA allocation |
 | --- | --- | --- | --- | --- |
